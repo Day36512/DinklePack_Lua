@@ -10,7 +10,7 @@ local function OnCommand(event, player, command)
             end
             player:CastSpell(player, auras[1], true)
         else
-            player:SendNotification("You're on combat!")
+            player:SendNotification("You're in combat!")
         end
         return false
     end

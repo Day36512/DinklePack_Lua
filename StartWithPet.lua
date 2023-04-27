@@ -5,8 +5,8 @@
 local EnableModule   = false   -- Enable module
 local AnnounceModule = true   -- Announce module on player login ?
 
-local LoadFromDB     = true   -- true  : Load beasts automatically from the database
-                              -- false : Use PET_NPC_DB list below
+local LoadFromDB     = false   -- true  : KEEP DISABLED FOR NOW!!!
+                              
 
 -- This table is used only when LoadFromDB=false
 -- entry,maxLevel

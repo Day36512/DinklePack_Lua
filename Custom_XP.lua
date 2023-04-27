@@ -19,6 +19,13 @@ local function OnLogin(event, player)
     end
 end
 
+local function OnFirstLogin(event, player)
+    local PUID = getPlayerCharacterGUID(player)
+    local defaultRate = 1
+    WorldDBExecute(string.format("INSERT INTO custom_xp VALUES (%i, %.2f)", PUID, defaultRate))
+    player:SendBroadcastMessage(string.format("|cff5af304Your XP rate is set to default: %.1fx|r", defaultRate))
+end
+
 local function SetRate(event, player, command)
     local mingmrank = 3
     local PUID = getPlayerCharacterGUID(player)
@@ -70,4 +77,5 @@ if enabled then
     RegisterPlayerEvent(3, OnLogin)
     RegisterPlayerEvent(12, OnXP)
     RegisterPlayerEvent(42, SetRate)
+    RegisterPlayerEvent(30, OnFirstLogin) -- Add this line to register the new function to the event
 end
