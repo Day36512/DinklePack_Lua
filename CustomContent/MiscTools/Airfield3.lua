@@ -1,4 +1,4 @@
-local NPCID = 90003
+local NPCID = 90004
 
 local function ResetPlayerDisplayId(eventId, delay, repeats, player)
     if not player:IsMoving() then
@@ -10,7 +10,7 @@ end
 
 local function PlatformTransportOnGossipHello(event, player, creature)
     player:GossipMenuAddItem(0, "Take me to Ironforge!", 0, 1)
-    player:GossipMenuAddItem(0, "Take me to Wetland Highlands!", 0, 2)
+    player:GossipMenuAddItem(0, "Take me to the Airfields!", 0, 2)
     player:GossipSendMenu(1, creature)
 end
 
@@ -20,18 +20,19 @@ local function PlatformTransportOnGossipSelect(event, player, creature, sender, 
         creature:CastSpell(player, 32992, true)
         player:CastSpell(player, 24085, true)
         player:SetDisplayId(25144)
-        player:MoveJump(-5166.45, -877.49, 507.39, 2000, 115)
+        player:MoveJump(-5166.45, -877.49, 507.39, 2000, 165)
 
-        player:RegisterEvent(ResetPlayerDisplayId, 19700, 1) 
+        player:RegisterEvent(ResetPlayerDisplayId, 26300, 1)
     elseif (intid == 2) then
         player:GossipComplete()
         creature:CastSpell(player, 32992, true)
         player:CastSpell(player, 24085, true)
         player:SetDisplayId(25144)
-        player:MoveJump(-4028.206, -1415.7199, 156.94, 2000, 70)
+        player:MoveJump(-4492, -1588, 509, 2000, 85)
 
-        player:RegisterEvent(ResetPlayerDisplayId, 12100, 1) 
+        player:RegisterEvent(ResetPlayerDisplayId, 12300, 1)
     end
 end
+
 RegisterCreatureGossipEvent(NPCID, 1, PlatformTransportOnGossipHello)
 RegisterCreatureGossipEvent(NPCID, 2, PlatformTransportOnGossipSelect)

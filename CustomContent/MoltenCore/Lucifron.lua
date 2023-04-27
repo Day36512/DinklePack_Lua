@@ -20,11 +20,16 @@ local randomTarget = targets[math.random(1, targetCount)]
 creature:CastSpell(randomTarget, 10216, true)
 end
 
+function Lucifron.CastChaosNova(eventId, delay, calls, creature)
+creature:CastSpell(creature, 30852, false)
+end
+
 function Lucifron.OnEnterCombat(event, creature, target)
-creature:RegisterEvent(Lucifron.CastImpendingDoom, math.random(6000, 11000), 0)
-creature:RegisterEvent(Lucifron.CastLucifronCurse, math.random(11000, 14000), 0)
-creature:RegisterEvent(Lucifron.CastShadowShock, 5000, 0)
-creature:RegisterEvent(Lucifron.CastFlamestrike, 15000, 0)
+creature:RegisterEvent(Lucifron.CastImpendingDoom, math.random(4000, 8000), 0) -- Reduced delay for Impending Doom
+creature:RegisterEvent(Lucifron.CastLucifronCurse, math.random(8000, 12000), 0) -- Reduced delay for Lucifron Curse
+creature:RegisterEvent(Lucifron.CastShadowShock, 5000, 0) -- Reduced delay for Shadow Shock
+creature:RegisterEvent(Lucifron.CastFlamestrike, 12000, 0) -- Reduced delay for Flamestrike
+creature:RegisterEvent(Lucifron.CastChaosNova, 180000, 0) -- Added new ability: Chaos Nova
 end
 
 function Lucifron.OnLeaveCombat(event, creature)
@@ -36,14 +41,14 @@ creature:RemoveEvents()
 end
 
 function Lucifron.OnDamageTaken(event, creature, attacker, damage)
-if(not Lucifron.enrageCasted and creature:HealthBelowPct(20)) then
+if(not Lucifron.enrageCasted and creature:HealthBelowPct(30)) then -- Enrage triggers at 30% health
 creature:CastSpell(creature, 38166, true)
 Lucifron.enrageCasted = true
 end
 end
 
 function Lucifron.OnSpawn(event, creature)
---creature:SetMaxHealth(748000)
+creature:SetMaxHealth(748000 * 1.25) -- Increase health pool by 25%
 end
 
 RegisterCreatureEvent(12118, 1, Lucifron.OnEnterCombat)

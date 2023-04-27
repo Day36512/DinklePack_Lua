@@ -5,7 +5,7 @@ local banTimer = 999999999
 
 --on death function - checks if player has token and bans character if it does.
 local function PlayerDeath(event, killer, killed)
-  if killed:HasItem(90000,1) and killed:GetLevel() == 1 then
+  if killed:HasItem(90000,1) then
     print(killed:GetName() .. " was killed by " .. killer:GetName())
     SendWorldMessage(killed:GetName() .. " was killed by " .. killer:GetName())
     Ban(1,killed:GetName(),banTimer)
@@ -14,16 +14,15 @@ end
 
 --First Gossip Screen for NPC
 function OnFirstTalk(event, player, unit)
+  player:PlayDistanceSound(20431)
   if player:GetLevel() == 1 then
-    player:PlayDistanceSound(20431)
     player:GossipMenuAddItem(0, "Looking for a challenge? Click here to try hardcore mode!", 0, 1)
-    player:GossipMenuAddItem(0, "What's with the wings?", 0, 4)
-    player:GossipSendMenu(1, unit)
-  else
-    player:SendBroadcastMessage("You must be level 1 to access hardcore mode.")
-    player:PlayDistanceSound(20432)
-    player:GossipComplete()
   end
+  if player:HasItem(90000, 1) then
+    player:GossipMenuAddItem(0, "Remove hardcore mode from your character.", 0, 8)
+  end
+  player:GossipMenuAddItem(0, "What's with the wings?", 0, 4)
+  player:GossipSendMenu(1, unit)
 end
 
 --Selection for NPC gossip
@@ -46,8 +45,14 @@ function OnSelect(event, player, unit, sender, intid, code)
     player:GossipSendMenu(6, unit)
   elseif intid == 7 then
     player:GossipComplete()
+	  elseif intid == 8 then
+    player:RemoveItem(90000, 1)
+    player:SendBroadcastMessage("Hardcore mode has been removed from your character.")
+    player:PlayDistanceSound(20435)
+    player:GossipComplete()
   end
 end
+
 
 --if player chooses to do hardcore they receive the token and have custom items and Murky removed
 function OnHardCore(event, player, unit, sender, intid, code)

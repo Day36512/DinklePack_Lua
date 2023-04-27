@@ -28,8 +28,8 @@ end
 
 function Hazzrash.ResumeCasts(eventId, delay, calls, creature)
 creature:RegisterEvent(Hazzrash.CastArcaneBarage, 6000, 0)
-creature:RegisterEvent(Hazzrash.CastArcaneBlast, 16000, 0)
-creature:RegisterEvent(Hazzrash.CastCrystalFlash, 25000, 0)
+creature:RegisterEvent(Hazzrash.CastArcaneBlast, 14000, 0)
+creature:RegisterEvent(Hazzrash.CastCrystalFlash, 20000, 0)
 creature:RegisterEvent(Hazzrash.CastChainBurn, 29000, 0)
 end
 
@@ -37,7 +37,7 @@ function Hazzrash.OnEnterCombat(event, creature, target)
 creature:RegisterEvent(Hazzrash.CastArcaneBarage, 6000, 0)
 creature:RegisterEvent(Hazzrash.CastArcaneBlast, 18000, 0)
 creature:RegisterEvent(Hazzrash.CastCrystalFlash, 25000, 0)
-creature:RegisterEvent(Hazzrash.CastChainBurn, 44000, 0)
+creature:RegisterEvent(Hazzrash.CastChainBurn, 34000, 0)
 creature:RegisterEvent(Hazzrash.CastEvocation, 60000, 1)
 end
 

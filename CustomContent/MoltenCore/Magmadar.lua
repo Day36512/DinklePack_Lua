@@ -1,5 +1,3 @@
---fixed stupidity
-
 local Magmadar = {};
 
 local SPELL_FRENZY = 19451
@@ -7,15 +5,17 @@ local SPELL_PANIC = 19408
 local SPELL_LAVA_BOMB = 19411
 local SPELL_LAVA_BOMB_RANGED = 20474
 local SPELL_SUMMON_CORE_HOUND = 364726
+local SPELL_ENRAGE = 27680
 
 local MELEE_TARGET_LOOKUP_DIST = 10.0
 
 function Magmadar.OnEnterCombat(event, creature, target)
-creature:RegisterEvent(Magmadar.Frenzy, math.random(14000, 18000), 0)
-creature:RegisterEvent(Magmadar.Panic, math.random(28000, 35000), 0)
-creature:RegisterEvent(Magmadar.LavaBomb, math.random(10000, 12000), 0)
-creature:RegisterEvent(Magmadar.LavaBombRanged, math.random(9000, 15000), 0)
+creature:RegisterEvent(Magmadar.Frenzy, math.random(12000, 16000), 0)
+creature:RegisterEvent(Magmadar.Panic, math.random(20000, 25000), 0)
+creature:RegisterEvent(Magmadar.LavaBomb, math.random(8000, 10000), 0)
+creature:RegisterEvent(Magmadar.LavaBombRanged, math.random(6000, 9000), 0)
 creature:RegisterEvent(Magmadar.CastSummonCoreHound, 45000, 0)
+creature:RegisterEvent(Magmadar.Enrage, 180000, 1) -- 3 minute enrage timer
 end
 
 function Magmadar.OnLeaveCombat(event, creature)
@@ -59,6 +59,11 @@ end
 
 function Magmadar.CastSummonCoreHound(event, delay, calls, creature)
 creature:CastSpell(creature, SPELL_SUMMON_CORE_HOUND, true)
+end
+
+function Magmadar.Enrage(event, delay, calls, creature)
+creature:CastSpell(creature, SPELL_ENRAGE, false)
+creature:SendUnitEmote("Magmadar becomes enraged, significantly increasing attack speed and damage!")
 end
 
 RegisterCreatureEvent(11982, 1, Magmadar.OnEnterCombat)

@@ -1,6 +1,6 @@
 function OnGossipHello(event, player, item)
-    player:GossipMenuAddItem(0, "|TInterface\\icons\\achievement_boss_lichking:37:37:-23|t|cff007d45Manage Scourge Events|r", 150, 0)
-    player:GossipMenuAddItem(0, "|TInterface\\icons\\inv_misc_book_11:37:37:-23|t|cff007d45General Information|r", 200, 0)
+    player:GossipMenuAddItem(0, "|TInterface\\icons\\achievement_boss_lichking:45:45:-40|t|cff007d45Manage Scourge Events|r", 150, 0)
+    player:GossipMenuAddItem(0, "|TInterface\\icons\\inv_misc_book_11:45:45:-40|t|cff007d45General Information|r", 200, 0)
     player:GossipSendMenu(1, item)
 end
 
@@ -10,8 +10,8 @@ local function OnGossipSelect(event, player, item, sender, intid, code)
     if (sender == 150) then
         if player:GetLevel() > 14 then
             -- Show Scourge Event menu
-            player:GossipMenuAddItem(0, "|TInterface\\icons\\spell_misc_emotionhappy:37:37:-23|t|cff007d45Start Event for Bonus Lich Runes|r", 1, 100)
-            player:GossipMenuAddItem(0, "|TInterface\\icons\\spell_misc_emotionsad:37:37:-23|t|cffC41F3BStop Event but Suffer|r", 1, 101)
+            player:GossipMenuAddItem(0, "|TInterface\\icons\\spell_misc_emotionhappy:45:45:-40|t|cff007d45Start Event for Bonus Lich Runes|r", 1, 100)
+            player:GossipMenuAddItem(0, "|TInterface\\icons\\spell_misc_emotionsad:45:45:-40|t|cffC41F3BStop Event but Suffer|r", 1, 101)
             player:GossipMenuAddItem(0, "Back", 999, 0)
             player:GossipSendMenu(1, item)
         else

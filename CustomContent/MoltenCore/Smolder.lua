@@ -65,9 +65,9 @@ creature:RegisterEvent(CastScorch, 6000, 0)
 creature:RegisterEvent(CastFlameBreath, 13000, 0)
 creature:RegisterEvent(CastCharredEarth, 12000, 0)
 creature:RegisterEvent(CastPyroblast, 10000, 0)
-creature:RegisterEvent(CastSummonElemental, 63500, 0)
+creature:RegisterEvent(CastSummonElemental, 43500, 0)
 creature:RegisterEvent(CastTailSweep, 8000, 0)
-creature:RegisterEvent(CastBellowingRoar, 33000, 0)
+creature:RegisterEvent(CastBellowingRoar, 31000, 0)
 end
 
 local function OnLeaveCombat(event, creature)
