@@ -58,8 +58,6 @@ function Patchqwerk.CheckHealth(event, creature)
 if (creature:HealthBelowPct(20)) then
 creature:SendUnitYell("Patchqwerk go berserk!", 0)
 creature:CastSpell(creature, 41305, true)
-elseif (creature:HealthAbovePct(95)) then
-creature:CastSpell(creature, 46587, true)
 end
 end
 
