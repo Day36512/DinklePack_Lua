@@ -1,3 +1,5 @@
+-- .xp 0.01 - .xp 10
+
 local enabled = true -- set to false to disable the entire script
 local GMonly = false -- set to true to allow only GMs to change rates
 
