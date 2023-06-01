@@ -1,6 +1,6 @@
 local spellIds = {100209, 100211, 100210, 100213, 100214, 100215, 100216, 100217, 100218, 100219, 100220, 100180, 100221, 100222} 
 local restrictedSpellIds = {100211, 100213, 100214, 100180} -- remove if you want to have all spells available in raids/dungeons. Right now only Up, Up and Away is disabled, except the Depcrecated spell. Just change to {}
-local requiredAuraRange = {200049, 200181} 
+local requiredAuraRange = {200049, 200182} 
 local requiredLevel = 1 -- Level restriction removed
 local emoteId = 68 -- obsolete
 local soundId = 53774
@@ -95,7 +95,7 @@ function OnSpellCast(event, player, spell, skipCheck)
 
 
 			 local playerRace = player:GetRace()
-    if playerRace ~= 10 and playerRace ~= 11 then
+    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 then
         local playerGuid = player:GetGUID()
         CreateLuaEvent(CreateDelayedSpellFunction(playerGuid, 100223), 100, 1)
         CreateLuaEvent(function()
@@ -108,7 +108,7 @@ function OnSpellCast(event, player, spell, skipCheck)
 				player:CastSpell(player, 34602, true)
 
 			local playerRace = player:GetRace()
-    if playerRace ~= 10 and playerRace ~= 11 then
+    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 then
         local playerGuid = player:GetGUID()
         CreateLuaEvent(CreateDelayedSpellFunction(playerGuid, 100223), 100, 1)
         CreateLuaEvent(function()
@@ -122,7 +122,7 @@ function OnSpellCast(event, player, spell, skipCheck)
 				player:CastSpell(player, 75459, true)
 
 			local playerRace = player:GetRace()
-    if playerRace ~= 10 and playerRace ~= 11 then
+    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 then
         local playerGuid = player:GetGUID()
         CreateLuaEvent(CreateDelayedSpellFunction(playerGuid, 100223), 100, 1)
         CreateLuaEvent(function()
@@ -135,7 +135,7 @@ function OnSpellCast(event, player, spell, skipCheck)
 				player:CastSpell(player, 34602, true)
 
 			local playerRace = player:GetRace()
-    if playerRace ~= 10 and playerRace ~= 11 then
+    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 then
         local playerGuid = player:GetGUID()
         CreateLuaEvent(CreateDelayedSpellFunction(playerGuid, 100223), 100, 1)
         CreateLuaEvent(function()

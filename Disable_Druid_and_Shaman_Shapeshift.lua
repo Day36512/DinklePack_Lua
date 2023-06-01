@@ -10,6 +10,7 @@ local auraConfig = {
     [2645] = true,  -- Ghost Wolf
     [24858] = true, -- Moonkin Form
     [33891] = true, -- Tree Form
+
 }
 
 local function OnSpellCast(event, player, spell, skipCheck)
