@@ -4,7 +4,7 @@ local fortitudeSpell = 10938
 local divineSpiritSpell = 27841
 
 local function OnSpawn(event, creature)
-creature:CastSpell(creature, lightwellSpell, true)
+-- creature:CastSpell(creature, lightwellSpell, true)
 end
 
 local function OnGossipHello(event, player, creature)
