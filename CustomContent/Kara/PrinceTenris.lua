@@ -36,7 +36,7 @@ end
 
 local function OnEnterCombat(event, creature, target)
 creature:RegisterEvent(CastBloodMirror, math.random(26000, 42000), 0)
-creature:RegisterEvent(CastSanguineSpirit, math.random(3000, 6000), 0)
+creature:RegisterEvent(CastSanguineSpirit, math.random(12000, 18000), 0)
 creature:RegisterEvent(CastSanguineStrike, math.random(11000, 19000), 0)
 creature:RegisterEvent(CastBloodSwoop, 23000, 0)
 end
