@@ -48,7 +48,7 @@ end
 end
 
 function Lucifron.OnSpawn(event, creature)
-creature:SetMaxHealth(748000 * 1.25) -- Increase health pool by 25%
+--creature:SetMaxHealth(748000 * 1.25) -- Increase health pool by 25%
 end
 
 RegisterCreatureEvent(12118, 1, Lucifron.OnEnterCombat)

@@ -1,4 +1,5 @@
-local Magmadar = {};
+local Magmadar = {}
+Magmadar.spellQueue = {}
 
 local SPELL_FRENZY = 19451
 local SPELL_PANIC = 19408
@@ -9,61 +10,82 @@ local SPELL_ENRAGE = 27680
 
 local MELEE_TARGET_LOOKUP_DIST = 10.0
 
+function Magmadar.CastFrenzy(eventId, delay, calls, creature)
+    table.insert(Magmadar.spellQueue, {spell = SPELL_FRENZY, targetType = 'self', emote = "Magmadar goes into a killing Frenzy!"})
+end
+
+function Magmadar.CastPanic(eventId, delay, calls, creature)
+    table.insert(Magmadar.spellQueue, {spell = SPELL_PANIC, targetType = 'victim'})
+end
+
+function Magmadar.CastLavaBomb(eventId, delay, calls, creature)
+    table.insert(Magmadar.spellQueue, {spell = SPELL_LAVA_BOMB, targetType = 'random', range = MELEE_TARGET_LOOKUP_DIST, maxRange = false})
+end
+
+function Magmadar.CastLavaBombRanged(eventId, delay, calls, creature)
+    table.insert(Magmadar.spellQueue, {spell = SPELL_LAVA_BOMB_RANGED, targetType = 'random', range = MELEE_TARGET_LOOKUP_DIST, maxRange = true})
+end
+
+function Magmadar.CastSummonCoreHound(eventId, delay, calls, creature)
+    table.insert(Magmadar.spellQueue, {spell = SPELL_SUMMON_CORE_HOUND, targetType = 'self'})
+end
+
+function Magmadar.CastEnrage(eventId, delay, calls, creature)
+    table.insert(Magmadar.spellQueue, {spell = SPELL_ENRAGE, targetType = 'self', emote = "Magmadar becomes enraged, significantly increasing attack speed and damage!"})
+end
+
+function Magmadar.ProcessSpellQueue(eventId, delay, calls, creature)
+    if not creature:IsCasting() and #Magmadar.spellQueue > 0 then
+        local nextSpell = table.remove(Magmadar.spellQueue, 1)
+        local target
+
+        if nextSpell.targetType == 'self' then
+            target = creature
+        elseif nextSpell.targetType == 'victim' then
+            target = creature:GetVictim()
+        elseif nextSpell.targetType == 'random' then
+            local targets = creature:GetAITargets(nextSpell.range or 0)
+            if #targets > 0 then
+                if nextSpell.maxRange then
+                    for _, t in pairs(targets) do
+                        if t:GetDistance(creature) > nextSpell.range then
+                            target = t
+                            break
+                        end
+                    end
+                else
+                    target = targets[math.random(1, #targets)]
+                end
+            end
+        end
+
+        if target then
+            creature:CastSpell(target, nextSpell.spell, false)
+            if nextSpell.emote then
+                creature:SendUnitEmote(nextSpell.emote)
+            end
+        end
+    end
+end
+
 function Magmadar.OnEnterCombat(event, creature, target)
-creature:RegisterEvent(Magmadar.Frenzy, math.random(12000, 16000), 0)
-creature:RegisterEvent(Magmadar.Panic, math.random(20000, 25000), 0)
-creature:RegisterEvent(Magmadar.LavaBomb, math.random(8000, 10000), 0)
-creature:RegisterEvent(Magmadar.LavaBombRanged, math.random(6000, 9000), 0)
-creature:RegisterEvent(Magmadar.CastSummonCoreHound, 45000, 0)
-creature:RegisterEvent(Magmadar.Enrage, 180000, 1) -- 3 minute enrage timer
+    creature:RegisterEvent(Magmadar.CastFrenzy, math.random(12000, 16000), 0)
+    creature:RegisterEvent(Magmadar.CastPanic, math.random(20000, 25000), 0)
+    creature:RegisterEvent(Magmadar.CastLavaBomb, math.random(8000, 10000), 0)
+    creature:RegisterEvent(Magmadar.CastLavaBombRanged, math.random(6000, 9000), 0)
+    creature:RegisterEvent(Magmadar.CastSummonCoreHound, 45000, 0)
+    creature:RegisterEvent(Magmadar.CastEnrage, 180000, 1) -- 3 minute enrage timer
+    creature:RegisterEvent(Magmadar.ProcessSpellQueue, 2000, 0)
 end
 
 function Magmadar.OnLeaveCombat(event, creature)
-creature:RemoveEvents()
+    creature:RemoveEvents()
+    Magmadar.spellQueue = {}
 end
 
 function Magmadar.OnDied(event, creature, killer)
-creature:RemoveEvents()
-end
-
-function Magmadar.Frenzy(event, delay, calls, creature)
-creature:CastSpell(creature, SPELL_FRENZY, false)
-creature:SendUnitEmote("Magmadar goes into a killing Frenzy!")
-end
-
-function Magmadar.Panic(event, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), SPELL_PANIC, false)
-end
-
-function Magmadar.LavaBomb(event, delay, calls, creature)
-local targets = creature:GetAITargets()
-local targetCount = creature:GetAITargetsCount()
-if targetCount > 0 then
-local targetIndex = math.random(1, targetCount)
-local target = targets[targetIndex]
-if target:GetDistance(creature) <= MELEE_TARGET_LOOKUP_DIST then
-creature:CastSpell(target, SPELL_LAVA_BOMB, false)
-end
-end
-end
-
-function Magmadar.LavaBombRanged(event, delay, calls, creature)
-local targets = creature:GetPlayersInRange(100.0)
-for _, target in pairs(targets) do
-if target:GetDistance(creature) > MELEE_TARGET_LOOKUP_DIST then
-creature:CastSpell(target, SPELL_LAVA_BOMB_RANGED, false)
-break
-end
-end
-end
-
-function Magmadar.CastSummonCoreHound(event, delay, calls, creature)
-creature:CastSpell(creature, SPELL_SUMMON_CORE_HOUND, true)
-end
-
-function Magmadar.Enrage(event, delay, calls, creature)
-creature:CastSpell(creature, SPELL_ENRAGE, false)
-creature:SendUnitEmote("Magmadar becomes enraged, significantly increasing attack speed and damage!")
+    creature:RemoveEvents()
+    Magmadar.spellQueue = {}
 end
 
 RegisterCreatureEvent(11982, 1, Magmadar.OnEnterCombat)
