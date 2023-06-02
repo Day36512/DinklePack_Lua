@@ -17,7 +17,7 @@ creature:CastSpell(creature:GetVictim(), 18106, true)
 end
 
 local function OnEnterCombat(event, creature, target)
-	    creature:RegisterEvent(CastLeap, 100, 1)
+	  --  creature:RegisterEvent(CastLeap, 100, 1)
 		creature:RegisterEvent(CastPlague, 500, 1)
 		creature:RegisterEvent(CastRend, 2000, 1)
 		creature:RegisterEvent(CastPlague, 20000, 0)

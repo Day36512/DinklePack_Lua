@@ -1,4 +1,4 @@
-local GAME_EVENT_ID = 17 -- Set the game event ID
+local GAME_EVENT_ID = {17, 92} -- Set the game event IDs
 local npcIds = {344, 12480, 1284, 400064, 234, 3429} -- Add your NPC entries here
 local BROADCAST_MESSAGE = "The Scourge are attacking the people of Azeroth. Quickly adventurers, prepare yourselves for battle!"
 local SOUND_ID = 13363
@@ -31,7 +31,7 @@ local function valueExists(tbl, value)
 end
 
 local function DespawnAndRespawnNpcs(event, gameEventId)
-    if gameEventId == GAME_EVENT_ID then
+    if valueExists(GAME_EVENT_ID, gameEventId) then
         local players = GetPlayersInWorld() -- Get all players in the world
         if event == 34 then -- Game Event Start
             SendWorldMessage(BROADCAST_MESSAGE, 2) -- Broadcast the message with chat type 2 (SYSTEM)

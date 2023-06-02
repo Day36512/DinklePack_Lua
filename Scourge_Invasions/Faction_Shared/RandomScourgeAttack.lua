@@ -1,11 +1,11 @@
-local ENABLED = true -- set to false to disable
+local ENABLED = false -- set to false to disable
 
 local GAME_EVENT_ID = 17 -- Set the game event ID
 local MAX_NPC_SPAWN = 2 -- Set the maximum number of NPCs to spawn simultaneously. Extremely high numbers will hurt performance
-local ATTACK_CHANCE = 10 -- Set the likelihood of an attack here, in percent
+local ATTACK_CHANCE = 5 -- Set the likelihood of an attack here, in percent
 local DAZE_SPELL_ID = 100201 -- Set the spell ID for daze
 local MINIMUM_LEVEL = 15 -- Set min level to be active
-local EXCLUDED_MAP_ID = 530 
+local EXCLUDED_MAP_IDS = {530, 571} -- Add excluded map IDs to this table
 
 local creatureEntries = {
     16423,
@@ -56,21 +56,26 @@ local function SpawnAttacker(event, player)
                 player:SendBroadcastMessage("You have been knocked off your mount!")
             end
 
-            for i = 1, npcCount do
-                local selectedCreature = creatureEntries[math.random(#creatureEntries)]
-                local randomX = x + math.random(-18, 18)
-                local randomY = y + math.random(-18, 18)
-                local spawnedCreature = player:SpawnCreature(selectedCreature, randomX, randomY, z, o, 7, 130000)
-                spawnedCreature:SetLevel(level)
-                spawnedCreature:SetMaxHealth(health)
-                spawnedCreature:SetHealth(health)
-                spawnedCreature:AttackStart(player)
+            -- Check if the player is on a vehicle
+            if not player:IsOnVehicle() then
+                for i = 1, npcCount do
+                    local selectedCreature = creatureEntries[math.random(#creatureEntries)]
+                    local randomX = x + math.random(-18, 18)
+                    local randomY = y + math.random(-18, 18)
+                    local spawnedCreature = player:SpawnCreature(selectedCreature, randomX, randomY, z, o, 7, 130000)
+                    spawnedCreature:SetLevel(level)
+                    spawnedCreature:SetMaxHealth(health)
+                    spawnedCreature:SetHealth(health)
+                    spawnedCreature:AttackStart(player)
 
-                local selectedDialogue = npcdialogue[math.random(#npcdialogue)]
-                spawnedCreature:SendUnitYell(selectedDialogue, 0)
+                    local selectedDialogue = npcdialogue[math.random(#npcdialogue)]
+                    spawnedCreature:SendUnitYell(selectedDialogue, 0)
+                end
             end
         end
     end
 end
 
 RegisterPlayerEvent(27, SpawnAttacker)
+
+

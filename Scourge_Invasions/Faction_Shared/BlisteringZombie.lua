@@ -1,8 +1,8 @@
 local BlisteringZombie = {};
 
-local function CastArmyOfTheDead(eventId, delay, calls, creature)
+--local function CastArmyOfTheDead(eventId, delay, calls, creature)
     creature:CastSpell(creature, 42650, true)
-end
+--end
 
 local function CastSpit(eventId, delay, calls, creature)
     creature:CastSpell(creature:GetVictim(), 25262, true)
@@ -19,7 +19,7 @@ local function CastSpecialSpell(eventId, delay, calls, creature)
 end
 
 local function OnEnterCombat(event, creature, target)
-    creature:RegisterEvent(CastArmyOfTheDead, 25000, 0)
+  --  creature:RegisterEvent(CastArmyOfTheDead, 25000, 0)
     creature:RegisterEvent(CastSpit, 5000, 0)
     creature:RegisterEvent(CastSpecialSpell, 1000, 0)
 end
