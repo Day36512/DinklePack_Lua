@@ -1,10 +1,15 @@
 local NPCID = 90002
+local DESTINATION_X = -4492 
+local DESTINATION_Y = -1588 
+local DESTINATION_Z = 509 
+local CHECK_LOCATION_DELAY = 500 
 
-local function ResetPlayerDisplayId(eventId, delay, repeats, player)
-    if not player:IsMoving() then
+local function CheckLocationAndResetDisplayId(eventId, delay, repeats, player)
+    local x, y, z = player:GetLocation()
+    if math.abs(x - DESTINATION_X) <= 1 and math.abs(y - DESTINATION_Y) <= 1 and math.abs(z - DESTINATION_Z) <= 1 then
+        -- The player has reached the destination, reset their display and cancel the event
         player:SetDisplayId(player:GetNativeDisplayId())
-    else
-        player:RegisterEvent(ResetPlayerDisplayId, 100, 1)
+        player:RemoveEventById(eventId)
     end
 end
 
@@ -19,8 +24,8 @@ local function PlatformTransportOnGossipSelect(event, player, creature, sender, 
         creature:CastSpell(player, 32992, true)
         player:CastSpell(player, 24085, true)
         player:SetDisplayId(25144)
-        player:MoveJump(-4492, -1588, 509, 2000, 115)
-        player:RegisterEvent(ResetPlayerDisplayId, 19800, 1) -- Adjust the delay time based on how long it takes to reach the destination
+        player:MoveJump(DESTINATION_X, DESTINATION_Y, DESTINATION_Z, 2000, 115)
+        player:RegisterEvent(CheckLocationAndResetDisplayId, CHECK_LOCATION_DELAY, 200) -- 0 repeats means infinite repeats
     end
 end
 

@@ -3,7 +3,6 @@ function OnGossipHello(event, player, item)
     player:GossipMenuAddItem(0, "|TInterface\\icons\\inv_misc_book_11:45:45:-40|t|cff007d45General Information|r", 200, 0)
     player:GossipSendMenu(1, item)
 end
-
 local function OnGossipSelect(event, player, item, sender, intid, code)
     player:GossipClearMenu()
 

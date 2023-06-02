@@ -1,10 +1,27 @@
 local NPCID = 90004
+local DESTINATION_X1 = -5166.45 -- Replace with actual value
+local DESTINATION_Y1 = -877.49 -- Replace with actual value
+local DESTINATION_Z1 = 507.39 -- Replace with actual value
+local DESTINATION_X2 = -4492 -- Replace with actual value
+local DESTINATION_Y2 = -1588 -- Replace with actual value
+local DESTINATION_Z2 = 509 -- Replace with actual value
+local CHECK_LOCATION_DELAY = 500 -- Adjust the delay time based on how long it takes to reach the destination
 
-local function ResetPlayerDisplayId(eventId, delay, repeats, player)
-    if not player:IsMoving() then
-        player:RegisterEvent(ResetPlayerDisplayId, 100, 1)
-    else
+local function CheckLocationAndResetDisplayId1(eventId, delay, repeats, player)
+    local x, y, z = player:GetLocation()
+    if math.abs(x - DESTINATION_X1) <= 1 and math.abs(y - DESTINATION_Y1) <= 1 and math.abs(z - DESTINATION_Z1) <= 1 then
+        -- The player has reached the destination, reset their display and cancel the event
         player:SetDisplayId(player:GetNativeDisplayId())
+        player:RemoveEventById(eventId)
+    end
+end
+
+local function CheckLocationAndResetDisplayId2(eventId, delay, repeats, player)
+    local x, y, z = player:GetLocation()
+    if math.abs(x - DESTINATION_X2) <= 1 and math.abs(y - DESTINATION_Y2) <= 1 and math.abs(z - DESTINATION_Z2) <= 1 then
+        -- The player has reached the destination, reset their display and cancel the event
+        player:SetDisplayId(player:GetNativeDisplayId())
+        player:RemoveEventById(eventId)
     end
 end
 
@@ -20,17 +37,15 @@ local function PlatformTransportOnGossipSelect(event, player, creature, sender, 
         creature:CastSpell(player, 32992, true)
         player:CastSpell(player, 24085, true)
         player:SetDisplayId(25144)
-        player:MoveJump(-5166.45, -877.49, 507.39, 2000, 165)
-
-        player:RegisterEvent(ResetPlayerDisplayId, 26300, 1)
+        player:MoveJump(DESTINATION_X1, DESTINATION_Y1, DESTINATION_Z1, 2000, 165)
+        player:RegisterEvent(CheckLocationAndResetDisplayId1, CHECK_LOCATION_DELAY, 200) 
     elseif (intid == 2) then
         player:GossipComplete()
         creature:CastSpell(player, 32992, true)
         player:CastSpell(player, 24085, true)
         player:SetDisplayId(25144)
-        player:MoveJump(-4492, -1588, 509, 2000, 85)
-
-        player:RegisterEvent(ResetPlayerDisplayId, 12300, 1)
+ player:MoveJump(DESTINATION_X2, DESTINATION_Y2, DESTINATION_Z2, 2000, 85)
+    player:RegisterEvent(CheckLocationAndResetDisplayId2, CHECK_LOCATION_DELAY, 200)
     end
 end
 
