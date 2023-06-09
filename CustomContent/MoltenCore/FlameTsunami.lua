@@ -1,14 +1,17 @@
+-- All this script does is make the spawned flame Tsunamis from the Smolder Fight move to a specified forward after a 2.5 second delay. 
+-- I had to get xyz manually for all positions. I created a seperate script to spawn creatures at the tsunami starting positions so i could map them out.
+
 local EntryId1 = 83006
 
 local function MoveToLocation(creature)
     local waypointId = 1
     local x, y, z, o = 835.78, -758.032, -223.82, 1.678
     creature:MoveTo(waypointId, x, y, z)
-    creature:SetHomePosition(x, y, z, o)
+    creature:SetHomePosition(x, y, z, o) -- Once they reach their waypoint, they were going back to their original position. To circumvent this I had to set their destination as the new home position.
 end
 
 local function OnSpawn(event, creature)
-    creature:SetReactState(0)
+    creature:SetReactState(0) -- makes sure they don't decide to attack players
     creature:RegisterEvent(function(event, delay, calls, capturedCreature)
         MoveToLocation(capturedCreature)
     end, 2500, 1)
