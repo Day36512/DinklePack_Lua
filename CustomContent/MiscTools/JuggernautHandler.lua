@@ -1,18 +1,27 @@
-local REQUIRED_ITEM_ID = 60102
+local REQUIRED_ITEM_IDS = {60102, 800030}
 local JUGGERNAUT_SPELL_ID = 100248
 local EXECUTE_SPELL_IDS = {47471, 47470, 25236, 25234, 20662, 20661, 20660, 20658, 5308}
 
 local VANGUARD_DEFENSE_SPELL_ID = 100250
 local DEVASTATE_SPELL_IDS = {47498, 20243, 30016, 30022, 47497}
 
+local function hasRequiredItemEquipped(player)
+    for _, itemId in ipairs(REQUIRED_ITEM_IDS) do
+        local item = player:GetItemByEntry(itemId)
+        if item and item:IsEquipped() then
+            return true
+        end
+    end
+    return false
+end
+
 local function WarriorL_OnAbilityCast(event, player, spell, skipCheck)
-    local requiredItem = player:GetItemByEntry(REQUIRED_ITEM_ID)
-    if not requiredItem or not requiredItem:IsEquipped() then
+    if not hasRequiredItemEquipped(player) then
         return
     end
 
     local spellId = spell:GetEntry()
-    
+
     -- Convert EXECUTE_SPELL_IDS and DEVASTATE_SPELL_IDS to sets for fast lookup
     local execute_spell_set = {}
     for _, v in ipairs(EXECUTE_SPELL_IDS) do

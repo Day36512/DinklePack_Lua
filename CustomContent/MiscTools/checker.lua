@@ -1,3 +1,5 @@
+local enableScript = false -- Set this to true to enable the script, false to disable
+
 local function OnPlayerLogin(event, player)
     -- Get race mask, class mask, team, and faction for the player
     local raceMask = player:GetRaceMask()
@@ -8,7 +10,7 @@ local function OnPlayerLogin(event, player)
     local race = player:GetRace() -- Added race variable
 
     -- Print the results to the World Server console
-	print("Player " .. player:GetName() .. " logged in with the following details:")
+    print("Player " .. player:GetName() .. " logged in with the following details:")
     print("Race Mask: " .. raceMask)
     print("Class Mask: " .. classMask)
     print("Team ID: " .. team .. " (" .. (team == 0 and "Alliance" or "Horde") .. ")")
@@ -49,4 +51,6 @@ local function OnPlayerLogin(event, player)
     end
 end
 
-RegisterPlayerEvent(3, OnPlayerLogin)
+if enableScript then
+    RegisterPlayerEvent(3, OnPlayerLogin)
+end

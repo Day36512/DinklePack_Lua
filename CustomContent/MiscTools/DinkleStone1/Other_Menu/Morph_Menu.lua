@@ -34,11 +34,11 @@ local MorphsTable = {
     {"Lich King", 22234},
     {"Saurfang", 14732},
     {"Onyxia", 8570},
-    {"Nefarian", 9472},
+    {"Kloveriell", 1000179},
     {"Dark Ranger", 30073},
     {"Millhouse", 19942},
-	{"Alleria - Dinkle Server Only", 70019}, -- remove me if not using my server
-	{"Turalyon - Dinkle Server Only", 400018}, -- remove me if not using my server
+	{"Alleria", 70019}, -- remove me if not using my server
+	{"Turalyon", 400018}, -- remove me if not using my server
 }
 --(Start) The Gossip Menu that shows Main Menu
 function Morph_MenuMenuGossip(event, player)
@@ -82,3 +82,4 @@ end
 if enabled then
 RegisterPlayerGossipEvent(GossipID, 2, OnSelect)
 end
+

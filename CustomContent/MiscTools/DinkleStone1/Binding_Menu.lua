@@ -109,18 +109,22 @@ local PlayerName = player:GetName()
 		BindListGossip(event, player)
 	end
 	if(intid == 2) then --Create Bind		
-	
-		local map = player:GetMap()
-		local xstring = string.sub(tostring(player:GetX()),1,10)
-		local ystring = string.sub(tostring(player:GetY()),1,10)
-		local zstring = string.sub(tostring(player:GetZ()),1,10)
-		local ostring = string.sub(tostring(player:GetO()),1,10)
-		
-		local extractedname = tostring(code:gsub('[%p%c]', ''))
 
-		local query = CharDBQuery(string.format("SELECT * FROM ac_eluna.binding_menu WHERE BindName='%s' AND CharID='%i'", extractedname, getPlayerCharacterGUID(player)))		
-		
-		
+	local map = player:GetMap()
+	local xstring = string.sub(tostring(player:GetX()),1,10)
+	local ystring = string.sub(tostring(player:GetY()),1,10)
+	local zstring = string.sub(tostring(player:GetZ()),1,10)
+	local ostring = string.sub(tostring(player:GetO()),1,10)
+	
+	local extractedname = tostring(code:gsub('[%p%c]', ''))
+
+	local query = CharDBQuery(string.format("SELECT * FROM ac_eluna.binding_menu WHERE BindName='%s' AND CharID='%i'", extractedname, getPlayerCharacterGUID(player)))		
+	
+	--New code to check the number of bindings for a character
+	local count_query = CharDBQuery(string.format("SELECT COUNT(*) FROM ac_eluna.binding_menu WHERE CharID='%i'", getPlayerCharacterGUID(player)))
+	local count = tonumber(count_query:GetInt32(0))
+	
+	if count < 15 then
 		if not query then
 		CharDBExecute(string.format("INSERT INTO ac_eluna.binding_menu (BindName, CharID, mappId, xCoord, yCoord, zCoord, orientation) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')", extractedname, getPlayerCharacterGUID(player), tostring(map:GetMapId()), xstring, ystring, zstring, ostring))
 		
@@ -141,6 +145,9 @@ local PlayerName = player:GetName()
 		end		
 		BindMenuGossip(event, player)
 		--player:GossipComplete()
+		else
+		player:SendBroadcastMessage("|cffff0000You have reached the maximum number of bindings (15). Please delete one before creating a new bind.|r")
+	end
 	end
 	if(intid == 3) then --Delete Bind
 		BindListGossip_Delete(event, player)

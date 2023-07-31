@@ -6,7 +6,7 @@ local function OnSpellCast(event, player, spell, skipCheck)
 
     if target:GetCreatureType() == 3 then
         local playerRace = player:GetRace()
-        if playerRace == 14 or playerRace == 15 then
+        if playerRace == 20 or playerRace == 21 then
             if not player:HasAura(100238) then
                 player:AddAura(100238, player)
             end

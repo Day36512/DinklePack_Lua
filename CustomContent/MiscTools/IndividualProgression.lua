@@ -20,6 +20,25 @@ local options = {
   "|TInterface\\icons\\spell_shadow_twilight:45:45:-40|t|cff00008bTier 16 - Ruby Sanctum (Level 80)"
 }
 
+local optionsWithoutIcon = {
+  "Tier 1 - Molten Core (Level 60)",
+  "Tier 2 - Onyxia (Level 60)",
+  "Tier 3 - Blackwing Lair (Level 60)",
+  "Tier 4 - Pre-AQ (Level 60)",
+  "Tier 5 - Anh'qiraj (Level 60)",
+  "Tier 6 - Naxxramas (Level 60)",
+  "Tier 7 - Karazhan, Gruul's Lair, Magtheridon's Lair (Level 70)",
+  "Tier 8 - Serpentshrine Cavern, Tempest Keep (Level 70)",
+  "Tier 9 - Hyjal Summit and Black Temple (Level 70)",
+  "Tier 10 - Zul'Aman (Level 70)",
+  "Tier 11 - Sunwell Plateau (Level 70)",
+  "Tier 12 - Naxxramas WotLK, Eye of Eternity, Obsidian Sanctum (Level 80)",
+  "Tier 13 - Ulduar (Level 80)",
+  "Tier 14 - Trial of the Crusader",
+  "Tier 15 - Icecrown Citadel (Level 80)",
+  "Tier 16 - Ruby Sanctum (Level 80)"
+}
+
 function getTextWithoutIcon(option)
   local textStart = option:find("|r") + 2
   return option:sub(textStart)
@@ -40,7 +59,7 @@ function OnGossipHello(event, player, object)
     local playerProgressionTier = tonumber(query:GetString(0)) -- Update this line
     local playerProgressionInfo = options[playerProgressionTier + 1]
 
-    object:SendUnitWhisper("Your current progression level is: " .. playerProgressionInfo, 0, player)
+    object:SendUnitWhisper("Your current progression level is: " .. optionsWithoutIcon[playerProgressionTier + 1], 0, player)
   else
     CharDBExecute("INSERT INTO character_settings (guid, source, data) VALUES (" .. guid .. ", 'mod-individual-progression', '0')") -- Update this line
     object:SendUnitWhisper("You have not set any individual progression. Contact a GM for help.", 0, player)
@@ -76,7 +95,8 @@ function OnGossipSelect(event, player, object, sender, intid, code)
       player:SetUInt32Value(PlayerTierKey, tier)
       player:SetUInt32Value(PlayerChangedTierKey, 1) -- Set the flag to indicate that the player has changed their progression
       player:GossipComplete()
-      player:SendBroadcastMessage("Your individual progression will be set to " .. options[intid - 1] .. " upon logout.")
+      player:SendBroadcastMessage("Your individual progression will be set to " .. optionsWithoutIcon[intid - 1] .. " upon logout.")
+
     end
   end
 end
