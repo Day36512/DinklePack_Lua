@@ -1,4 +1,4 @@
-local holidayEventIds = {17, 91}
+local holidayEventIds = {17, 91, 92}
 
 -- add a boolean flag
 local hasScriptRun = false
