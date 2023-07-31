@@ -34,7 +34,6 @@ function Broodlord.SpawnAdds(eventId, delay, calls, creature)
 end
 
 
-
 function Broodlord.OnEnterCombat(event, creature, target)
     creature:SendUnitYell("None of your kind should be here! You've doomed only yourselves!", 0)
     creature:RegisterEvent(Broodlord.CastBlastWave, math.random(12000, 18000), 0)

@@ -1,30 +1,27 @@
--- Cenarion Hold Sentry (NPC ID: 15184)
+
 local NPC_CENARION_HOLD_SENTRY = 15184
 
--- This function will be called when the NPC enters combat.
-local function OnEnterCombat(event, creature, target)
-    creature:SendUnitYell("For Cenarion Hold!", 0)
-    -- Add more custom combat code here if necessary.
+local SPELL_ABILITY_ONE = 845  
+local SPELL_ABILITY_TWO = 1680  
+
+local function CastAbilities(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), SPELL_ABILITY_ONE, true)
+    creature:CastSpell(creature:GetVictim(), SPELL_ABILITY_TWO, true)
 end
 
--- This function will be called when the NPC leaves combat.
-local function OnLeaveCombat(event, creature)
-    -- Add your custom code here.
+local function Sentry_OnEnterCombat(event, creature, target)
+	creature:SendUnitYell("For Cenarion Hold!", 0)
+    creature:RegisterEvent(CastAbilities, 4000, 0)
 end
 
--- This function will be called when the NPC's target dies.
-local function OnTargetDied(event, creature, victim)
-    creature:SendUnitSay("Another enemy falls!", 0)
-    -- Add more custom code here if necessary.
+local function Sentry_OnLeaveCombat(event, creature)
+    creature:RemoveEvents()
 end
 
--- This function will be called when the NPC dies.
-local function OnDied(event, creature, killer)
-    -- Add your custom code here.
+local function Sentry_OnDied(event, creature, killer)
+    creature:RemoveEvents()
 end
 
--- Register the event handlers.
-RegisterCreatureEvent(NPC_CENARION_HOLD_SENTRY, 1, OnEnterCombat)
-RegisterCreatureEvent(NPC_CENARION_HOLD_SENTRY, 2, OnLeaveCombat)
-RegisterCreatureEvent(NPC_CENARION_HOLD_SENTRY, 3, OnTargetDied)
-RegisterCreatureEvent(NPC_CENARION_HOLD_SENTRY, 4, OnDied)
+RegisterCreatureEvent(NPC_CENARION_HOLD_SENTRY, 1, Sentry_OnEnterCombat)
+RegisterCreatureEvent(NPC_CENARION_HOLD_SENTRY, 2, Sentry_OnLeaveCombat)
+RegisterCreatureEvent(NPC_CENARION_HOLD_SENTRY, 4, Sentry_OnDied)
