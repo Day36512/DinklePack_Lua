@@ -1,8 +1,8 @@
 local function deathgateoncreate(event, player)
     if player:GetClass() == 6 then
-		player:LearnSpell(50977)
-        player:LearnSpell(53428)
-		player:LearnSpell(48778)
+		--player:LearnSpell(50977)
+       -- player:LearnSpell(53428)
+		-- player:LearnSpell(48778)
 
         
         local itemId = 38707  

@@ -1,15 +1,32 @@
 -- This script was made by Dinkledork
 -- Make sure you only have one type of ammo on your character
+-- Updated by TurekSY
 
 local ENABLED = false -- Set this to false to disable the script
 
-local ARROW_ITEM_IDS = {52021, 41165, 11285, 28056, 3030, 28053, 3029, 3464, 10579, 41586, 31737, 2515, 33803, 3031, 18042, 19316, 32760, 2512, 34581, 9399, 24412, 30611, 2514, 12654, 31949, 30319, 24417, 41164, 52020, 41584, 28061, 28060, 11284, 3033, 15997, 10513, 23773, 10512, 2516, 2519, 32883, 32882, 34582, 19317, 4960, 13377, 8069, 8068, 8067, 32761, 3465, 31735, 23772, 30612, 11630, 5568} -- Replace these with actual ammo IDs
-local SPELL_IDS = {3674, 53209, 63672, 63670, 63671, 63668, 49049, 20901, 20903, 20900, 20904, 27065, 20902, 49050, 63671, 63669, 63668, 53301, 19434, 19386, 24132, 24133, 27068, 49011, 49012, 34490, 3034, 58433, 58434, 58432, 58431, 42234, 27022, 42245, 14295, 42244, 14294, 42243, 1510, 49052, 49051, 34120, 56641, 49001, 49000, 27016, 25295, 13555, 13554, 13553, 13552, 13551, 13550, 13549, 1978, 49048, 49047, 27021, 25294, 14290, 14289, 14288, 2643, 61006, 61005, 53351, 60192, 49045, 49044, 27019, 14287, 14286, 14285, 14284, 14283, 14282, 14281, 49045, 75} -- Add more spell IDs to this table such as serpent sting arcane shot etc, separated by commas. Right now it triggers on auto shot.
+local ARROW_ITEM_IDS = {3464, 2512, 2515, 3030, 9399, 10579, 11285, 19316, 18042, 12654, 28053, 24417, 33803, 24412, 28056, 30611, 31949, 34581, 30319, 32760, 31737, 41165, 41586, 52021} 
+
+local BULLET_ITEM_IDS = {3465, 4960, 2516, 8067, 2519, 5568, 8068, 3033, 8069, 10512, 11284, 10513, 11630, 19317, 15997, 28060, 13377, 23772, 23773, 29885, 28061, 30612, 32883, 32882, 34582, 32761, 31735, 41164, 41584, 52020} 
+local BOW_SUBCLASS_ID = 2 
+local GUN_SUBCLASS_ID = 3 
+local CROSSBOW_SUBCLASS_ID = 18 
+local MAX_AMMO = 1000 -- Maximum ammunition allowed
+local MIN_AMMO_THRESHOLD = 52 -- Ammo count threshold to add max ammo
+local SPELL_IDS = {75} -- Add another Spell If you want
 
 local function GetArrowItemId(player)
-    for _, arrowId in ipairs(ARROW_ITEM_IDS) do
+    for _, arrowId in ipairs(ARROW_ITEM_IDS) do -- arrow
         if player:HasItem(arrowId) then
             return arrowId
+        end
+    end
+    return nil
+end
+
+local function GetBulletItemId(player)
+    for _, bulletId in ipairs(BULLET_ITEM_IDS) do -- bullet
+        if player:HasItem(bulletId) then
+            return bulletId
         end
     end
     return nil
@@ -24,18 +41,89 @@ local function IsRelevantSpell(spellId)
     return false
 end
 
-local function OnPlayerSpellCast(event, player, spell, skipCheck)
+local function IsBowEquipped(player)
+    local weapon = player:GetEquippedItemBySlot(17) -- 17 is the ranged weapon slot
+    if weapon then
+        local itemSubclass = weapon:GetSubClass()
+        if itemSubclass == BOW_SUBCLASS_ID then
+            return true
+        end
+    end
+    return false
+end
+
+local function IsGunEquipped(player)
+    local weapon = player:GetEquippedItemBySlot(17) -- 17 is the ranged weapon slot
+    if weapon then
+        local itemSubclass = weapon:GetSubClass()
+        if itemSubclass == GUN_SUBCLASS_ID then
+            return true
+        end
+    end
+    return false
+end
+
+local function IsCrossbowEquipped(player)
+    local weapon = player:GetEquippedItemBySlot(17) -- 17 is the ranged weapon slot
+    if weapon then
+        local itemSubclass = weapon:GetSubClass()
+        if itemSubclass == CROSSBOW_SUBCLASS_ID then
+            return true
+        end
+    end
+    return false
+end
+
+local function Ammo_OnPlayerSpellCast(event, player, spell, skipCheck)
     if not ENABLED then
         return
     end
 
     local spellId = spell:GetEntry()
     if IsRelevantSpell(spellId) then
-        local arrowItemId = GetArrowItemId(player)
-        if arrowItemId then
-            player:AddItem(arrowItemId, 1) --can change this number to 2 or 3 or whatever if you're too lazy to add spells in. 
+        if IsBowEquipped(player) then
+            local arrowItemId = GetArrowItemId(player)
+            if arrowItemId then
+                local currentAmmoCount = player:GetItemCount(arrowItemId)
+                if currentAmmoCount < MIN_AMMO_THRESHOLD then
+                    player:AddItem(arrowItemId, MAX_AMMO - currentAmmoCount)
+                    player:RemoveItem(10579, 800)
+                    player:RemoveItem(32760, 800)
+                end
+            end
+        elseif IsGunEquipped(player) then
+            local bulletItemId = GetBulletItemId(player)
+            if bulletItemId then
+                local currentAmmoCount = player:GetItemCount(bulletItemId)
+                if currentAmmoCount < MIN_AMMO_THRESHOLD then
+                    player:AddItem(bulletItemId, MAX_AMMO - currentAmmoCount)
+                    player:RemoveItem(32761, 800)
+                    player:RemoveItem(29885, 800)
+                end
+            end
+        elseif IsCrossbowEquipped(player) then
+            local arrowItemId = GetArrowItemId(player)
+            if arrowItemId then
+                local currentAmmoCount = player:GetItemCount(arrowItemId)
+                if currentAmmoCount < MIN_AMMO_THRESHOLD then
+                    player:AddItem(arrowItemId, MAX_AMMO - currentAmmoCount)
+                    player:RemoveItem(10579, 800)
+                    player:RemoveItem(32760, 800)
+                end
+            end
         end
     end
 end
 
-RegisterPlayerEvent(5, OnPlayerSpellCast)
+local function EnableScript(event, player, command, chatHandler)
+    if (command:lower() == "ua") then
+        ENABLED = true
+        player:SendBroadcastMessage("Unlimited Ammo script enabled.")
+        return false -- Consumes the command, no further processing
+    end
+end
+
+
+
+RegisterPlayerEvent(5, Ammo_OnPlayerSpellCast)
+RegisterPlayerEvent(42, EnableScript)

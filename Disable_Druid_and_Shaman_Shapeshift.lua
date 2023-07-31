@@ -1,4 +1,4 @@
-local enabled = true -- set to true to enable
+local enabled = false -- set to true to enable
 local additionalAurasEnabled = true -- set to true if you want to use a spectral type aura visual instead of the ghost wolf or druid forms
 
 -- enable or disable specific forms
@@ -7,7 +7,7 @@ local auraConfig = {
     [5487] = false,  -- Bear Form
     [9634] = false,  -- Dire Bear Form
     [783] = false,   -- Travel Form
-    [2645] = true,  -- Ghost Wolf
+    [2645] = false,  -- Ghost Wolf
     [24858] = true, -- Moonkin Form
     [33891] = true, -- Tree Form
 

@@ -2,8 +2,8 @@
 -- ACCOUNTWIDE MOUNTS MOD
 ------------------------------------------------------------------------------------------------
 
-local EnableModule = true
-local AnnounceModule = true   -- Announce module on player login ?
+local EnableModule = false
+local AnnounceModule = false   -- Announce module on player login ?
 
 local StrictFactions = false  -- Disallow learning mounts from opposing faction
 local GM_LearnAllCmd = false  -- enable ".learn all mounts" command for GM (debug)

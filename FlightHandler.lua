@@ -95,7 +95,7 @@ function OnSpellCast(event, player, spell, skipCheck)
 
 
 			 local playerRace = player:GetRace()
-    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 then
+    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 and playerRace ~= 14 then
         local playerGuid = player:GetGUID()
         CreateLuaEvent(CreateDelayedSpellFunction(playerGuid, 100223), 100, 1)
         CreateLuaEvent(function()
@@ -108,7 +108,7 @@ function OnSpellCast(event, player, spell, skipCheck)
 				player:CastSpell(player, 34602, true)
 
 			local playerRace = player:GetRace()
-    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 then
+    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 and playerRace ~= 14 then
         local playerGuid = player:GetGUID()
         CreateLuaEvent(CreateDelayedSpellFunction(playerGuid, 100223), 100, 1)
         CreateLuaEvent(function()
@@ -122,7 +122,7 @@ function OnSpellCast(event, player, spell, skipCheck)
 				player:CastSpell(player, 75459, true)
 
 			local playerRace = player:GetRace()
-    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 then
+    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 and playerRace ~= 14 then
         local playerGuid = player:GetGUID()
         CreateLuaEvent(CreateDelayedSpellFunction(playerGuid, 100223), 100, 1)
         CreateLuaEvent(function()
@@ -135,7 +135,7 @@ function OnSpellCast(event, player, spell, skipCheck)
 				player:CastSpell(player, 34602, true)
 
 			local playerRace = player:GetRace()
-    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 then
+    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 and playerRace ~= 14 then
         local playerGuid = player:GetGUID()
         CreateLuaEvent(CreateDelayedSpellFunction(playerGuid, 100223), 100, 1)
         CreateLuaEvent(function()

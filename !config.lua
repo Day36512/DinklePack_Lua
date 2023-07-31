@@ -3,7 +3,7 @@ local prefs = {
 	-- Global Settings
 	Item_RewardPoint = 37711,
 	Item_HardcoreKey = 90000,
-	NPC_CheckNear = true,
+	NPC_CheckNear = false,
 	
 	-- Guild Invite Lua
 	GI_debugOn = false,
@@ -27,7 +27,7 @@ local prefs = {
 	OM_GossipID = 9920005,
 	OM_minExpRate = 0,
 	OM_maxExpRate = 10,
-	
+		
 	-- NPC Summon Menu	
 	NSM_debugON = false,
 	NSM_enabled = true,
@@ -41,6 +41,7 @@ local prefs = {
 			{400117, 80, "|TInterface\\Icons\\inv_potion_163:45:45:-40|t", "Buffer"},
 			{190010, 60, "|TInterface\\Icons\\sanctum_features_transportationnetwork:45:45:-40|t", "Transmogrifier"},
 			{1, 100, "|TInterface\\Icons\\inv_misc_book_07:45:45:-40|t", "Trainer"},
+			{999991, 90, "|TInterface\\Icons\\achievement_legionpvp6tier3:45:45:-40|t", "1v1 Arena Master"},
 	},
 	NSM_NPC_Trainers = {
 		[1] = {4594}, -- Warrior
@@ -78,6 +79,28 @@ local prefs = {
 	RPE_points_AB_win = 5,
 	RPE_points_Other_win = 3,
 	
+	-- Arena Menu
+	AM_debugOn = false,
+	AM_enabled = true,
+	AM_GossipID = 9710000,
+	AM_NpcId = 14508,
+	
+	-- Arena Gurubashi
+	AG_debugOn = false,
+	AG_range = 100,
+	AG_maxSpawn = 5,
+	AG_creatureEntries = {
+			16423,
+			16422,
+			400011,
+			400057,
+	},
+	
+	-- Belt Menu
+	Belt_debugOn = true,
+	Belt_enabled = true,
+	Belt_GossipID = 99005,
+	Belt_ChatCommand = "belts",
 }
 
 ---------------------------------

@@ -1,3 +1,12 @@
+--[[
+Name: Custom_XP
+Version: 1.0.0
+Made by: Dinkledork
+Notes: use ingame command .xp 
+
+]]
+
+
 local enabled = true -- set to false to disable the entire script
 local GMonly = false -- set to true to allow only GMs to change rates
 
@@ -6,7 +15,7 @@ local function getPlayerCharacterGUID(player)
 end
 
 local function GMONLY(player)
-    player:SendBroadcastMessage("|cffff0000You don't have permission to use this command.|r")
+   -- player:SendBroadcastMessage("|cffff0000You don't have permission to use this command.|r")
 end
 
 local function OnLogin(event, player)
@@ -29,8 +38,15 @@ end
 local function SetRate(event, player, command)
     local mingmrank = 3
     local PUID = getPlayerCharacterGUID(player)
+	
 
     if command:find("xp") or command:find("exp") then
+	
+	if player:HasItem(800048, 1) then
+            player:SendBroadcastMessage("|cffff0000You do not have access to this feature in Slow and Steady Mode.|r")
+            return false
+        end
+
         
         if command:find("q") or command:find("Q") or command:find("?") or command == "xp" or command == "exp" then
             local Q = WorldDBQuery(string.format("SELECT * FROM custom_xp WHERE CharID=%i", PUID))
@@ -47,17 +63,18 @@ local function SetRate(event, player, command)
 
         local rate = tonumber(command:sub(command:find("xp") and 4 or 5))
 
-        if rate and rate >= 0.01 and rate <= 10 then
-            if (GMonly and player:GetGMRank() < mingmrank) then
-                GMONLY(player)
-                return false
-            else
-                WorldDBExecute(string.format("DELETE FROM custom_xp WHERE CharID = %i", PUID))
-                WorldDBExecute(string.format("INSERT INTO custom_xp VALUES (%i, %.2f)", PUID, rate))
-                player:SendBroadcastMessage(string.format("|cff5af304You changed your experience rate to %.2fx|r", rate))
-                return false
-            end
-        end
+		if rate and rate >= 0.01 and rate <= 10 then
+    if GMonly and player:GetGMRank() < mingmrank then
+        GMONLY(player)
+        return false
+		elseif not GMonly or player:GetGMRank() >= mingmrank then
+        WorldDBExecute(string.format("DELETE FROM custom_xp WHERE CharID = %i", PUID))
+        WorldDBExecute(string.format("INSERT INTO custom_xp VALUES (%i, %.2f)", PUID, rate))
+        player:SendBroadcastMessage(string.format("|cff5af304You changed your experience rate to %.2fx|r", rate))
+        return false
+    end
+	end
+
     end
 end
 
@@ -90,5 +107,5 @@ if enabled then
     RegisterPlayerEvent(3, OnLogin)
     RegisterPlayerEvent(12, OnXP)
     RegisterPlayerEvent(42, SetRate)
-    RegisterPlayerEvent(30, OnFirstLogin) -- Add this line to register the new function to the event
+    RegisterPlayerEvent(30, OnFirstLogin) 
 end
