@@ -20,6 +20,18 @@ local YELL_OPTIONS_COMBAT_LEAVE = {
     "Aww...You no stay for dinner? You make Patchqwerk sad." 
 }
 
+function Patchqwerk.CastHatefulStrike(eventId, delay, calls, creature)
+creature:CastSpell(creature:GetVictim(), 28308, true)
+end
+
+function Patchqwerk.CastGore(eventId, delay, calls, creature)
+creature:CastSpell(creature:GetVictim(), 48130, true)
+end
+
+function Patchqwerk.PoisonBoltVolley(eventId, delay, calls, creature)
+creature:CastSpell(creature:GetVictim(), 25991, true)
+end
+
 local function SelectRandomYell(yellOptions)
     local randomIndex = math.random(1, #yellOptions)
     return yellOptions[randomIndex]
@@ -38,11 +50,9 @@ end
 
 function Patchqwerk.OnEnterCombat(event, creature, target)
     SendRandomYell(creature, YELL_OPTIONS_COMBAT_ENTER)
-
     creature:RegisterEvent(Patchqwerk.PoisonBoltVolley, 7000, 0)
     creature:RegisterEvent(Patchqwerk.CastHatefulStrike, 15000, 0)
     creature:RegisterEvent(Patchqwerk.CastGore, 20000, 0)
-    creature:RegisterEvent(Patchqwerk.SummonOozeling, 10000, 0)
 end
 
 function Patchqwerk.OnLeaveCombat(event, creature)

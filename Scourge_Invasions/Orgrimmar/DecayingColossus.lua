@@ -10,10 +10,13 @@ creature:CastSpell(creature:GetVictim(), 6713, true)
 end
 
 local function CastStomp(eventId, delay, calls, creature)
-local targets = creature:GetAITargets(10)
-local target = targets[math.random(#targets)]
-creature:CastSpell(target, 55196, true)
+    local targets = creature:GetAITargets(10)
+    if #targets > 0 then -- Check if the targets table is not empty
+        local target = targets[math.random(#targets)]
+        creature:CastSpell(target, 55196, true)
+    end
 end
+
 
 local function CastThunderclap(eventId, delay, calls, creature)
 creature:CastSpell(creature:GetVictim(), 55635, true)
