@@ -1,16 +1,11 @@
--- place in game with .npc add 400117
-
-local ENABLE_BUFF_NPC = true -- Set this to true to enable BufferNPC, false to disable
+local ENABLE_BUFF_NPC = true 
 local NPCID = 400117
 local ANNOUNCE_MODULE = true
 local BUFF_BY_LEVEL = true
 local BUFF_CURE_RES = true
-local BUFF_NUM_PHRASES = 19
-local BUFF_NUM_WHISPERS = 14
 local BUFF_MESSAGE_TIMER = 60000
 local BUFF_EMOTE_SPELL = 44940
-local ENABLE_BUFF_EMOTE_SPELL = false -- shoots off a firework periodically to grab attention
-
+local ENABLE_BUFF_EMOTE_SPELL = false 
 
 local phrases = {
     "It's no fluff, you'll be tough, with these buffs!",    
@@ -53,95 +48,67 @@ local whispers = {
 	
 }
 
-local function Replace(str, from, to)
-    str = string.gsub(str, from, to)
-    return str
+function ShuffleTable(t)
+    local rand = math.random 
+    local iterations = #t
+    local w
+
+    for z = iterations, 2, -1 do
+        w = rand(z)
+        t[z], t[w] = t[w], t[z]
+    end
+
+    return t
 end
 
-local function PickWhisper(Name)
-    local WhisperNum = math.random(1, #whispers)
-    local whisper = whispers[WhisperNum]
-    local randMsg = Replace(whisper, "%%s", Name)
-    return randMsg
-end
+local shuffledPhrases = ShuffleTable(phrases)
+local shuffledWhispers = ShuffleTable(whispers)
+local phraseIndex = 1
+local whisperIndex = 1
 
-local function PickPhrase()
-    local PhraseNum = math.random(1, #phrases)
-    local phrase = phrases[PhraseNum]
+
+function PickPhrase()
+    local phrase = shuffledPhrases[phraseIndex]
+    phraseIndex = (phraseIndex % #shuffledPhrases) + 1
     return phrase
 end
 
-local function OnGossipSelect(event, player, creature, sender, intid)
+function PickWhisper(Name)
+    local whisper = shuffledWhispers[whisperIndex]
+    whisperIndex = (whisperIndex % #shuffledWhispers) + 1
+    return whisper:format(Name)
+end
+
+function Buffer_OnGossipSelect(event, player, creature, sender, intid)
     local PlayerName = player:GetName()
     local PlayerLevel = player:GetLevel()
 
-    
-    local vecBuffs = {48162, 43223, 48469, 48470, 48170, 43002}
+    local spellTable = {
+        [1] = {1244, 1126, 19740},
+        [10] = {1245, 1126, 27683},
+        [20] = {2791, 1126, 27683, 13326},
+        [30] = {10937, 25898, 1126, 27681, 27683, 13326},
+        [40] = {10937, 48469, 27681, 48170, 13326},
+        [50] = {10938, 43223, 48469, 48074, 48170, 36880},
+        [60] = {10938, 43223, 48469, 48074, 48170, 36880},
+        [70] = {25389, 43223, 48469, 48074, 48170, 36880},
+		[80] = {48161, 43223, 48469, 48074, 48170, 36880},
+    }
 
-    
-    if BUFF_CURE_RES and player:HasAura(15007) then
-        player:RemoveAura(15007)
-        creature:SendUnitSay("The aura of death has been lifted from you " .. PlayerName .. ". Watch yourself out there!", 0, player)
+    for level, spells in pairs(spellTable) do
+        if PlayerLevel >= level then
+            for _, spell in ipairs(spells) do
+                player:CastSpell(player, spell, true)
+            end
+        end
     end
 
-if PlayerLevel >= 1 and PlayerLevel < 10 then
-    player:CastSpell(player, 21562, true) 
-    player:CastSpell(player, 1126, true)  
-    player:CastSpell(player, 27683, true) 
-elseif PlayerLevel >= 10 and PlayerLevel < 20 then
-    player:CastSpell(player, 21562, true) 
-    player:CastSpell(player, 1126, true)  
-    player:CastSpell(player, 27683, true) 
-elseif PlayerLevel >= 20 and PlayerLevel < 30 then
-    player:CastSpell(player, 21562, true) 
-    player:CastSpell(player, 1126, true)  
-    player:CastSpell(player, 27683, true) 
-    player:CastSpell(player, 13326, true) 
-elseif PlayerLevel >= 30 and PlayerLevel < 40 then
-    player:CastSpell(player, 21562, true) 
-    player:CastSpell(player, 25898, true) 
-    player:CastSpell(player, 1126, true)  
-    player:CastSpell(player, 27681, true) 
-    player:CastSpell(player, 27683, true) 
-    player:CastSpell(player, 13326, true) 
-elseif PlayerLevel >= 40 and PlayerLevel < 50 then
-    player:CastSpell(player, 21562, true) 
-    player:CastSpell(player, 48469, true) 
-    player:CastSpell(player, 27681, true) 
-    player:CastSpell(player, 48170, true) 
-    player:CastSpell(player, 13326, true) 
-elseif PlayerLevel >= 50 and PlayerLevel < 60 then
-    player:CastSpell(player, 48162, true) 
-    player:CastSpell(player, 43223, true) 
-    player:CastSpell(player, 48469, true) 
-    player:CastSpell(player, 48074, true) 
-    player:CastSpell(player, 48170, true) 
-   player:CastSpell(player, 36880, true) 
-elseif PlayerLevel >= 60 and PlayerLevel < 70 then
-    player:CastSpell(player, 48162, true) 
-    player:CastSpell(player, 43223, true) 
-    player:CastSpell(player, 48469, true) 
-    player:CastSpell(player, 48074, true) 
-    player:CastSpell(player, 48170, true) 
-    player:CastSpell(player, 36880, true) 
-elseif PlayerLevel >= 70 and PlayerLevel < 80 then
-    player:CastSpell(player, 48162, true) 
-    player:CastSpell(player, 43223, true) 
-    player:CastSpell(player, 48469, true) 
-    player:CastSpell(player, 48074, true) 
-    player:CastSpell(player, 48170, true) 
-    player:CastSpell(player, 36880, true) 
-else
-for _, buff in ipairs(vecBuffs) do
-    player:CastSpell(player, buff, true)
-end
-end
     creature:SendUnitSay(PickWhisper(PlayerName), 0)
-    creature:PerformEmote(71) 
+    creature:PerformEmote(71)
     player:GossipComplete()
 end
 
-local function OnGossipHello(event, player, creature)
+local function Buffer_OnGossipHello(event, player, creature)
     if ENABLE_BUFF_NPC then
         player:GossipMenuAddItem(0, "|TInterface\\icons\\spell_misc_emotionhappy:43:43:-33|t|cff007d45Buff me!|r", 1, 1)
         player:GossipSendMenu(1, creature)
@@ -150,10 +117,8 @@ local function OnGossipHello(event, player, creature)
     end
 end
 
-
-
 local function OnTimerEmote(eventID, delay, pCall, creature) 
-    creature:PerformEmote(71)  
+    creature:PerformEmote(71) 
     if ENABLE_BUFF_EMOTE_SPELL then  
         creature:CastSpell(creature, BUFF_EMOTE_SPELL, true)
     end
@@ -161,29 +126,25 @@ local function OnTimerEmote(eventID, delay, pCall, creature)
     creature:RegisterEvent(OnTimerEmote, BUFF_MESSAGE_TIMER, 1, creature) 
 end
 
-
-local function OnSpawn(event, creature)
+local function Buffer_OnSpawn(event, creature)
     creature:RegisterEvent(OnTimerEmote, BUFF_MESSAGE_TIMER, 1, creature) 
     if BUFF_EMOTE_SPELL ~= 0 then
         creature:AddAura(BUFF_EMOTE_SPELL, creature)
     end
 end
 
-
 local function WrappedOnTimerEmote(eventID, delay, pCall)
     local anyCreature = nil
-    
     for _, player in ipairs(GetPlayersInWorld()) do
         anyCreature = player:GetNearestCreature(30, NPCID)
         if anyCreature then
             break
         end
     end
-
     if anyCreature then
-        local playersInRange = anyCreature:GetPlayersInRange(100000)
+        local playersInRange = anyCreature:GetPlayersInRange(100)
         for _, player in ipairs(playersInRange) do
-            local creature = player:GetNearestCreature(100000, NPCID)
+            local creature = player:GetNearestCreature(100, NPCID)
             if creature then
                 OnTimerEmote(eventID, delay, pCall, creature)
             end
@@ -191,22 +152,10 @@ local function WrappedOnTimerEmote(eventID, delay, pCall)
     end
 end
 
-
 local eventId = CreateLuaEvent(WrappedOnTimerEmote, BUFF_MESSAGE_TIMER, 1)
 if eventId then
-    RegisterCreatureEvent(NPCID, 5, OnSpawn)
+    RegisterCreatureEvent(NPCID, 5, Buffer_OnSpawn)
 end
 
-local function OnLogin(event, player)
-    if ANNOUNCE_MODULE then
-        player:SendBroadcastMessage("This server is running the |cff4CFF00BufferNPC |rmodule.")
-    end
-    local creature = player:GetNearestCreature(30, NPCID)  
-    if creature then
-        creature:SetEquipmentSlots(27937, 27937, 0)  -- Weapon slots. Change to whatever.
-    end
-end
-
-RegisterPlayerEvent(3, OnLogin)
-RegisterCreatureGossipEvent(NPCID, 1, OnGossipHello)
-RegisterCreatureGossipEvent(NPCID, 2, OnGossipSelect)
+RegisterCreatureGossipEvent(NPCID, 1, Buffer_OnGossipHello)
+RegisterCreatureGossipEvent(NPCID, 2, Buffer_OnGossipSelect)
