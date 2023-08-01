@@ -2,7 +2,7 @@ local ENABLE_BUFF_NPC = true
 local Buffer_NPCID = 400117
 local BUFF_BY_LEVEL = true
 local BUFF_CURE_RES = true
-local BUFF_MESSAGE_TIMER = 60000
+local BUFF_MESSAGE_TIMER = 30000
 local BUFF_EMOTE_SPELL = 44940
 local ENABLE_BUFF_EMOTE_SPELL = false 
 
@@ -116,21 +116,45 @@ local function Buffer_OnGossipHello(event, player, creature)
     end
 end
 
-local function OnTimerEmote(eventID, delay, repeats, creature) 
+local function OnTimerEmote(eventID, delay, pCall, creature) 
     creature:PerformEmote(71) 
     if ENABLE_BUFF_EMOTE_SPELL then  
         creature:CastSpell(creature, BUFF_EMOTE_SPELL, true)
     end
     creature:SendUnitSay(PickPhrase(), 0)
+    creature:RegisterEvent(OnTimerEmote, BUFF_MESSAGE_TIMER, 1, creature) 
 end
 
 local function Buffer_OnSpawn(event, creature)
-    creature:RegisterEvent(OnTimerEmote, BUFF_MESSAGE_TIMER, 0) 
+    creature:RegisterEvent(OnTimerEmote, BUFF_MESSAGE_TIMER, 1, creature) 
     if BUFF_EMOTE_SPELL ~= 0 then
         creature:AddAura(BUFF_EMOTE_SPELL, creature)
     end
 end
 
-RegisterCreatureEvent(Buffer_NPCID, 5, Buffer_OnSpawn)
+local function WrappedOnTimerEmote(eventID, delay, pCall)
+    local anyCreature = nil
+    for _, player in ipairs(GetPlayersInWorld()) do
+        anyCreature = player:GetNearestCreature(30, Buffer_NPCID)
+        if anyCreature then
+            break
+        end
+    end
+    if anyCreature then
+        local playersInRange = anyCreature:GetPlayersInRange(100)
+        for _, player in ipairs(playersInRange) do
+            local creature = player:GetNearestCreature(100, Buffer_NPCID)
+            if creature then
+                OnTimerEmote(eventID, delay, pCall, creature)
+            end
+        end
+    end
+end
+
+local eventId = CreateLuaEvent(WrappedOnTimerEmote, BUFF_MESSAGE_TIMER, 1)
+if eventId then
+    RegisterCreatureEvent(Buffer_NPCID, 5, Buffer_OnSpawn)
+end
+
 RegisterCreatureGossipEvent(Buffer_NPCID, 1, Buffer_OnGossipHello)
 RegisterCreatureGossipEvent(Buffer_NPCID, 2, Buffer_OnGossipSelect)
