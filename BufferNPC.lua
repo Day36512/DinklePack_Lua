@@ -1,6 +1,5 @@
 local ENABLE_BUFF_NPC = true 
-local NPCID = 400117
-local ANNOUNCE_MODULE = true
+local Buffer_Buffer_NPCID = 400117
 local BUFF_BY_LEVEL = true
 local BUFF_CURE_RES = true
 local BUFF_MESSAGE_TIMER = 60000
@@ -117,45 +116,21 @@ local function Buffer_OnGossipHello(event, player, creature)
     end
 end
 
-local function OnTimerEmote(eventID, delay, pCall, creature) 
+local function OnTimerEmote(eventID, delay, repeats, creature) 
     creature:PerformEmote(71) 
     if ENABLE_BUFF_EMOTE_SPELL then  
         creature:CastSpell(creature, BUFF_EMOTE_SPELL, true)
     end
     creature:SendUnitSay(PickPhrase(), 0)
-    creature:RegisterEvent(OnTimerEmote, BUFF_MESSAGE_TIMER, 1, creature) 
 end
 
 local function Buffer_OnSpawn(event, creature)
-    creature:RegisterEvent(OnTimerEmote, BUFF_MESSAGE_TIMER, 1, creature) 
+    creature:RegisterEvent(OnTimerEmote, BUFF_MESSAGE_TIMER, 0) 
     if BUFF_EMOTE_SPELL ~= 0 then
         creature:AddAura(BUFF_EMOTE_SPELL, creature)
     end
 end
 
-local function WrappedOnTimerEmote(eventID, delay, pCall)
-    local anyCreature = nil
-    for _, player in ipairs(GetPlayersInWorld()) do
-        anyCreature = player:GetNearestCreature(30, NPCID)
-        if anyCreature then
-            break
-        end
-    end
-    if anyCreature then
-        local playersInRange = anyCreature:GetPlayersInRange(100)
-        for _, player in ipairs(playersInRange) do
-            local creature = player:GetNearestCreature(100, NPCID)
-            if creature then
-                OnTimerEmote(eventID, delay, pCall, creature)
-            end
-        end
-    end
-end
-
-local eventId = CreateLuaEvent(WrappedOnTimerEmote, BUFF_MESSAGE_TIMER, 1)
-if eventId then
-    RegisterCreatureEvent(NPCID, 5, Buffer_OnSpawn)
-end
-
-RegisterCreatureGossipEvent(NPCID, 1, Buffer_OnGossipHello)
-RegisterCreatureGossipEvent(NPCID, 2, Buffer_OnGossipSelect)
+RegisterCreatureEvent(Buffer_NPCID, 5, Buffer_OnSpawn)
+RegisterCreatureGossipEvent(Buffer_NPCID, 1, Buffer_OnGossipHello)
+RegisterCreatureGossipEvent(Buffer_NPCID, 2, Buffer_OnGossipSelect)
