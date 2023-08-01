@@ -1,5 +1,5 @@
 local ENABLE_BUFF_NPC = true 
-local Buffer_Buffer_NPCID = 400117
+local Buffer_NPCID = 400117
 local BUFF_BY_LEVEL = true
 local BUFF_CURE_RES = true
 local BUFF_MESSAGE_TIMER = 60000
