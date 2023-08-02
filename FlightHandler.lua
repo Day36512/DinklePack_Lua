@@ -1,11 +1,13 @@
-local spellIds = {100209, 100211, 100210, 100213, 100214, 100215, 100216, 100217, 100218, 100219, 100220, 100180, 100221, 100222} 
-local restrictedSpellIds = {100211, 100213, 100214, 100180} -- remove if you want to have all spells available in raids/dungeons. Right now only Up, Up and Away is disabled, except the Depcrecated spell. Just change to {}
-local requiredAuraRange = {200049, 200182} 
-local requiredLevel = 1 -- Level restriction removed
-local emoteId = 68 -- obsolete
-local soundId = 53774
+FlightScriptNamespace = {} 
 
-function CreateDelayedEmoteFunction(playerGuid, emoteId)
+FlightScriptNamespace.spellIds = {100209, 100211, 100210, 100213, 100214, 100215, 100216, 100217, 100218, 100219, 100220, 100180, 100221, 100222} 
+FlightScriptNamespace.restrictedSpellIds = {100211, 100213, 100214, 100180} -- remove if you want to have all spells available in raids/dungeons. Right now only Up, Up and Away is disabled, except the Depcrecated spell. Just change to {}
+FlightScriptNamespace.requiredAuraRange = {200049, 200182} 
+FlightScriptNamespace.requiredLevel = 1 
+FlightScriptNamespace.emoteId = 68 
+FlightScriptNamespace.soundId = 53774
+
+function FlightScriptNamespace.CreateDelayedEmoteFunction(playerGuid, emoteId)
     return function()
         local player = GetPlayerByGUID(playerGuid)
         if player then
@@ -14,7 +16,7 @@ function CreateDelayedEmoteFunction(playerGuid, emoteId)
     end
 end
 
-function CreateDelayedSpellFunction(playerGuid, spellId)
+function FlightScriptNamespace.CreateDelayedSpellFunction(playerGuid, spellId)
     return function()
         local player = GetPlayerByGUID(playerGuid)
         if player then
@@ -23,18 +25,18 @@ function CreateDelayedSpellFunction(playerGuid, spellId)
     end
 end
 
-function RemoveAuraIfNotFalling(playerGuid, auraId)
+function FlightScriptNamespace.RemoveAuraIfNotFalling(playerGuid, auraId)
     local player = GetPlayerByGUID(playerGuid)
     if player and not player:IsFalling() then
         player:RemoveAura(auraId)
     end
 end
 
-function OnSpellCast(event, player, spell, skipCheck)
-    for i, spellId in ipairs(spellIds) do
+function FlightScriptNamespace.Flight_OnSpellCast(event, player, spell, skipCheck)
+    for i, spellId in ipairs(FlightScriptNamespace.spellIds) do
         if (spell:GetEntry() == spellId) then
             local hasRequiredAura = false
-            for j = requiredAuraRange[1], requiredAuraRange[2] do
+            for j = FlightScriptNamespace.requiredAuraRange[1], FlightScriptNamespace.requiredAuraRange[2] do
                 if (player:HasAura(j)) then
                     hasRequiredAura = true
                     break
@@ -45,14 +47,14 @@ function OnSpellCast(event, player, spell, skipCheck)
             local mapId = map:GetMapId()
             local restrictionMessage = "You cannot cast this spell in battlegrounds, dungeons, or raids."
             
-            if (mapId == 530 and player:GetLevel() < 70) then -- change 70 to 1
+            if (mapId == 530 and player:GetLevel() < 70) then
                 restrictionMessage = "You must be level 70 to cast this spell in Outland."
-            elseif (mapId == 571 and not player:HasSpell(54197)) then -- .learn 54197
+            elseif (mapId == 571 and not player:HasSpell(54197)) then
                 restrictionMessage = "You must have Cold Weather Flying to cast this spell in Northrend."
             end
 
             local isRestrictedSpell = false
-            for _, restrictedSpellId in ipairs(restrictedSpellIds) do
+            for _, restrictedSpellId in ipairs(FlightScriptNamespace.restrictedSpellIds) do
                 if (spell:GetEntry() == restrictedSpellId) then
                     isRestrictedSpell = true
                     break
@@ -63,23 +65,22 @@ function OnSpellCast(event, player, spell, skipCheck)
                 player:SendAreaTriggerMessage(restrictionMessage)
                 spell:Cancel()
                 return false
-            elseif (not hasRequiredAura and player:GetLevel() >= requiredLevel) then
+            elseif (not hasRequiredAura and player:GetLevel() >= FlightScriptNamespace.requiredLevel) then
                 player:SendAreaTriggerMessage("You must have wings equipped to cast this spell.")
                 spell:Cancel()
                 return false
-            elseif (hasRequiredAura and player:GetLevel() < requiredLevel) then
+            elseif (hasRequiredAura and player:GetLevel() < FlightScriptNamespace.requiredLevel) then
                 player:SendAreaTriggerMessage("You must be at least level 40 to cast this spell.")
                 spell:Cancel()
                 return false
-            elseif (not hasRequiredAura and player:GetLevel() < requiredLevel) then
+            elseif (not hasRequiredAura and player:GetLevel() < FlightScriptNamespace.requiredLevel) then
                 player:SendAreaTriggerMessage("You must be at least level 40 and have wings equipped to cast this spell.")
                 spell:Cancel()
                 return false
             elseif (spell:GetEntry() == 100210 or spell:GetEntry() == 100218 or spell:GetEntry() == 100219 or spell:GetEntry() == 100220) then
-                --player:PerformEmote(emoteId)(obsolete)
-                player:PlayDirectSound(soundId)
+                player:PlayDirectSound(FlightScriptNamespace.soundId)
                 local maxHealth = player:GetMaxHealth()
-                local healthToReduce = maxHealth * 0.10 -- 10% of max health
+                local healthToReduce = maxHealth * 0.10
                 local newHealth = player:GetHealth() - healthToReduce
                 local healthPct = (newHealth / maxHealth) * 100
                 if healthPct <= 5 then
@@ -87,71 +88,71 @@ function OnSpellCast(event, player, spell, skipCheck)
                 else
                     player:SetHealth(newHealth)
                 end
-				
-			elseif (spell:GetEntry() == 100209) then
-				player:CastSpell(player, 71495, true)
-				player:CastSpell(player, 34602, true)
-				player:CastSpell(player, 75459, true)
 
+                if (spell:GetEntry() == 100209) then
+                    player:CastSpell(player, 71495, true)
+                    player:CastSpell(player, 34602, true)
+                    player:CastSpell(player, 75459, true)
 
-			 local playerRace = player:GetRace()
-    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 and playerRace ~= 14 then
-        local playerGuid = player:GetGUID()
-        CreateLuaEvent(CreateDelayedSpellFunction(playerGuid, 100223), 100, 1)
-        CreateLuaEvent(function()
-            RemoveAuraIfNotFalling(playerGuid, 100223)
-        end, 1400, 1)
+                    local playerRace = player:GetRace()
+                    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 and playerRace ~= 14 then
+                        local playerGuid = player:GetGUID()
+                        CreateLuaEvent(FlightScriptNamespace.CreateDelayedSpellFunction(playerGuid, 100223), 100, 1)
+                        CreateLuaEvent(function()
+                            FlightScriptNamespace.RemoveAuraIfNotFalling(playerGuid, 100223)
+                        end, 1400, 1)
+                    end
+
+                elseif (spell:GetEntry() == 100216) then
+                    player:CastSpell(player, 75459, true)
+                    player:CastSpell(player, 34602, true)
+
+                    local playerRace = player:GetRace()
+                    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 and playerRace ~= 14 then
+                        local playerGuid = player:GetGUID()
+                        CreateLuaEvent(FlightScriptNamespace.CreateDelayedSpellFunction(playerGuid, 100223), 100, 1)
+                        CreateLuaEvent(function()
+                            FlightScriptNamespace.RemoveAuraIfNotFalling(playerGuid, 100223)
+                        end, 1400, 1)
+                    end
+
+                elseif (spell:GetEntry() == 100217) then
+                    player:CastSpell(player, 71495, true)
+                    player:CastSpell(player, 34602, true)
+                    player:CastSpell(player, 75459, true)
+
+                    local playerRace = player:GetRace()
+                    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 and playerRace ~= 14 then
+                        local playerGuid = player:GetGUID()
+                        CreateLuaEvent(FlightScriptNamespace.CreateDelayedSpellFunction(playerGuid, 100223), 100, 1)
+                        CreateLuaEvent(function()
+                            FlightScriptNamespace.RemoveAuraIfNotFalling(playerGuid, 100223)
+                        end, 1400, 1)
+                    end
+
+                elseif (spell:GetEntry() == 100221) then
+                    player:CastSpell(player, 71495, true)
+                    player:CastSpell(player, 34602, true)
+
+                    local playerRace = player:GetRace()
+                    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 and playerRace ~= 14 then
+                        local playerGuid = player:GetGUID()
+                        CreateLuaEvent(FlightScriptNamespace.CreateDelayedSpellFunction(playerGuid, 100223), 100, 1)
+                        CreateLuaEvent(function()
+                            FlightScriptNamespace.RemoveAuraIfNotFalling(playerGuid, 100223)
+                        end, 1400, 1)
+                    end
+                    
+                elseif (spell:GetEntry() == 100211 or spell:GetEntry() == 100213 or spell:GetEntry() == 100214 or spell:GetEntry() == 100215) then
+                    player:CastSpell(player, 34602, true)
+                    player:CastSpell(player, 75459, true)
+
+                    local playerGuid = player:GetGUID()
+                    CreateLuaEvent(FlightScriptNamespace.CreateDelayedEmoteFunction(playerGuid, 53), 100, 1)
+                end
+            end
+        end
     end
-
-			elseif (spell:GetEntry() == 100216) then
-				player:CastSpell(player, 75459, true)
-				player:CastSpell(player, 34602, true)
-
-			local playerRace = player:GetRace()
-    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 and playerRace ~= 14 then
-        local playerGuid = player:GetGUID()
-        CreateLuaEvent(CreateDelayedSpellFunction(playerGuid, 100223), 100, 1)
-        CreateLuaEvent(function()
-            RemoveAuraIfNotFalling(playerGuid, 100223)
-        end, 1400, 1)
-    end
-
-			elseif (spell:GetEntry() == 100217) then
-				player:CastSpell(player, 71495, true)
-				player:CastSpell(player, 34602, true)
-				player:CastSpell(player, 75459, true)
-
-			local playerRace = player:GetRace()
-    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 and playerRace ~= 14 then
-        local playerGuid = player:GetGUID()
-        CreateLuaEvent(CreateDelayedSpellFunction(playerGuid, 100223), 100, 1)
-        CreateLuaEvent(function()
-            RemoveAuraIfNotFalling(playerGuid, 100223)
-        end, 1400, 1)
-    end
-
-			elseif (spell:GetEntry() == 100221) then
-				player:CastSpell(player, 71495, true)
-				player:CastSpell(player, 34602, true)
-
-			local playerRace = player:GetRace()
-    if playerRace ~= 10 and playerRace ~= 11 and playerRace ~= 12 and playerRace ~= 17 and playerRace ~= 19 and playerRace ~= 20 and playerRace ~= 21 and playerRace ~= 14 then
-        local playerGuid = player:GetGUID()
-        CreateLuaEvent(CreateDelayedSpellFunction(playerGuid, 100223), 100, 1)
-        CreateLuaEvent(function()
-            RemoveAuraIfNotFalling(playerGuid, 100223)
-        end, 1400, 1)
-    end
-             
-elseif (spell:GetEntry() == 100211 or spell:GetEntry() == 100213 or spell:GetEntry() == 100214 or spell:GetEntry() == 100215) then
-    player:CastSpell(player, 34602, true)
-    player:CastSpell(player, 75459, true)
-
-    local playerGuid = player:GetGUID()
-    CreateLuaEvent(CreateDelayedEmoteFunction(playerGuid, 53), 100, 1)
-end
-end
-end
 end
 
-RegisterPlayerEvent(5, OnSpellCast)
+RegisterPlayerEvent(5, FlightScriptNamespace.Flight_OnSpellCast)

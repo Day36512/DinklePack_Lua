@@ -1,4 +1,4 @@
---
+--[[
 -- Created by IntelliJ IDEA.
 -- User: Silvia
 -- Date: 28/02/2021
@@ -200,4 +200,4 @@ local function GrantReward(event, player, oldLevel)
 end
 
 RegisterPlayerEvent(PLAYER_EVENT_ON_LEVEL_CHANGE, GrantReward)
-
+]]

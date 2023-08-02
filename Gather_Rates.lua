@@ -1,25 +1,18 @@
---[[
-Name: Gather_Rates
-Version: 1.0.0
-Made by: Dinkledork
-Notes: use ingame command .ga 
+GatherRatesNamespace = {}
 
-]]
+GatherRatesNamespace.enabled = true
+GatherRatesNamespace.GMonly = false
 
-
-local enabled = true -- disable the script with true or false
-local GMonly = false -- determine whether you want only GMs to be able to use said command
-
-local function getPlayerCharacterGUID(player)
+function GatherRatesNamespace.getPlayerCharacterGUID(player)
     return player:GetGUIDLow()
 end
 
-local function GMONLY(player)
+function GatherRatesNamespace.GMONLY(player)
     -- player:SendBroadcastMessage("|cffff0000You don't have permission to use this command.|r")
 end
 
-local function OnLogin(event, player)
-    local PUID = getPlayerCharacterGUID(player)
+function GatherRatesNamespace.OnLogin(event, player)
+    local PUID = GatherRatesNamespace.getPlayerCharacterGUID(player)
     local Q = CharDBQuery(string.format("SELECT GatherRate FROM custom_gather_rates WHERE CharID=%i", PUID))
 
     if Q then
@@ -28,9 +21,9 @@ local function OnLogin(event, player)
     end
 end
 
-local function SetGatherRate(event, player, command)
+function GatherRatesNamespace.SetGatherRate(event, player, command)
     local mingmrank = 3
-    local PUID = getPlayerCharacterGUID(player)
+    local PUID = GatherRatesNamespace.getPlayerCharacterGUID(player)
 
     if command:find("ga") then
         local rate = tonumber(command:sub(4))
@@ -41,12 +34,12 @@ local function SetGatherRate(event, player, command)
         end
 
         if rate and rate >= 1 and rate <= 10 then
-            if player:HasItem(800048, 1) then
-                player:SendBroadcastMessage("|cffff0000You cannot use this command in Slow and Steady Mode.|r")
+            if player:HasItem(800048, 1) or player:HasItem(800086, 1) then
+                player:SendBroadcastMessage("|cffff0000You cannot use this command while certain challenge modes are active!|r")
                 return false
             end
-            if GMonly and player:GetGMRank() < mingmrank then
-                GMONLY(player)
+            if GatherRatesNamespace.GMonly and player:GetGMRank() < mingmrank then
+                GatherRatesNamespace.GMONLY(player)
                 return false
             else
                 CharDBExecute(string.format("REPLACE INTO custom_gather_rates (CharID, GatherRate) VALUES (%i, %d)", PUID, rate))
@@ -60,9 +53,9 @@ local function SetGatherRate(event, player, command)
     end
 end
 
-local function onLootItem(event, player, item, count)
+function GatherRatesNamespace.onLootItem(event, player, item, count)
     local itemEntry = item:GetEntry()
-    local PUID = getPlayerCharacterGUID(player)
+    local PUID = GatherRatesNamespace.getPlayerCharacterGUID(player)
     local Q = CharDBQuery(string.format("SELECT GatherRate FROM custom_gather_rates WHERE CharID=%i", PUID))
     local GatherRate = 1
 
@@ -79,7 +72,7 @@ local function onLootItem(event, player, item, count)
     end
 end
 
-local function createGatherRatesTable()
+function GatherRatesNamespace.createGatherRatesTable()
     CharDBExecute([[
         CREATE TABLE IF NOT EXISTS custom_gather_rates (
             CharID INT PRIMARY KEY,
@@ -88,9 +81,9 @@ local function createGatherRatesTable()
     ]])
 end
 
-if enabled then
-    createGatherRatesTable()
-    RegisterPlayerEvent(3, OnLogin)
-    RegisterPlayerEvent(32, onLootItem)
-    RegisterPlayerEvent(42, SetGatherRate)
+if GatherRatesNamespace.enabled then
+    GatherRatesNamespace.createGatherRatesTable()
+    RegisterPlayerEvent(3, GatherRatesNamespace.OnLogin)
+    RegisterPlayerEvent(32, GatherRatesNamespace.onLootItem)
+    RegisterPlayerEvent(42, GatherRatesNamespace.SetGatherRate)
 end

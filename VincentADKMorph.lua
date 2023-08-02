@@ -1,3 +1,5 @@
+--[[
+
 local morph_commands = {
     ["#sally"] = 2043,
     ["#newthrall"] = 4527,
@@ -33,7 +35,7 @@ local demorph_commands = {
     ["#vincent"] = true,
 }
 
-local function MorphPlayer(event, player, message, type, language)
+local function ADK_MorphPlayer(event, player, message, type, language)
     local lower_message = string.lower(message)
     local morph_id = morph_commands[lower_message]
 
@@ -50,4 +52,5 @@ local function MorphPlayer(event, player, message, type, language)
     end
 end
 
-RegisterPlayerEvent(18, MorphPlayer)
+RegisterPlayerEvent(18, ADK_MorphPlayer)
+]]

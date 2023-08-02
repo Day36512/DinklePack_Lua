@@ -1,6 +1,8 @@
-local NPC_ENTRY = 98888 -- NPC Trainer ID
+RacialChangeNamespace = {}
 
-local RacialSpellsCombined = {
+RacialChangeNamespace.NPC_ENTRY = 98888 -- NPC Trainer ID
+
+RacialChangeNamespace.RacialSpellsCombined = {
     [1] = {20864, 58985, 20597, 20598}, -- human
     [2] = {20594, 20595, 20596, 59224}, -- dwarf
     [3] = {21009, 20583, 20585, 58984, 20582}, -- NightElf
@@ -22,7 +24,7 @@ local RacialSpellsCombined = {
     
 }
 
-local RacesCombined = {
+RacialChangeNamespace.RacesCombined = {
     [1] = "Human",
     [2] = "Dwarf",
     [3] = "NightElf",
@@ -44,8 +46,8 @@ local RacesCombined = {
     
 }
 
-local function OnHello(event, player, unit)
-    if unit:GetEntry() == NPC_ENTRY then
+local function Swao_OnHello(event, player, unit)
+    if unit:GetEntry() == RacialChangeNamespace.NPC_ENTRY then
         player:GossipClearMenu()
         player:GossipMenuAddItem(0, "Change Racial Abilities", 0, 1)
         player:GossipSendMenu(1, unit)
@@ -65,8 +67,8 @@ local function getCostForPlayer(player)
     end
 end
 
-local function OnGossipSelect(event, player, unit, sender, intid, code)
-    if unit:GetEntry() == NPC_ENTRY then
+local function Swao_OnGossipSelect(event, player, unit, sender, intid, code)
+    if unit:GetEntry() == RacialChangeNamespace.NPC_ENTRY then
         if intid == 1 then
             player:GossipClearMenu()
             player:GossipMenuAddItem(0, "Cancel", 0, 2)
@@ -74,7 +76,7 @@ local function OnGossipSelect(event, player, unit, sender, intid, code)
             local cost = getCostForPlayer(player)
 
             -- Add options to select a new race
-            for raceID, raceName in pairs(RacesCombined) do
+            for raceID, raceName in pairs(RacialChangeNamespace.RacesCombined) do
                 local confirmText = "This will cost you "..tostring(cost/10000).." gold. Do you wish to proceed?"
                 if cost == 0 then -- Free for level 10 or lower
                     confirmText = "This feature is free until level 11. Do you wish to proceed?"
@@ -94,10 +96,10 @@ local function OnGossipSelect(event, player, unit, sender, intid, code)
             end
 
             local selectedRaceID = intid - 10
-            local selectedRaceSpells = RacialSpellsCombined[selectedRaceID]
+            local selectedRaceSpells = RacialChangeNamespace.RacialSpellsCombined[selectedRaceID]
 
             -- Remove all current racial abilities
-            for _, spellList in pairs(RacialSpellsCombined) do
+            for _, spellList in pairs(RacialChangeNamespace.RacialSpellsCombined) do
                 for _, spellID in ipairs(spellList) do
                     player:RemoveSpell(spellID)
                 end
@@ -113,7 +115,7 @@ local function OnGossipSelect(event, player, unit, sender, intid, code)
                 player:LearnSpell(spellID)
             end
 
-            player:SendBroadcastMessage("You have changed your racial abilities to: " .. RacesCombined[selectedRaceID] .. ".")
+            player:SendBroadcastMessage("You have changed your racial abilities to: " .. RacialChangeNamespace.RacesCombined[selectedRaceID] .. ".")
             player:GossipComplete()
         else
             player:GossipComplete()
@@ -121,7 +123,5 @@ local function OnGossipSelect(event, player, unit, sender, intid, code)
     end
 end
 
-
-
-RegisterCreatureGossipEvent(NPC_ENTRY, 1, OnHello)
-RegisterCreatureGossipEvent(NPC_ENTRY, 2, OnGossipSelect)
+RegisterCreatureGossipEvent(RacialChangeNamespace.NPC_ENTRY, 1, Swao_OnHello)
+RegisterCreatureGossipEvent(RacialChangeNamespace.NPC_ENTRY, 2, Swao_OnGossipSelect)

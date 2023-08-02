@@ -1,3 +1,4 @@
+--[[
 --Manages the cooldown for a list of potion items that players can use. 
 --When a player uses a potion item from the list, the script registers an event to reset the cooldown of that potion item for the player after a set period of time (3 seconds in this case). 
 --This allows the player to use the same potion item again after the cooldown has been reset. The script only runs if the enabled variable is set to true.
@@ -34,3 +35,4 @@ for k,v in pairs(Potions) do
 RegisterItemEvent( v, 2, Item_cooldown )
 end
 end
+]]

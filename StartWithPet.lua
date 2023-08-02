@@ -1,16 +1,15 @@
+HunterPetModule = {}
+
 ------------------------------------------------------------------------------------------------
 -- HUNTER START WITH PET MOD
 ------------------------------------------------------------------------------------------------
 
-local EnableModule   = false   -- Enable module
-local AnnounceModule = true   -- Announce module on player login ?
-
-local LoadFromDB     = false   -- true  : KEEP DISABLED FOR NOW!!!
-                              
+HunterPetModule.EnableModule   = false   -- Enable module
+HunterPetModule.LoadFromDB     = false   -- true  : KEEP DISABLED FOR NOW!!!
 
 -- This table is used only when LoadFromDB=false
 -- entry,maxLevel
-local PET_NPC_DB = {
+HunterPetModule.PET_NPC_DB = {
     {299,1},    -- Diseased Young Wolf
     {705,1},    -- Ragged Young Wolf
     {1508,1},   -- Young Scavenger
@@ -44,7 +43,7 @@ local PET_NPC_DB = {
 }
 
 -- spellId
-local PET_SPELLS = {
+HunterPetModule.PET_SPELLS = {
     883,   -- Call Pet
     982,   -- Revive Pet
     1515,  -- Tame Beast
@@ -59,19 +58,19 @@ local PET_SPELLS = {
 -- Happy   = 666001 - 1050000
 -- Default = 166500 (Unhappy)
 
-local PET_STARTWITH_HAPPINESS = 500000
+HunterPetModule.PET_STARTWITH_HAPPINESS = 500000
 
 ------------------------------------------------------------------------------------------------
 -- END CONFIG
 ------------------------------------------------------------------------------------------------
 
-if (not EnableModule) then return end
+if (not HunterPetModule.EnableModule) then return end
 local FILE_NAME        = string.match(debug.getinfo(1,'S').source, "[^/\\]*.lua$")
 local CLASS_HUNTER     = 3
 local POWER_HAPPINESS  = 4
 
 local function loadPetDB()
-    PET_NPC_DB = {}
+    HunterPetModule.PET_NPC_DB = {}
 
     local Query
     -- Normal/Elite Tameable beasts (non-exotic, non-rare)
@@ -83,26 +82,22 @@ local function loadPetDB()
 
     if(Query) then
         repeat
-            table.insert(PET_NPC_DB, {Query:GetUInt32(0), Query:GetUInt32(1)})
+            table.insert(HunterPetModule.PET_NPC_DB, {Query:GetUInt32(0), Query:GetUInt32(1)})
         until not Query:NextRow()
-        PrintInfo("["..FILE_NAME.."][HunterStartWithPet]<loadPetDB()> Loaded "..Query:GetRowCount().." total tameable beasts from database.")
+        PrintInfo("["..FILE_NAME.."][HunterPetModule.HunterStartWithPet]<loadPetDB()> Loaded "..Query:GetRowCount().." total tameable beasts from database.")
     else
-        PrintError("["..FILE_NAME.."][HunterStartWithPet]<loadPetDB()> Could not load tameable beasts from database.")
+        PrintError("["..FILE_NAME.."][HunterPetModule.HunterStartWithPet]<loadPetDB()> Could not load tameable beasts from database.")
     end
 end
 
-local function onLogin(event, player)
-    player:SendBroadcastMessage("This server is running the |cff4CFF00HunterStartWithPet|r module.")
-end
-
-local function onFirstLogin(event, player)
+local function Pet_onFirstLogin(event, player)
     if(player:GetClass() == CLASS_HUNTER) then
-        for _,v in ipairs(PET_SPELLS) do
+        for _,v in ipairs(HunterPetModule.PET_SPELLS) do
             player:LearnSpell(v)
         end
         local plevel = player:GetLevel()
         local maxidx = 0
-        for i,v in ipairs(PET_NPC_DB) do
+        for i,v in ipairs(HunterPetModule.PET_NPC_DB) do
             if (plevel >= v[2]) then
                 maxidx = i
             else
@@ -110,25 +105,22 @@ local function onFirstLogin(event, player)
             end
         end
         -- player:SendBroadcastMessage("[|cff4CFF00HunterStartWithPet|r][DEBUG] Beast random pool size for level "..plevel..": "..maxidx)
-        local pet = PerformIngameSpawn(1, PET_NPC_DB[math.random(1,maxidx)][1], player:GetMapId(), player:GetInstanceId(), player:GetX()+math.cos(player:GetO()-math.pi/2), player:GetY()+math.sin(player:GetO()-math.pi/2), player:GetZ(), player:GetO(), false, 5000)
+        local pet = PerformIngameSpawn(1, HunterPetModule.PET_NPC_DB[math.random(1,maxidx)][1], player:GetMapId(), player:GetInstanceId(), player:GetX()+math.cos(player:GetO()-math.pi/2), player:GetY()+math.sin(player:GetO()-math.pi/2), player:GetZ(), player:GetO(), false, 5000)
         pet:SetFaction(35)
         player:CastSpell(pet, 2650, true)
         local guid = player:GetPetGUID()
         if(guid) then
-            player:GetMap():GetWorldObject(guid):ToUnit():SetPower(PET_STARTWITH_HAPPINESS, POWER_HAPPINESS)
+            player:GetMap():GetWorldObject(guid):ToUnit():SetPower(HunterPetModule.PET_STARTWITH_HAPPINESS, POWER_HAPPINESS)
         end
     end
 end
 
-if (LoadFromDB) then
+if (HunterPetModule.LoadFromDB) then
     loadPetDB()
 end
 
-if (#PET_NPC_DB > 0) then
-    RegisterPlayerEvent(30, onFirstLogin) -- PLAYER_EVENT_ON_FIRST_LOGIN
-    if (AnnounceModule) then
-        RegisterPlayerEvent(3, onLogin)   -- PLAYER_EVENT_ON_LOGIN
-    end
+if (#HunterPetModule.PET_NPC_DB > 0) then
+    RegisterPlayerEvent(30, Pet_onFirstLogin) 
     PrintInfo("["..FILE_NAME.."][HunterStartWithPet] Module loaded.")
 else
     PrintError("["..FILE_NAME.."][HunterStartWithPet] Error loading module, table `PET_NPC_DB` is empty.")

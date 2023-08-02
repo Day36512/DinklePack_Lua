@@ -1,9 +1,11 @@
+--[[
+
 -- Just for you, Kein666
 -- This script allows dks to equip shields and dw 2h without db edits.
 
 local ENABLE_SCRIPT = false -- Set to true to enable the script, false to disable it
 
-local EVENT_ON_LOGIN = 3
+local DK_EVENT_ON_LOGIN = 3
 local DEATH_KNIGHT_CLASS = 6
 local SHIELD_SKILL_ID = 433
 
@@ -16,4 +18,5 @@ local function SetShieldSkillForDeathKnights(event, player)
     end
 end
 
-RegisterPlayerEvent(EVENT_ON_LOGIN, SetShieldSkillForDeathKnights)
+RegisterPlayerEvent(DK_EVENT_ON_LOGIN, SetShieldSkillForDeathKnights)
+]]

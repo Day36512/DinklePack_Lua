@@ -22,7 +22,7 @@ local PERM_ENCHANTMENT_SLOT = 0
 local DD = {}
  
 -- functions
-local LoadDB, setVisual, applyVisuals, LOGOUT, LOGIN
+local LoadDB, setVisual, applyVisuals, VISUAL_LOGOUT, LOGIN
  
 function LoadDB()
     DD = {}
@@ -118,7 +118,7 @@ local E = {
 }
  
 -- script variables:
-local chatCommand = "enchant"
+local VISUAL_CHATCommand = "enchant"
 local maxGossipItems = 14 -- per page
 local menu_id = 123
  
@@ -128,7 +128,7 @@ local EQUIPMENT_SLOT_OFFHAND = 16
 local D = {}
  
 -- functions:
-local showItems, HELLO, SELECT, CHAT
+local showItems, HELLO, SELECT, VISUAL_CHAT
  
 function showItems(player, unit, offset)
     local temp = (maxGossipItems)*offset+1
@@ -150,8 +150,8 @@ function HELLO(event, player, unit)
     player:GossipSendMenu(100, unit, menu_id)
 end
  
-function CHAT(event, player, msg, Type, lang)
-    if(msg == chatCommand) then
+function VISUAL_CHAT(event, player, msg, Type, lang)
+    if(msg == VISUAL_CHATCommand) then
         player:GossipClearMenu()
         HELLO(1, player, player)
         return false
@@ -186,10 +186,10 @@ function SELECT(event, player, unit, sender, action, code)
     end
 end
  
-function LOGOUT(event, player)
+function VISUAL_LOGOUT(event, player)
     D[player:GetGUIDLow()] = nil
 end
  
-RegisterPlayerEvent(4, LOGOUT)
-RegisterPlayerEvent(18, CHAT)
+RegisterPlayerEvent(4, VISUAL_LOGOUT)
+RegisterPlayerEvent(18, VISUAL_CHAT)
 RegisterPlayerGossipEvent(menu_id, 2, SELECT)

@@ -1,3 +1,4 @@
+--[[
 local enabled = false
 local command = "gmmenu"
 
@@ -39,7 +40,7 @@ end
 
 
 
-local function OnSelect(event, player, _, sender, intid, code)
+local function PlrOnSelect(event, player, _, sender, intid, code)
 player:GossipClearMenu()
 		local map = player:GetMap()
 		local mapID = map:GetMapId()
@@ -362,4 +363,5 @@ end
 
 
 RegisterPlayerEvent(42, PlrMenu)
-RegisterPlayerGossipEvent(1979, 2, OnSelect)
+RegisterPlayerGossipEvent(1979, 2, PlrOnSelect)
+]]

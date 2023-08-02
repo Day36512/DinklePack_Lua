@@ -1,17 +1,19 @@
+QuestCompletionNamespace = {}
+
 --[[
 Added status to check if COMPLETE or INCOMPLETE should not take gold if already completed
 Aswell as added LogTitle and ID to the broadcast message
  ]]
 
-local MSGQC = "#qc" -- Command
-local rankCommand = 3 -- GM Rank
-local takeMoney = 0.10 -- Set the amount of gold you want to take from the player (0.025 = 2.5%)
-local Quest = {}
+QuestCompletionNamespace.MSGQC = "#qc" -- Command
+QuestCompletionNamespace.rankCommand = 3 -- GM Rank
+QuestCompletionNamespace.takeMoney = 0.10 -- Set the amount of gold you want to take from the player (0.025 = 2.5%)
+QuestCompletionNamespace.Quest = {}
 
-local QUEST_STATUS_COMPLETE = 1
-local QUEST_STATUS_INCOMPLETE = 3
+QuestCompletionNamespace.QUEST_STATUS_COMPLETE = 1
+QuestCompletionNamespace.QUEST_STATUS_INCOMPLETE = 3
 
-function Quest.Update(player)
+function QuestCompletionNamespace.Quest.Update(player)
     local query = CharDBQuery("SELECT  name, Money FROM characters")
     if query then
         repeat
@@ -19,7 +21,7 @@ function Quest.Update(player)
 
             local CurrentName = (row["name"]) -- Get the name of the player
             local Gold = tonumber(row["Money"]) -- Get the amount of gold of the player
-            local Gold_new = math.floor(Gold * takeMoney) -- Calculate the amount of gold to take
+            local Gold_new = math.floor(Gold * QuestCompletionNamespace.takeMoney) -- Calculate the amount of gold to take
             if (CurrentName == player:GetName()) then
                 player:SaveToDB()
 
@@ -33,14 +35,14 @@ function Quest.Update(player)
                         local LogTitle = string.format(QuestTitle["LogTitle"])
                         -- check if already completed if so skip it
                         local isCompleted = player:GetQuestStatus(QuestID)
-                        if isCompleted == QUEST_STATUS_COMPLETE then
+                        if isCompleted == QuestCompletionNamespace.QUEST_STATUS_COMPLETE then
                             player:SendBroadcastMessage(
                                 "|cFFffffff|cFF00ff00The World |r|cFFffffff already completed |cFFffffff|cFF00ff00" ..
                                 LogTitle .. "|r|cFFffffff for you")
 
                         end
 
-                        if isCompleted == QUEST_STATUS_INCOMPLETE then
+                        if isCompleted == QuestCompletionNamespace.QUEST_STATUS_INCOMPLETE then
 
                             if player:HasQuest(QuestID) then
                                 player:CompleteQuest(QuestID)
@@ -54,7 +56,7 @@ function Quest.Update(player)
                                 player:ModifyMoney(-Gold_new)
                                 player:SendBroadcastMessage(
                                     "|cFFffffff|cFF00ff00The World |r|cFFffffff has taken |cFFffffff|cFF00ff00" ..
-                                    takeMoney ..
+                                    QuestCompletionNamespace.takeMoney ..
                                     "%|r|cFFffffff of the |cFF00ff00" ..
                                     Gold_new .. "|r|cFFffffff coins")
 
@@ -68,18 +70,18 @@ function Quest.Update(player)
     end
 end
 
-function Quest.Complete(_, player, msg, _, _)
-    if msg:find(MSGQC) then
+function QuestCompletionNamespace.Quest.Complete(_, player, msg, _, _)
+    if msg:find(QuestCompletionNamespace.MSGQC) then
         local gmRank = player:GetGMRank()
-        if (gmRank < rankCommand) then
+        if (gmRank < QuestCompletionNamespace.rankCommand) then
             player:SendBroadcastMessage(
                 "|cFFffffff|cFF00ff00The World |r|cFFffffff Don't have access. |cFF00ff00")
             return
         end
 
-        Quest.Update(player)
+        QuestCompletionNamespace.Quest.Update(player)
         return false
     end
 end
 
-RegisterPlayerEvent(18, Quest.Complete)
+RegisterPlayerEvent(18, QuestCompletionNamespace.Quest.Complete)

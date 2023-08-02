@@ -1,3 +1,5 @@
+--[[
+
 --Credits go to Dinkledork
 --This script was made for someone who wanted to receive xp for low level mobs. 
 --The Calculations are based on these results online, but they're probably too high so change them to whatever you want.:
@@ -13,7 +15,7 @@ local BASE_XP = 15
 --You don't need to modify anything below.
 
 -- Function to be called when a player kills a creature
-local function OnKillCreature(event, player, creature)
+local function LOW_OnKillCreature(event, player, creature)
   -- Check if the experience calculation and award is enabled
   if ENABLED then
     -- Check if the creature's level is not equal to 1
@@ -34,5 +36,6 @@ function EnableXPAward(enable)
   ENABLED = enable
 end
 
--- Register the OnKillCreature function for the player event 7
-RegisterPlayerEvent(7, OnKillCreature)
+-- Register the LOW_OnKillCreature function for the player event 7
+RegisterPlayerEvent(7, LOW_OnKillCreature)
+]]

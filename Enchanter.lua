@@ -2,7 +2,7 @@
 -- Fixed by rochet
 -- edit by Clotic Updated with Ranged bows and added some other enchants
 
-local npcid = 60011 -- ID for npc
+local npcid_enchanter = 60011 -- ID for npc
 
 local T = {
     ["Menu"] = {
@@ -241,5 +241,5 @@ function EnchanterSelect(event, player, unit, sender, intid, code)
     end
 end
 
-RegisterCreatureGossipEvent(npcid, 1, Enchanter)
-RegisterCreatureGossipEvent(npcid, 2, EnchanterSelect)
+RegisterCreatureGossipEvent(npcid_enchanter, 1, Enchanter)
+RegisterCreatureGossipEvent(npcid_enchanter, 2, EnchanterSelect)

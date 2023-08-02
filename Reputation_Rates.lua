@@ -1,13 +1,7 @@
---[[
-Name: Reputation_Rates
-Version: 1.0.0
-Made by: Dinkledork
-Notes: use ingame command .rep 
+ReputationRatesModule = {}
 
-]]
-
-local enabled = true -- disable the script with true or false
-local GMonly = false -- determine whether you want only GMs to be able to use said command
+ReputationRatesModule.enabled = true -- disable the script with true or false
+ReputationRatesModule.GMonly = false -- determine whether you want only GMs to be able to use said command
 
 local function getPlayerCharacterGUID(player)
     return player:GetGUIDLow()
@@ -17,7 +11,7 @@ local function GMONLY(player)
     -- player:SendBroadcastMessage("|cffff0000You don't have permission to use this command.|r")
 end
 
-local function OnLogin(event, player)
+function ReputationRatesModule.OnLogin(event, player)
     local aura = player:GetAura(80118)
     if aura then
         local RepRate = aura:GetStackAmount()
@@ -25,7 +19,7 @@ local function OnLogin(event, player)
     end
 end
 
-local function SetRepRate(event, player, command)
+function ReputationRatesModule.SetRepRate(event, player, command)
     local mingmrank = 3
 
     if command:find("rep") then
@@ -41,7 +35,7 @@ local function SetRepRate(event, player, command)
                 player:SendBroadcastMessage("|cffff0000You cannot use this command in Slow and Steady Mode.|r")
                 return false
             end
-            if GMonly and player:GetGMRank() < mingmrank then
+            if ReputationRatesModule.GMonly and player:GetGMRank() < mingmrank then
                 GMONLY(player)
                 return false
             else
@@ -60,7 +54,7 @@ local function SetRepRate(event, player, command)
     end
 end
 
-if enabled then
-    RegisterPlayerEvent(3, OnLogin)
-    RegisterPlayerEvent(42, SetRepRate)
+if ReputationRatesModule.enabled then
+    RegisterPlayerEvent(3, ReputationRatesModule.OnLogin)
+    RegisterPlayerEvent(42, ReputationRatesModule.SetRepRate)
 end

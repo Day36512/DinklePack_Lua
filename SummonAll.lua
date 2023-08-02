@@ -1,32 +1,15 @@
---command = .summonall
+SummonAllModule = {}
 
-
---
--- Created by IntelliJ IDEA.
--- User: Silvia
--- Date: 29/01/2021
--- Time: 21:34
--- To change this template use File | Settings | File Templates.
--- Originally created by Honey for Azerothcore
--- requires ElunaLua module
-
-maps = {}
-
--- Summoning your party is allowed on the maps listed below. You can add more by providing
--- the related map id in its own line. Find map ids e.g. in ./data/map.dbc
+SummonAllModule.maps = {}
 
 -- Eastern kingdoms
-table.insert(maps, 0)
+table.insert(SummonAllModule.maps, 0)
 -- Kalimdor
-table.insert(maps, 1)
+table.insert(SummonAllModule.maps, 1)
 -- Outland
-table.insert(maps, 530)
+table.insert(SummonAllModule.maps, 530)
 -- Northrend
-table.insert(maps, 571)
-
-------------------------------------------
--- NO ADJUSTMENTS REQUIRED BELOW THIS LINE
-------------------------------------------
+table.insert(SummonAllModule.maps, 571)
 
 local function has_value (tab, val)
 	for index, value in ipairs(tab) do
@@ -44,7 +27,7 @@ local function summonAll(event, player, command, chatHandler)
 		end
 		mapId = player:GetMapId()
 		--allow to proceed if the player is on one of the maps listed above
-		if has_value(maps, mapId) then
+		if has_value(SummonAllModule.maps, mapId) then
 			--allow to proceed if the player is not in combat
 			if not player:IsInCombat() then
 				group = player:GetGroup()

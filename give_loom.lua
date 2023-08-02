@@ -1,3 +1,5 @@
+--[[
+
 --Gives new players starting gear. Currently level 30 rdf gear.
 
 local enabled = false
@@ -91,3 +93,4 @@ if enabled then
 --RegisterPlayerEvent(1, OnCharacterCreate)
 RegisterPlayerEvent(30, OnCharacterCreate)
 end
+]]

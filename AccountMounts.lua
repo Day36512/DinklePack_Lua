@@ -1,3 +1,4 @@
+--[[
 ------------------------------------------------------------------------------------------------
 -- ACCOUNTWIDE MOUNTS MOD
 ------------------------------------------------------------------------------------------------
@@ -512,3 +513,4 @@ RegisterPlayerEvent(3, OnLogin)
 RegisterPlayerEvent(42, OnCommand)
 RegisterPacketEvent(299, 7, OnSendLearnedSpell) -- PACKET_EVENT_ON_PACKET_SEND (SMSG_LEARNED_SPELL)
 RegisterPacketEvent(300, 7, OnSendLearnedSpell) -- PACKET_EVENT_ON_PACKET_SEND (SMSG_SUPERCEDED_SPELL)
+]]

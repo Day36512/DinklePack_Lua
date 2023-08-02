@@ -7,19 +7,21 @@ Notes: use ingame command .craft
 ]]
 
 
-local enabled = true -- disable the script with true or false
-local GMonly = false -- determine whether you want only GMs to be able to use said command
+CraftingRatesNamespace = {}
 
-local function getPlayerCharacterGUID(player)
+CraftingRatesNamespace.enabled = true
+CraftingRatesNamespace.GMonly = false
+
+function CraftingRatesNamespace.getPlayerCharacterGUID(player)
     return player:GetGUIDLow()
 end
 
-local function GMONLY(player)
+function CraftingRatesNamespace.GMONLY(player)
     -- player:SendBroadcastMessage("|cffff0000You don't have permission to use this command.|r")
 end
 
-local function OnLogin(event, player)
-    local PUID = getPlayerCharacterGUID(player)
+function CraftingRatesNamespace.OnLogin(event, player)
+    local PUID = CraftingRatesNamespace.getPlayerCharacterGUID(player)
     local Q = CharDBQuery(string.format("SELECT CraftRate FROM custom_craft_rates WHERE CharID=%i", PUID))
 
     if Q then
@@ -28,9 +30,9 @@ local function OnLogin(event, player)
     end
 end
 
-local function SetCraftRate(event, player, command)
+function CraftingRatesNamespace.SetCraftRate(event, player, command)
     local mingmrank = 3
-    local PUID = getPlayerCharacterGUID(player)
+    local PUID = CraftingRatesNamespace.getPlayerCharacterGUID(player)
 
     if command:find("craft") then
         local rate = tonumber(command:sub(7))
@@ -41,12 +43,12 @@ local function SetCraftRate(event, player, command)
         end
 
         if rate and rate >= 1 and rate <= 10 then
-            if player:HasItem(800048, 1) then
-                player:SendBroadcastMessage("|cffff0000You cannot use this command in Slow and Steady Mode.|r")
+            if player:HasItem(800048, 1) or player:HasItem(800086, 1) then
+                player:SendBroadcastMessage("|cffff0000You cannot use this command while certain challenge modes are active!|r")
                 return false
             end
-            if GMonly and player:GetGMRank() < mingmrank then
-                GMONLY(player)
+            if CraftingRatesNamespace.GMonly and player:GetGMRank() < mingmrank then
+                CraftingRatesNamespace.GMONLY(player)
                 return false
             else
                 CharDBExecute(string.format("REPLACE INTO custom_craft_rates (CharID, CraftRate) VALUES (%i, %d)", PUID, rate))
@@ -60,9 +62,9 @@ local function SetCraftRate(event, player, command)
     end
 end
 
-local function onCreateItem(event, player, item, count)
+function CraftingRatesNamespace.onCreateItem(event, player, item, count)
     local itemEntry = item:GetEntry()
-    local PUID = getPlayerCharacterGUID(player)
+    local PUID = CraftingRatesNamespace.getPlayerCharacterGUID(player)
     local Q = CharDBQuery(string.format("SELECT CraftRate FROM custom_craft_rates WHERE CharID=%i", PUID))
     local CraftRate = 1
 
@@ -77,7 +79,7 @@ local function onCreateItem(event, player, item, count)
     end
 end
 
-local function createCraftRatesTable()
+function CraftingRatesNamespace.createCraftRatesTable()
     CharDBExecute([[
         CREATE TABLE IF NOT EXISTS custom_craft_rates (
             CharID INT PRIMARY KEY,
@@ -86,9 +88,10 @@ local function createCraftRatesTable()
     ]])
 end
 
-if enabled then
-    createCraftRatesTable()
-    RegisterPlayerEvent(3, OnLogin)
-    RegisterPlayerEvent(52, onCreateItem)
-    RegisterPlayerEvent(42, SetCraftRate)
+if CraftingRatesNamespace.enabled then
+    CraftingRatesNamespace.createCraftRatesTable()
+    RegisterPlayerEvent(3, CraftingRatesNamespace.OnLogin)
+    RegisterPlayerEvent(52, CraftingRatesNamespace.onCreateItem)
+    RegisterPlayerEvent(42, CraftingRatesNamespace.SetCraftRate)
 end
+

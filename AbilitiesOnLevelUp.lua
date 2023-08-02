@@ -915,7 +915,7 @@ local RIDING = {
     [70] = { 34091 } -- Artisan Riding (300)
 }
 
-local function onLevelChange(event, player, oldLevel)
+local function Abilities_onLevelChange(event, player, oldLevel)
     local class = player:GetClass()
     local level = player:GetLevel()
     local team = player:GetTeam()
@@ -973,7 +973,7 @@ local function onLevelChange(event, player, oldLevel)
     end
 end
 
-local function onLearnTalent(event, player, talentId, talentRank, spellId)
+local function Abilities_onLearnTalent(event, player, talentId, talentRank, spellId)
     local class = player:GetClass()
     local level = player:GetLevel()
     local talentSkills = TALENTSKILL[class]
@@ -988,23 +988,23 @@ local function onLearnTalent(event, player, talentId, talentRank, spellId)
     end
 end
 
-local function onLogin(event, player)
+local function Abilities_onLogin(event, player)
     player:SendBroadcastMessage("This server is running the |cff4CFF00" .. FILE_NAME .. "|r module loaded.")
 end
 
-local function onFirstLogin(event, player)
+local function Abilities_onFirstLogin(event, player)
     if (MaxLevel) then
         player:SetLevel(MaxPlayerLevel)
     end
-    onLevelChange(1, player, 0)
+    Abilities_onLevelChange(1, player, 0)
 end
 
-RegisterPlayerEvent(13, onLevelChange) -- PLAYER_EVENT_ON_LEVEL_CHANGE
-RegisterPlayerEvent(39, onLearnTalent) -- PLAYER_EVENT_ON_LEARN_TALENTS
-RegisterPlayerEvent(30, onFirstLogin) -- PLAYER_EVENT_ON_FIRST_LOGIN
+RegisterPlayerEvent(13, Abilities_onLevelChange) -- PLAYER_EVENT_ON_LEVEL_CHANGE
+RegisterPlayerEvent(39, Abilities_onLearnTalent) -- PLAYER_EVENT_ON_LEARN_TALENTS
+RegisterPlayerEvent(30, Abilities_onFirstLogin) -- PLAYER_EVENT_ON_FIRST_LOGIN
 
 if (AnnounceModule) then
-    RegisterPlayerEvent(30, onLogin) -- PLAYER_EVENT_ON_LOGIN
+    RegisterPlayerEvent(30, Abilities_onLogin) -- PLAYER_EVENT_ON_LOGIN
 end
 
 PrintInfo("[" .. FILE_NAME .. "] AutoLearnSkills module loaded.")

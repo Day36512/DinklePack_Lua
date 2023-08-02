@@ -1,3 +1,5 @@
+--[[
+
 -- Addresses one of the issues with my server, which is high hp mobs at low levels. If you're running auto balance, this will not work.
 -- A bit buggy. May encounter mobs with an unexpectedly high amount of health.
 
@@ -69,3 +71,4 @@ end
 
 RegisterPlayerEvent(27, OnUpdateZone)
 RegisterPlayerEvent(28, OnMapChange)
+]]

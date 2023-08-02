@@ -4,6 +4,8 @@
     You also can hire me if you want to for some lua scripts!
 ]]-- 
 
+--[[
+
 local NPC_MORPHER = 700030 
 
 local function MorpherOnGossipHello (event, player, creature)
@@ -114,3 +116,4 @@ end
 
 
 RegisterCreatureGossipEvent(NPC_MORPHER, 2, MorpherOnGossipSelect)
+]]
