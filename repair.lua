@@ -1,7 +1,9 @@
-local cmd = "repairall"
+local RepairAllModule = {}
 
-local function OnCommand(event, player, command)
-    if command == cmd then
+RepairAllModule.cmd = "repairall"
+
+function RepairAllModule.OnCommand(event, player, command)
+    if command == RepairAllModule.cmd then
         if not player:IsInCombat() then
             player:DurabilityRepairAll( false )
             player:SendBroadcastMessage("Your equipment has been repaired.")
@@ -9,4 +11,5 @@ local function OnCommand(event, player, command)
         return false
     end
 end
-RegisterPlayerEvent(42, OnCommand)
+
+RegisterPlayerEvent(42, RepairAllModule.OnCommand)
