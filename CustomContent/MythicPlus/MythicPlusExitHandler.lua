@@ -1,4 +1,4 @@
-local ResetDungeon = {}
+--[[local ResetDungeon = {}
 local ResetSpellIds = {107081, 107082, 107083, 107084, 107085, 107086, 107087, 107088, 107089, 107090, 107091}
 local DIFFICULTIES = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10} -- All difficulties
 
@@ -54,3 +54,4 @@ end
 
 RegisterPlayerEvent(5, OnPlayerCastSpell) -- PLAYER_EVENT_ON_CAST_SPELL
 RegisterPlayerEvent(28, OnPlayerMapChange) -- PLAYER_EVENT_ON_MAP_CHANGE
+]]

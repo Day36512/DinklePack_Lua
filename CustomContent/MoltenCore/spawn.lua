@@ -12,7 +12,7 @@ local positions = {
     {x = 770.67, y = -754.96, z = -220.55, o = 2.67},
 }
 
-local function onCommand(event, player, command)
+local function EggsonCommand(event, player, command)
     if command == "eggs" then
         for _, position in ipairs(positions) do
             player:SpawnCreature(20279, position.x, position.y, position.z, position.o, 1, 60000)
@@ -21,4 +21,4 @@ local function onCommand(event, player, command)
     end
 end
 
-RegisterPlayerEvent(42, onCommand)
+RegisterPlayerEvent(42, EggsonCommand)

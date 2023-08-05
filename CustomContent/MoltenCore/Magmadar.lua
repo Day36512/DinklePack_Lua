@@ -97,9 +97,9 @@ function Magmadar.OnEnterCombat(event, creature, target)
     creature:RegisterEvent(Magmadar.CastFrenzy, math.random(12000, 16000), 0) -- example: casts frenzy between 12-16 seconds if is not casting, otherwise casts it directly afterwards
     creature:RegisterEvent(Magmadar.CastPanic, math.random(20000, 25000), 0)
     creature:RegisterEvent(Magmadar.CastLavaBomb, math.random(8000, 10000), 0)
-    creature:RegisterEvent(Magmadar.CastLavaBombRanged, math.random(6000, 9000), 0)
+    creature:RegisterEvent(Magmadar.CastLavaBombRanged, math.random(9000, 12000), 0)
     creature:RegisterEvent(Magmadar.CastSummonCoreHound, 45000, 0)
-    creature:RegisterEvent(Magmadar.CastEnrage, 180000, 1) -- 3 minute enrage timer
+    creature:RegisterEvent(Magmadar.CastEnrage, 300000, 1) -- 5 minute enrage timer
     creature:RegisterEvent(Magmadar.ProcessSpellQueue, 2000, 0)
 end
 

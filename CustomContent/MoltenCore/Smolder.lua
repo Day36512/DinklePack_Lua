@@ -1,5 +1,23 @@
 local Smolder = {}
 Smolder.spellQueue = {}
+Smolder.flameTsunamisEnabled = true -- Flame Tsunamis enabled by default
+
+
+function ToggleFlameTsunamis(event, player, message, type, lang)
+    if player:IsGM() then -- Check if the player has GM privileges
+        if message == "tsunami on" then
+            Smolder.flameTsunamisEnabled = true
+            player:SendBroadcastMessage("Flame Tsunamis have been enabled.")
+            return false
+        elseif message == "tsunami off" then
+            Smolder.flameTsunamisEnabled = false
+            player:SendBroadcastMessage("Flame Tsunamis have been disabled.")
+            return false
+        end
+    else
+     --   player:SendBroadcastMessage("You do not have permission to use this command.")
+    end
+end
 -- Ngl, this was a pain in the ass to script out.
 
 --Defines preset positions for Flame Tsunamis to spawn. Flame Tsunamis are invisible creatures with auras added to them to look like walls of flame. 
@@ -87,13 +105,14 @@ local function CastCharredEarth(eventId, delay, calls, creature) -- Charred eart
     end
 
     if meleeTarget then
-        creature:CastSpell(meleeTarget, 100148, false)
+        creature:CastSpell(meleeTarget, 80085, false)
     end
 
     if rangedTarget then
-        creature:CastSpell(rangedTarget, 100148, false)
+        creature:CastSpell(rangedTarget, 80085, false)
     end
 end
+
 
 local function CastPyroblast(eventId, delay, calls, creature) -- casts pyroblast on random targets 
     if isCastingSummonElemental then return end
@@ -101,9 +120,8 @@ local function CastPyroblast(eventId, delay, calls, creature) -- casts pyroblast
     local validTargets = {}
 
     for _, target in pairs(targets) do
-        if target:IsPlayer() then
-            table.insert(validTargets, target)
-        end
+        
+        table.insert(validTargets, target)
     end
 
     if #validTargets > 0 then
@@ -115,15 +133,15 @@ local function CastPyroblast(eventId, delay, calls, creature) -- casts pyroblast
     end
 end
 
+
 local function CastSmolderBomb(eventId, delay, calls, creature) -- casts Smolder Bomb on random target
     if isCastingSummonElemental then return end
     local targets = creature:GetAITargets()
     local validTargets = {}
 
     for _, target in pairs(targets) do
-        if target:IsPlayer() then
-            table.insert(validTargets, target)
-        end
+        -- Removed the condition that checks if the target is a player
+        table.insert(validTargets, target)
     end
 
     if #validTargets > 0 then
@@ -135,11 +153,9 @@ local function CastSmolderBomb(eventId, delay, calls, creature) -- casts Smolder
     end
 end
 
-
-
-
 local function CastSummonElemental(eventId, delay, calls, creature) -- periodically summons elementals
     QueueSpell(364728, "self", nil, "Minions of fire, rise and serve your master!", 20422)
+	creature:PlayDirectSound(183258)
 end
 
 local function CastTailSweep(eventId, delay, calls, creature) -- periodically casts tail sweep
@@ -152,24 +168,27 @@ end
 
 local function CastBellowingRoar(eventId, delay, calls, creature) -- casts aoe fear with emote
     QueueSpell(22686, "self", nil, "Feel the power of my roar!", 20421)
+	creature:PlayDirectSound(183257)
 end
 
 local function OnEnterCombat(event, creature, target)
-    creature:SendUnitYell("Feel the heat of my flame and know your end is near!", 0) -- sends out a yell on enter combat. 0 is universal language
-    creature:PlayDirectSound(20419) -- plays a sound file that is currently dead :/
-   creature:RegisterEvent(function(event, delay, calls, capturedCreature) 
-    Smolder.SpawnCreatures(capturedCreature)
-end, 25000, 0, creature) -- summons Tsunamis every 25 seconds
-   creature:RegisterEvent(function(event, delay, calls, capturedCreature)
-    Smolder.SpawnCreatures(capturedCreature)
-end, 3000, 1, creature) -- summons flame tsunamies once at the start of the fight with a three second delay
-   creature:RegisterEvent(function(event, delay, calls, capturedCreature)
-    Smolder.SpawnCreaturesTwo(capturedCreature)
-end, 100, 1, creature) -- Summons flame wall at mouth of entrance at the start of the fight
+    if Smolder.flameTsunamisEnabled then
+        creature:SendUnitYell("Feel the heat of my flame and know your end is near!", 0)
+        creature:PlayDirectSound(183256)
+        creature:RegisterEvent(function(event, delay, calls, capturedCreature) 
+            Smolder.SpawnCreatures(capturedCreature)
+        end, 25000, 0, creature)
+        creature:RegisterEvent(function(event, delay, calls, capturedCreature)
+            Smolder.SpawnCreatures(capturedCreature)
+        end, 3000, 1, creature)
+        creature:RegisterEvent(function(event, delay, calls, capturedCreature)
+            Smolder.SpawnCreaturesTwo(capturedCreature)
+        end, 100, 1, creature)
+    end
 	creature:RegisterEvent(CastSmolderBomb, 15000, 0)
     creature:RegisterEvent(CastScorch, 6000, 0)
     creature:RegisterEvent(CastFlameBreath, 13000, 0)
-    creature:RegisterEvent(CastCharredEarth, 12000, 0)
+    creature:RegisterEvent(CastCharredEarth, 10000, 0)
     creature:RegisterEvent(CastPyroblast, 10000, 0)
     creature:RegisterEvent(CastSummonElemental, 43500, 0)
 creature:RegisterEvent(CastTailSweep, 8000, 0)
@@ -178,7 +197,7 @@ creature:RegisterEvent(ProcessSpellQueue, 1000, 0)
 end
 
 function Smolder.DespawnCreatures(creature) -- Despawns any flame tsunamis. I set this for on death and on leave combat
-    local creatureEntryList = {83006, 83007, 83008, 83009, 83010, 83011, 83012, 83013, 83014, 83015, 83016, 83017, 83018, 83019, 83020}
+    local creatureEntryList = {83006, 83007, 83008, 83009, 83010, 83011, 83012, 83013, 83014, 83015, 83016, 83017, 83018, 83019, 83020, 387570, 12265}
     for _, entry in ipairs(creatureEntryList) do
         local nearbyCreatures = creature:GetCreaturesInRange(1000, entry) -- searches for them within 1000 yards
         for _, nearbyCreature in ipairs(nearbyCreatures) do
@@ -197,7 +216,7 @@ end
 
 local function OnDied(event, creature, killer)
     creature:SendUnitYell("My fire...extinguished...", 0)
-    creature:PlayDirectSound(20420)
+    creature:PlayDirectSound(183259)
     Smolder.DespawnCreatures(creature)
     creature:RemoveEvents()
 end
@@ -206,7 +225,6 @@ end
 local function OnDamageTaken(event, creature, attacker, damage)
 if (creature:HealthBelowPct(20) and not Smolder.healthCheck) then
 creature:SendUnitYell("My power is waning, but I will fight until my last flame burns out!", 0)
-creature:PlayDirectSound(20423)
 Smolder.healthCheck = true
 end
 end
@@ -220,3 +238,5 @@ RegisterCreatureEvent(83001, 2, OnLeaveCombat)
 RegisterCreatureEvent(83001, 4, OnDied)
 RegisterCreatureEvent(83001, 9, OnDamageTaken)
 RegisterCreatureEvent(83001, 5, OnSpawn)
+RegisterPlayerEvent(18, ToggleFlameTsunamis) -- 18 is for chat command events
+

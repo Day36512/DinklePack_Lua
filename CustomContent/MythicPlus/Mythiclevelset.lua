@@ -1,4 +1,4 @@
-local SPELL_IDS = {
+--[[local SPELL_IDS = {
     107081, 107082, 107083, 107084, 107085, 107086,
     107087, 107088, 107089, 107090, 107091
 }
@@ -42,3 +42,4 @@ end
 
 RegisterPlayerEvent(28, OnPlayerLeaveMap)
 RegisterPlayerEvent(5, OnSpellCast)
+]]

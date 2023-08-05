@@ -10,11 +10,11 @@ function Gehennas.CastRainOfFire(eventId, delay, calls, creature)
 end
 
 function Gehennas.CastShadowBolt(eventId, delay, calls, creature)
-    table.insert(Gehennas.spellQueue, {spell = {19729, 19728}, targetType = 'random', chance = 0.5, range = 10})
+    table.insert(Gehennas.spellQueue, {spell = 21077, targetType = 'random', chance = 0.5, range = 10})
 end
 
 function Gehennas.CastShadowboltVolley(eventId, delay, calls, creature)
-    table.insert(Gehennas.spellQueue, {spell = 25586, targetType = 'victim'})
+    table.insert(Gehennas.spellQueue, {spell = 27646, targetType = 'victim'})
 end
 
 function Gehennas.ProcessSpellQueue(eventId, delay, calls, creature)

@@ -1,23 +1,29 @@
 local BaronGedon = {}
-BaronGedon.spellQueue = {}
 
+BaronGedon.NPC_ID = 12056
+BaronGedon.SPELL_IDS = {
+    INFERNO = 19695,
+    IGNITE_MANA = 19659,
+    LIVING_BOMB = 20475,
+    ARMAGEDDON = 20478
+}
+BaronGedon.spellQueue = {}
 BaronGedon.armageddonCast = false
 
-
 function BaronGedon.CastInferno(eventId, delay, calls, creature)
-    table.insert(BaronGedon.spellQueue, {spell = 19695, targetType = 'self'})
+    table.insert(BaronGedon.spellQueue, {spell = BaronGedon.SPELL_IDS.INFERNO, targetType = 'self'})
 end
 
 function BaronGedon.CastIgniteMana(eventId, delay, calls, creature)
-    table.insert(BaronGedon.spellQueue, {spell = 19659, targetType = 'victim'})
+    table.insert(BaronGedon.spellQueue, {spell = BaronGedon.SPELL_IDS.IGNITE_MANA, targetType = 'victim'})
 end
 
 function BaronGedon.CastLivingBomb(eventId, delay, calls, creature)
-    table.insert(BaronGedon.spellQueue, {spell = 20475, targetType = 'random'})
+    table.insert(BaronGedon.spellQueue, {spell = BaronGedon.SPELL_IDS.LIVING_BOMB, targetType = 'random'})
 end
 
 function BaronGedon.CastArmageddon(eventId, delay, calls, creature)
-    table.insert(BaronGedon.spellQueue, {spell = 20478, targetType = 'self'})
+    table.insert(BaronGedon.spellQueue, {spell = BaronGedon.SPELL_IDS.ARMAGEDDON, targetType = 'self'})
 end
 
 function BaronGedon.ProcessSpellQueue(eventId, delay, calls, creature)
@@ -65,14 +71,13 @@ function BaronGedon.OnDamageTaken(event, creature, attacker, damage)
     creature:SetData("BaronGedonHealthPct", creature:GetHealthPct())
 end
 
-
 function BaronGedon.OnDied(event, creature, killer)
     creature:RemoveEvents()
     BaronGedon.spellQueue = {}
     BaronGedon.armageddonCast = false
 end
 
-RegisterCreatureEvent(12056, 1, BaronGedon.OnEnterCombat)
-RegisterCreatureEvent(12056, 2, BaronGedon.OnLeaveCombat)
-RegisterCreatureEvent(12056, 9, BaronGedon.OnDamageTaken)
-RegisterCreatureEvent(12056, 4, BaronGedon.OnDied)
+RegisterCreatureEvent(BaronGedon.NPC_ID, 1, BaronGedon.OnEnterCombat)
+RegisterCreatureEvent(BaronGedon.NPC_ID, 2, BaronGedon.OnLeaveCombat)
+RegisterCreatureEvent(BaronGedon.NPC_ID, 9, BaronGedon.OnDamageTaken)
+RegisterCreatureEvent(BaronGedon.NPC_ID, 4, BaronGedon.OnDied)

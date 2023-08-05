@@ -1,4 +1,4 @@
-local NPC_ID = 90005
+--[[local NPC_ID = 90005
 local GOSSIP_ICON = 0
 local MAX_DIFFICULTY_LEVEL = 10 
 local REFRESH_INTERVAL = 1000 
@@ -44,7 +44,10 @@ local playerEvents = {}
 local creatureAuraStacks = {}
 
 local function IsCreatureInDungeon(creature, player)
-    return creature:GetInstanceId() == player:GetInstanceId() and (creature:GetEntry() < 70000 or creature:GetEntry() > 82000)
+    local creatureId = creature:GetEntry()
+    return creature:GetInstanceId() == player:GetInstanceId() and 
+           ((creatureId < 70000 or creatureId > 82000) and 
+            (creatureId < 84000 or creatureId > 88999))
 end
 
 local function ApplyAndRefreshDifficultyAura(player, auraSpellId, stacks, shouldApply)
@@ -181,3 +184,4 @@ RegisterCreatureGossipEvent(NPC_ID, 2, OnGossipSelect)
 
 
 
+]]
