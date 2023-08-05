@@ -1,14 +1,12 @@
-local AURA_ID = 80081 -- Set the Aura ID you want to check for here
+local ItemCreation = {}
 
-local function OnPlayerCreateItem(event, player, item, count)
-    -- Check if the player has the specified aura
-    if player:HasAura(AURA_ID) then
-        -- Get the item entry ID
+ItemCreation.AURA_ID = 80081 
+
+function ItemCreation.OnPlayerCreateItem(event, player, item, count)
+    if player:HasAura(ItemCreation.AURA_ID) then
         local itemEntry = item:GetEntry()
-
-        -- Create a duplicate of the item
         player:AddItem(itemEntry, count)
     end
 end
 
-RegisterPlayerEvent(52, OnPlayerCreateItem) -- 52 is the PLAYER_EVENT_ON_CREATE_ITEM
+RegisterPlayerEvent(52, ItemCreation.OnPlayerCreateItem) 

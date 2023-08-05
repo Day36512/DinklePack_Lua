@@ -6,12 +6,12 @@ Notes: Opens the a menu for other menus from a item.
 
 ]]
 local enabled = true
-local GossipID = 9900000
+local DinkleStoneOneGossipID = 9900000
 local Binding_Menu = true
 local Party_Summon_Menu = true
 local TP_Menu = true
 local Other = true
-local ItemEntry = 65000 -- Dinklestone. You can change this item ID to whatever as long as it has a spell. Please see items to remove if you're not using my server,
+local ItemEntry = 65000 -- DinkleStoneOne. You can change this item ID to whatever as long as it has a spell. Please see items to remove if you're not using my server,
 
 -- Do not change or remove
 local Gold = 10000
@@ -31,12 +31,12 @@ local function getPlayerCharacterGUID(player)
   end
 --(End)
 --(Start) The Gossip Menu that shows Main Menu
-function MenuMenusGossip(event, player)
+function DinkleStoneOneMenuMenusGossip(event, player)
 	if ((player:IsInCombat()) and (player:GetGMRank() >= 3)) then
 		player:GossipClearMenu()
 		player:GossipMenuAddItem(3, "|TInterface\\Icons\\Mail_gmicon:45:45:-40|t GM Menu", 0, 195)
 		player:GossipMenuAddItem(4, "|TInterface\\Icons\\achievement_bg_hld4bases_eos:45:45:-40|t [Exit Menu]", 0, 199)
-		player:GossipSendMenu(1, player, GossipID)
+		player:GossipSendMenu(1, player, DinkleStoneOneGossipID)
 	elseif player:IsInCombat() then
 			return
 	else
@@ -61,13 +61,13 @@ function MenuMenusGossip(event, player)
 		if (player:GetGMRank() >= 3) then
 			player:GossipMenuAddItem(3, "|TInterface\\Icons\\Mail_gmicon:45:45:-40|t GM Menu", 0, 95)
 		end
-		player:GossipSendMenu(1, player, GossipID)	
+		player:GossipSendMenu(1, player, DinkleStoneOneGossipID)	
     end
 end
 --(End)
 
 --(Start)
-local function OnSelect(event, player, _, sender, intid, code)	
+local function DinkleStoneOneOnSelect(event, player, _, sender, intid, code)	
 	local x = player:GetX()
 	local y = player:GetY()
 	local z = player:GetZ()
@@ -97,7 +97,7 @@ local function OnSelect(event, player, _, sender, intid, code)
 		GMSettingsMenuGossip(event, player)
 	end
 	if(intid == 98) then --Back
-		MenuMenusGossip(event, player)
+		DinkleStoneOneMenuMenusGossip(event, player)
 		return false
 	end
 	if(intid == 99) then --Close
@@ -113,14 +113,14 @@ local function BootMSG(eventid, delay, repeats, player)
    -- player:SendBroadcastMessage("|cff3399FFYou can open a bind menu by typing |cff00cc00 ."..commandline1.." |cff3399FF in chat.")
 end
 local firstlogin = false
-local function OnFirstLogin(event, player)
+local function DinkleStoneOneOnFirstLogin(event, player)
 	if event == 30 then
 	firstlogin = true
 	end
 	
 	player:RegisterEvent(BootMSG, 60000, 1, player)
 end
-local function OnLogin(event, player)
+local function DinkleStoneOneOnLogin(event, player)
 	if not firstlogin then
 	player:RegisterEvent(BootMSG, 20000, 1, player)
 	else
@@ -128,7 +128,7 @@ local function OnLogin(event, player)
 	end
 end
 --(end)
-local function OnUse(event, player, item, target)
+local function DinkleStoneOneOnUse(event, player, item, target)
 	if player:IsInCombat() then
 		player:SendBroadcastMessage("You cannot use this item while in combat.")
 		return false
@@ -137,10 +137,10 @@ local function OnUse(event, player, item, target)
 end
 
 if enabled then
-RegisterPlayerEvent(30, OnFirstLogin)
-RegisterPlayerEvent(3, OnLogin)
-RegisterPlayerGossipEvent(GossipID, 2, OnSelect)
---RegisterItemEvent(900504, 2, MenuMenusGossip )
-RegisterItemEvent(ItemEntry, 2, MenuMenusGossip )
-RegisterItemEvent(ItemEntry, 2, OnUse )
+RegisterPlayerEvent(30, DinkleStoneOneOnFirstLogin)
+RegisterPlayerEvent(3, DinkleStoneOneOnLogin)
+RegisterPlayerGossipEvent(DinkleStoneOneGossipID, 2, DinkleStoneOneOnSelect)
+--RegisterItemEvent(900504, 2, DinkleStoneOneMenuMenusGossip )
+RegisterItemEvent(ItemEntry, 2, DinkleStoneOneMenuMenusGossip )
+RegisterItemEvent(ItemEntry, 2, DinkleStoneOneOnUse )
 end

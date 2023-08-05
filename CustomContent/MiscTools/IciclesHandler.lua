@@ -1,19 +1,12 @@
-local function tableContains(table, value)
-    for _, v in ipairs(table) do
-        if v == value then
-            return true
-        end
-    end
-    return false
-end
+local IceLanceTrigger = {}
 
-local SPELL_AURA_FROST = 44572
-local SPELL_AURA_FROST_STACK = 100240
-local SPELL_ICE_LANCE_RANK_1 = 100241
-local SPELL_ICE_LANCE_RANK_2 = 100242
-local SPELL_ICE_LANCE_RANK_3 = 100243
+IceLanceTrigger.SPELL_AURA_FROST = 44572
+IceLanceTrigger.SPELL_AURA_FROST_STACK = 100240
+IceLanceTrigger.SPELL_ICE_LANCE_RANK_1 = 100241
+IceLanceTrigger.SPELL_ICE_LANCE_RANK_2 = 100242
+IceLanceTrigger.SPELL_ICE_LANCE_RANK_3 = 100243
 
-local SPELL_FROSTBOLT = {
+IceLanceTrigger.SPELL_FROSTBOLT = {
     116,   -- Rank 1
     205,   -- Rank 2
     837,   -- Rank 3
@@ -32,27 +25,36 @@ local SPELL_FROSTBOLT = {
     42842, -- Rank 16
 }
 
-local SPELL_FROSTFIREBOLT = {
+IceLanceTrigger.SPELL_FROSTFIREBOLT = {
     44614, -- Rank 1
     47610, -- Rank 2
 }
 
-local function FB_ICE_OnSpellCast(event, player, spell)
+local function tableContains(table, value)
+    for _, v in ipairs(table) do
+        if v == value then
+            return true
+        end
+    end
+    return false
+end
+
+function IceLanceTrigger.FB_ICE_OnSpellCast(event, player, spell)
     local spellId = spell:GetEntry()
 
-    if spellId == SPELL_ICE_LANCE_RANK_1 then
+    if spellId == IceLanceTrigger.SPELL_ICE_LANCE_RANK_1 then
         player:CastSpell(player:GetSelection(), 107104, true)
-    elseif spellId == SPELL_ICE_LANCE_RANK_2 then
+    elseif spellId == IceLanceTrigger.SPELL_ICE_LANCE_RANK_2 then
         player:CastSpell(player:GetSelection(), 107105, true)
-    elseif spellId == SPELL_ICE_LANCE_RANK_3 then
+    elseif spellId == IceLanceTrigger.SPELL_ICE_LANCE_RANK_3 then
         player:CastSpell(player:GetSelection(), 107106, true)
     end
 
-    if not (tableContains(SPELL_FROSTBOLT, spellId) or tableContains(SPELL_FROSTFIREBOLT, spellId)) then
+    if not (tableContains(IceLanceTrigger.SPELL_FROSTBOLT, spellId) or tableContains(IceLanceTrigger.SPELL_FROSTFIREBOLT, spellId)) then
         return
     end
 
-    if not player:HasSpell(SPELL_AURA_FROST) then
+    if not player:HasSpell(IceLanceTrigger.SPELL_AURA_FROST) then
         return
     end
 
@@ -61,9 +63,9 @@ local function FB_ICE_OnSpellCast(event, player, spell)
         return
     end
     
-    local aura = player:GetAura(SPELL_AURA_FROST_STACK)
+    local aura = player:GetAura(IceLanceTrigger.SPELL_AURA_FROST_STACK)
     if not aura then
-        player:AddAura(SPELL_AURA_FROST_STACK, player)
+        player:AddAura(IceLanceTrigger.SPELL_AURA_FROST_STACK, player)
     else
         aura:SetStackAmount(aura:GetStackAmount() + 1)
         if aura:GetStackAmount() >= 6 then
@@ -73,19 +75,18 @@ local function FB_ICE_OnSpellCast(event, player, spell)
             end
             
             local level = player:GetLevel()
-            local iceLanceSpell = SPELL_ICE_LANCE_RANK_1
+            local iceLanceSpell = IceLanceTrigger.SPELL_ICE_LANCE_RANK_1
             
             if level >= 72 and level <= 77 then
-                iceLanceSpell = SPELL_ICE_LANCE_RANK_2
+                iceLanceSpell = IceLanceTrigger.SPELL_ICE_LANCE_RANK_2
             elseif level >= 78 then
-                iceLanceSpell = SPELL_ICE_LANCE_RANK_3
+                iceLanceSpell = IceLanceTrigger.SPELL_ICE_LANCE_RANK_3
             end
             
             player:CastSpell(target, iceLanceSpell, true)
-            player:RemoveAura(SPELL_AURA_FROST_STACK)
+            player:RemoveAura(IceLanceTrigger.SPELL_AURA_FROST_STACK)
         end
     end
 end
 
-
-RegisterPlayerEvent(5, FB_ICE_OnSpellCast)
+RegisterPlayerEvent(5, IceLanceTrigger.FB_ICE_OnSpellCast)

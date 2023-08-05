@@ -7,7 +7,7 @@ Notes:
 ]]
 local enabled = true
 local MenuMenus = true
-local GossipID = 9910004
+local GM_F_GossipID = 9910004
 local Gold = 10000
 
 function GMFunctionMenuGossip(event, player)
@@ -19,13 +19,13 @@ function GMFunctionMenuGossip(event, player)
 	player:GossipMenuAddItem(3, "|TInterface\\Icons\\Inv_misc_coin_01:45:45:-40|t Add gold", 0, 1, true, "How much gold?")
 	player:GossipMenuAddItem(4, "|TInterface\\Icons\\Achievement_bg_returnxflags_def_wsg:45:45:-40|t [Back]", 0, 9999)
 	
-	player:GossipSendMenu(1, player, GossipID)
+	player:GossipSendMenu(1, player, GM_F_GossipID)
 
 end
 
 
 --(Start)
-local function OnSelect(event, player, _, sender, intid, code)
+local function GM_F_OnSelect(event, player, _, sender, intid, code)
 local PlayerName = player:GetName()
 	
 	if(intid == 1) then --List
@@ -41,5 +41,5 @@ local PlayerName = player:GetName()
 end
 --(End)
 if enabled then
-RegisterPlayerGossipEvent(GossipID, 2, OnSelect)
+RegisterPlayerGossipEvent(GM_F_GossipID, 2, GM_F_OnSelect)
 end

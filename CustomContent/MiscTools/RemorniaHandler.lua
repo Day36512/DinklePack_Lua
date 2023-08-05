@@ -1,25 +1,27 @@
-local AURA_ID = 80006
-local CAST_SPELL_ID = 72313
-local HEAL_PERCENT = 5
-local EMOTE_ID = 53
+local AuraSpellHeal = {}
 
-local function OnSpellCast(event, player, spell, skipCheck)
+AuraSpellHeal.AURA_ID = 80006
+AuraSpellHeal.CAST_SPELL_ID = 72313
+AuraSpellHeal.HEAL_PERCENT = 5
+AuraSpellHeal.EMOTE_ID = 53
+
+function AuraSpellHeal.OnSpellCast(event, player, spell, skipCheck)
     local spellId = spell:GetEntry()
 
     -- Cast spell 72313 and play emote 53 when the player casts spell 80006
-    if spellId == 80006 then
-        player:CastSpell(player, CAST_SPELL_ID, true)
-        player:PerformEmote(EMOTE_ID)
+    if spellId == AuraSpellHeal.AURA_ID then
+        player:CastSpell(player, AuraSpellHeal.CAST_SPELL_ID, true)
+        player:PerformEmote(AuraSpellHeal.EMOTE_ID)
     end
 
     -- Check if the player has the specified aura active
-    if player:HasAura(AURA_ID) then
+    if player:HasAura(AuraSpellHeal.AURA_ID) then
         -- Calculate the healing amount
-        local healAmount = player:GetMaxHealth() * (HEAL_PERCENT / 100)
+        local healAmount = player:GetMaxHealth() * (AuraSpellHeal.HEAL_PERCENT / 100)
 
         -- Apply the healing effect
         player:DealHeal(player, spellId, healAmount)
     end
 end
 
-RegisterPlayerEvent(5, OnSpellCast)
+RegisterPlayerEvent(5, AuraSpellHeal.OnSpellCast)

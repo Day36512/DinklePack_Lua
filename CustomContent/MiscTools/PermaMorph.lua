@@ -1,38 +1,31 @@
--- SQL script to create a new table
-local CreateTableSQL = [[
+local MorphDisplay = {}
+
+MorphDisplay.CreateTableSQL = [[
 CREATE TABLE IF NOT EXISTS player_morph_displayids (
     `guid` INT UNSIGNED NOT NULL,
     `displayId` INT UNSIGNED NOT NULL,
     PRIMARY KEY (`guid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ]]
-CharDBExecute(CreateTableSQL)
+CharDBExecute(MorphDisplay.CreateTableSQL)
 
--- Function to handle custom commands
-local function onCustomCommand(event, player, command)
-    
-    -- Morph command
+function MorphDisplay.OnCustomCommand(event, player, command)
     local cmd, displayId = string.match(command, "^(m?orph) (%d+)$")
     if cmd and displayId then
         displayId = tonumber(displayId)
         player:SetDisplayId(displayId)
-        
         local query = ("INSERT INTO player_morph_displayids (guid, displayId) VALUES (%d, %d) ON DUPLICATE KEY UPDATE displayId = %d"):format(player:GetGUIDLow(), displayId, displayId)
         CharDBExecute(query)
         return false
     end
-    
-    -- Demorph command
+
     if command:lower() == "demorph" then
         player:DeMorph()
-        
-        -- Delete player's row from the player_morph_displayids table
         local deleteQuery = ("DELETE FROM player_morph_displayids WHERE guid = %d"):format(player:GetGUIDLow())
         CharDBExecute(deleteQuery)
         return false
     end
-    
-    -- Display command
+
     if command:lower() == "display" then
         local target = player:GetSelection()
         if target then
@@ -45,8 +38,7 @@ local function onCustomCommand(event, player, command)
     end
 end
 
--- Function to set player's display ID on login
-local function onPlayerLogin(event, player)
+function MorphDisplay.OnPlayerLogin(event, player)
     local guid = player:GetGUIDLow()
     local query = ("SELECT displayId FROM player_morph_displayids WHERE guid = %d"):format(guid)
     local result = CharDBQuery(query)
@@ -57,6 +49,5 @@ local function onPlayerLogin(event, player)
     end
 end
 
--- Register the events
-RegisterPlayerEvent(42, onCustomCommand)
-RegisterPlayerEvent(3, onPlayerLogin)
+RegisterPlayerEvent(42, MorphDisplay.OnCustomCommand)
+RegisterPlayerEvent(3, MorphDisplay.OnPlayerLogin)

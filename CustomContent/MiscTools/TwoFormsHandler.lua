@@ -1,4 +1,6 @@
-local function OnFirstLogin(event, player)
+local FirstLogin = {}
+
+function FirstLogin.OnFirstLogin(eventId, delay, calls, player)
     local race = player:GetRace()
     local gender = player:GetGender()
 
@@ -11,4 +13,6 @@ local function OnFirstLogin(event, player)
     end
 end
 
-RegisterPlayerEvent(30, OnFirstLogin)
+RegisterPlayerEvent(30, function(event, player)
+    player:RegisterEvent(FirstLogin.OnFirstLogin, 17000, 1)
+end)

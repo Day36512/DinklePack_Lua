@@ -1,12 +1,10 @@
--- Save Location Script
-
-local SAVE_LOCATION_SPELL = 312370
-local TELEPORT_BACK_DURATION = 900000 -- 15 minutes in milliseconds
-
+local SaveLocationmk = {}
+SaveLocationmk.SAVE_LOCATION_SPELL = 312370
+SaveLocationmk.TELEPORT_BACK_DURATION = 900000 -- 15 minutes in milliseconds
 local savedLocations = {}
 
-local function OnSaveLocationCast(event, player, spell)
-    if spell:GetEntry() == SAVE_LOCATION_SPELL then
+function SaveLocationmk.OnSaveLocationmkCast(event, player, spell)
+    if spell:GetEntry() == SaveLocationmk.SAVE_LOCATION_SPELL then
         local playerGuid = player:GetGUIDLow()
         if not savedLocations[playerGuid] then
             local mapId, x, y, z, orientation = player:GetMapId(), player:GetX(), player:GetY(), player:GetZ(), player:GetO()
@@ -18,26 +16,24 @@ local function OnSaveLocationCast(event, player, spell)
                 savedLocations[playerGuid] = nil
                 player:SendBroadcastMessage("Your saved location has expired.")
             end
-            CreateLuaEvent(RemoveSavedLocation, TELEPORT_BACK_DURATION, 1, player)
+            CreateLuaEvent(RemoveSavedLocation, SaveLocationmk.TELEPORT_BACK_DURATION, 1, player)
         end
     end
 end
 
-RegisterPlayerEvent(5, OnSaveLocationCast)
+RegisterPlayerEvent(5, SaveLocationmk.OnSaveLocationmkCast)
 
+local TeleportBackmk = {}
+TeleportBackmk.TELEPORT_BACK_SPELL = 312372
+TeleportBackmk.SPELL_ON_TELEPORT = 51908
 
--- Teleport Back Script
-
-local TELEPORT_BACK_SPELL = 312372
-local SPELL_ON_TELEPORT = 51908
-
-local function OnTeleportBackCast(event, player, spell)
-    if spell:GetEntry() == TELEPORT_BACK_SPELL then
+function TeleportBackmk.OnTeleportBackmkCast(event, player, spell)
+    if spell:GetEntry() == TeleportBackmk.TELEPORT_BACK_SPELL then
         local playerGuid = player:GetGUIDLow()
         if savedLocations[playerGuid] then
             local savedLocation = savedLocations[playerGuid]
             player:Teleport(savedLocation.mapId, savedLocation.x, savedLocation.y, savedLocation.z, savedLocation.orientation)
-            player:CastSpell(player, SPELL_ON_TELEPORT, true)
+            player:CastSpell(player, TeleportBackmk.SPELL_ON_TELEPORT, true)
             savedLocations[playerGuid] = nil
             player:SendBroadcastMessage("You have been teleported back to your camp.")
 
@@ -50,4 +46,4 @@ local function OnTeleportBackCast(event, player, spell)
     end
 end
 
-RegisterPlayerEvent(5, OnTeleportBackCast)
+RegisterPlayerEvent(5, TeleportBackmk.OnTeleportBackmkCast)

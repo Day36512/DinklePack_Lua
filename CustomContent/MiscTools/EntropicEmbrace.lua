@@ -1,12 +1,17 @@
-local SPELL_CAST_100234 = 100234
-local SPELL_CAST_72313 = 72313
-local EMOTE_ROAR = 53
+local RoarCaster = {}
 
-local function OnCast100234(event, player, spell)
-    if spell:GetEntry() == SPELL_CAST_100234 then
-        player:CastSpell(player, SPELL_CAST_72313, true)
-        player:PerformEmote(EMOTE_ROAR)
+RoarCaster.SPELL_IDS = {
+    CAST_100234 = 100234,
+    CAST_72313 = 72313
+}
+
+RoarCaster.EMOTE_ROAR = 53
+
+function RoarCaster.OnCastEntropicEmbrace(event, player, spell)
+    if spell:GetEntry() == RoarCaster.SPELL_IDS.CAST_100234 then
+        player:CastSpell(player, RoarCaster.SPELL_IDS.CAST_72313, true)
+        player:PerformEmote(RoarCaster.EMOTE_ROAR)
     end
 end
 
-RegisterPlayerEvent(5, OnCast100234)
+RegisterPlayerEvent(5, RoarCaster.OnCastEntropicEmbrace)

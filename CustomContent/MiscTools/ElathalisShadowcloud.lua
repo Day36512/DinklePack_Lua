@@ -1,13 +1,15 @@
-local ELATHALIS_SHADOWCLOUD = 1500017 -- NPC ID
+local Elathalis = {}
 
-local function ElathalisGossipHello(event, player, creature)
+Elathalis.NPC_ID = 1500017
+
+function Elathalis.GossipHello(event, player, creature)
 	player:GossipClearMenu()
 	player:GossipAddQuests(creature)
     player:GossipMenuAddItem(0, "Who are you?", 0, 1)
     player:GossipSendMenu(1, creature)
 end
 
-local function ElathalisGossipSelect(event, player, creature, sender, intid, code)
+function Elathalis.GossipSelect(event, player, creature, sender, intid, code)
     if intid == 1 then
         creature:SendUnitSay("My name is Elathalis Shadowcloud, a Void Elf priest, and a proud member of the Order of the Empyrean Void. I was once a student in Quel'Thalas, but after the fall of Silvermoon, I sought refuge in the Void.", 0)
         player:GossipMenuAddItem(0, "What is the Order of the Empyrean Void?", 0, 2)
@@ -32,7 +34,5 @@ local function ElathalisGossipSelect(event, player, creature, sender, intid, cod
     end
 end
 
-RegisterCreatureGossipEvent(ELATHALIS_SHADOWCLOUD, 1, ElathalisGossipHello)
-RegisterCreatureGossipEvent(ELATHALIS_SHADOWCLOUD, 2, ElathalisGossipSelect)
-
-
+RegisterCreatureGossipEvent(Elathalis.NPC_ID, 1, Elathalis.GossipHello)
+RegisterCreatureGossipEvent(Elathalis.NPC_ID, 2, Elathalis.GossipSelect)

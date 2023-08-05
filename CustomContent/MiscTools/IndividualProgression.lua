@@ -1,7 +1,9 @@
-local npcId = 50000
-local PlayerChangedTierKey = 1001
-local mainMenu = "|TInterface\\icons\\inv_helmet_74:45:45:-40|t|cff00008bSet Individual Progression |r"
-local options = {
+IndividualProgression = {}
+
+IndividualProgression.npcId = 50000
+IndividualProgression.PlayerChangedTierKey = 1001
+IndividualProgression.mainMenu = "|TInterface\\icons\\inv_helmet_74:45:45:-40|t|cff00008bSet Individual Progression |r"
+IndividualProgression.options = {
   "|TInterface\\icons\\achievement_boss_ragnaros:45:45:-40|t|cff8b0000Tier 1 - Molten Core (Level 60)|r",
   "|TInterface\\icons\\achievement_boss_onyxia:45:45:-40|t|cff8b0000Tier 2 - Onyxia (Level 60)|r",
   "|TInterface\\icons\\achievement_boss_nefarion:45:45:-40|t|cff8b0000Tier 3 - Blackwing Lair (Level 60)|r",
@@ -20,7 +22,7 @@ local options = {
   "|TInterface\\icons\\spell_shadow_twilight:45:45:-40|t|cff00008bTier 16 - Ruby Sanctum (Level 80)"
 }
 
-local optionsWithoutIcon = {
+IndividualProgression.optionsWithoutIcon = {
   "Tier 1 - Molten Core (Level 60)",
   "Tier 2 - Onyxia (Level 60)",
   "Tier 3 - Blackwing Lair (Level 60)",
@@ -39,13 +41,13 @@ local optionsWithoutIcon = {
   "Tier 16 - Ruby Sanctum (Level 80)"
 }
 
-function getTextWithoutIcon(option)
+function IndividualProgression.getTextWithoutIcon(option)
   local textStart = option:find("|r") + 2
   return option:sub(textStart)
 end
 
-function OnGossipHello(event, player, object)
-  player:GossipMenuAddItem(0, mainMenu, 0, 1)
+function IndividualProgression.OnGossipHello(event, player, object)
+  player:GossipMenuAddItem(0, IndividualProgression.mainMenu, 0, 1)
   player:GossipMenuAddItem(0, "|TInterface\\icons\\inv_scroll_03:45:45:-40|t |cff00008bWhat is Individual Progression?|r", 0, 200)
   player:GossipSendMenu(1, object)
   object:SetEquipmentSlots(32262, 33755, 0)
@@ -57,79 +59,61 @@ function OnGossipHello(event, player, object)
   CharDBExecute("UPDATE character_settings SET data = TRIM(data) WHERE source = 'mod-individual-progression'")
   if query then
     local playerProgressionTier = tonumber(query:GetString(0)) -- Update this line
-    local playerProgressionInfo = options[playerProgressionTier + 1]
+    local playerProgressionInfo = IndividualProgression.options[playerProgressionTier + 1]
 
-    object:SendUnitWhisper("Your current progression level is: " .. optionsWithoutIcon[playerProgressionTier + 1], 0, player)
+    object:SendUnitWhisper("Your current progression level is: " .. IndividualProgression.optionsWithoutIcon[playerProgressionTier + 1], 0, player)
   else
     CharDBExecute("INSERT INTO character_settings (guid, source, data) VALUES (" .. guid .. ", 'mod-individual-progression', '0')") -- Update this line
     object:SendUnitWhisper("You have not set any individual progression. Contact a GM for help.", 0, player)
   end
 end
 
-
-
-function ShowIndividualProgressionExplanation(player, object)
+function IndividualProgression.ShowIndividualProgressionExplanation(player, object)
   player:GossipMenuAddItem(0, "Individual Progression is meant to simulate 'progress through expansions and expansion tiers' for individual players. Players must complete each tier in order to access content for the next tier. \n\nEach tier is designed to simulate experience of being within that tier and expansion, within reason of the WotLK client. This means Vanilla content is like Vanilla WoW, TBC is like TBC, and so on. \n\nThe goal of this feature is to focus on journey of the player. All catch-up mechanisms have been removed. \n\nThere is no need for 'fresh' servers because each new character is a fresh server. Note that this feature either requires many players working together on a server for each tier, or adjustments for smaller raid sizes to allow individual groups to progress (or more bots). Please see the auto-balance module and NPC Bot Settings in world.conf for some adjustments that improve this process on a less populated servers.", 0, 201)
   player:GossipMenuAddItem(0, "|TInterface\\icons\\achievement_guildperk_massresurrection:45:45:-40|t Back", 0, 100)
   player:GossipSendMenu(1, object)
 end
 
-local PlayerTierKey = 1000 
+IndividualProgression.PlayerTierKey = 1000 
 
-function OnGossipSelect(event, player, object, sender, intid, code)
+function IndividualProgression.OnGossipSelect(event, player, object, sender, intid, code)
   if intid == 1 then
-    for i, option in ipairs(options) do
+    for i, option in ipairs(IndividualProgression.options) do
       player:GossipMenuAddItem(0, option, 0, i + 1)
     end
     player:GossipMenuAddItem(0, "|TInterface\\icons\\achievement_guildperk_massresurrection:45:45:-40|t Back", 0, 100)
     player:GossipSendMenu(1, object)
   elseif intid == 100 then
-    player:GossipMenuAddItem(0, mainMenu, 0, 1)
+    player:GossipMenuAddItem(0, IndividualProgression.mainMenu, 0, 1)
     player:GossipMenuAddItem(0, "|TInterface\\icons\\inv_scroll_03:45:45:-40|t What's Individual Progression?", 0, 200) 
     player:GossipSendMenu(1, object)
   elseif intid == 200 then
-    ShowIndividualProgressionExplanation(player, object) 
+    IndividualProgression.ShowIndividualProgressionExplanation(player, object) 
   else
     local tier = intid - 2
     if tier >= 0 then
-      player:SetUInt32Value(PlayerTierKey, tier)
-      player:SetUInt32Value(PlayerChangedTierKey, 1) -- Set the flag to indicate that the player has changed their progression
+      player:SetUInt32Value(IndividualProgression.PlayerTierKey, tier)
+      player:SetUInt32Value(IndividualProgression.PlayerChangedTierKey, 1) -- Set the flag to indicate that the player has changed their progression
       player:GossipComplete()
-      player:SendBroadcastMessage("Your individual progression will be set to " .. optionsWithoutIcon[intid - 1] .. " upon logout.")
-
+      player:SendBroadcastMessage("Your individual progression will be set to " .. IndividualProgression.optionsWithoutIcon[intid - 1] .. " upon logout.")
     end
   end
 end
 
-RegisterCreatureGossipEvent(npcId, 1, OnGossipHello)
-RegisterCreatureGossipEvent(npcId, 2, OnGossipSelect)
+RegisterCreatureGossipEvent(IndividualProgression.npcId, 1, IndividualProgression.OnGossipHello)
+RegisterCreatureGossipEvent(IndividualProgression.npcId, 2, IndividualProgression.OnGossipSelect)
 
-function OnPlayerLogout(event, player)
-  local tier = player:GetUInt32Value(PlayerTierKey)
-  local tierChanged = player:GetUInt32Value(PlayerChangedTierKey) -- Check if the player has changed their progression
+function IndividualProgression.Individual_OnPlayerLogout(event, player)
+  local tier = player:GetUInt32Value(IndividualProgression.PlayerTierKey)
+  local tierChanged = player:GetUInt32Value(IndividualProgression.PlayerChangedTierKey) -- Check if the player has changed their progression
   if tier >= 0 and tierChanged == 1 then
     local guid = player:GetGUIDLow()
     print("Updating character_settings with guid: " .. guid .. " and tier: " .. tier) -- Add this line to log the data being saved
     CharDBExecute("UPDATE character_settings SET data = '" .. string.format("%u", tier) .. "' WHERE guid = " .. guid .. " AND source = 'mod-individual-progression'") -- Update this line
-    player:SetUInt32Value(PlayerTierKey, 0)
-    player:SetUInt32Value(PlayerChangedTierKey, 0) -- Reset the flag
+    player:SetUInt32Value(IndividualProgression.PlayerTierKey, 0)
+    player:SetUInt32Value(IndividualProgression.PlayerChangedTierKey, 0) -- Reset the flag
   end
 end
 
 
-
-RegisterPlayerEvent(4, OnPlayerLogout)
-
-function OnCreatureSpawn(event, creature)
-  creature:SetEquipmentSlots(32262, 33755, 0)
-end
-
-function OnPlayerLogin(event, player)
-  local creature = player:GetNearestCreature(100, npcId)
-  if creature then
-    creature:SetEquipmentSlots(32262, 33755, 0)
-  end
-end
-
-RegisterPlayerEvent(3, OnPlayerLogin)
-RegisterCreatureEvent(npcId, 5, OnCreatureSpawn)
+RegisterPlayerEvent(4, IndividualProgression.Individual_OnPlayerLogout)

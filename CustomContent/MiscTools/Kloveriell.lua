@@ -1,13 +1,15 @@
-local Kloveriell_Entry = 100140 
+local Kloveriell = {}
 
-local function Kloveriell_GossipHello(event, player, unit)
+Kloveriell.NPC_ID = 100140
+
+function Kloveriell.GossipHello(event, player, unit)
     player:GossipClearMenu()
-	player:GossipAddQuests(unit)
+    player:GossipAddQuests(unit)
     player:GossipMenuAddItem(0, "Tell me about yourself, Kloveriell.", 0, 1)
     player:GossipSendMenu(1, unit)
 end
 
-local function Kloveriell_GossipSelect(event, player, unit, sender, intid, code)
+function Kloveriell.GossipSelect(event, player, unit, sender, intid, code)
     player:GossipClearMenu()
     if (intid == 1) then
         unit:SendUnitSay("I am a Paladin, once a Knight of the Silver Hand. My path has been one of honor, justice, and protection. I've seen battles, held comrades as they drew their last breath, and fought for peace. Serving alongside High Priestess Aquila Empyrean, I now strive to guard and counsel High Elves and Void Elves alike.", 0)
@@ -27,12 +29,12 @@ local function Kloveriell_GossipSelect(event, player, unit, sender, intid, code)
     elseif (intid == 6) then
         unit:SendUnitSay("Thank you, traveler. May the Light guide your path and may your heart remain steadfast in the face of darkness. Should you or the Priestess ever need assistance, know that my blade is at the ready.", 0)
         player:CastSpell(player, 25898, true)  
-		player:GossipComplete()
+        player:GossipComplete()
     end
     if (intid ~= 6) then
         player:GossipSendMenu(1, unit)
     end
 end
 
-RegisterCreatureGossipEvent(Kloveriell_Entry, 1, Kloveriell_GossipHello)
-RegisterCreatureGossipEvent(Kloveriell_Entry, 2, Kloveriell_GossipSelect)
+RegisterCreatureGossipEvent(Kloveriell.NPC_ID, 1, Kloveriell.GossipHello)
+RegisterCreatureGossipEvent(Kloveriell.NPC_ID, 2, Kloveriell.GossipSelect)

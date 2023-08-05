@@ -1,4 +1,6 @@
-local TargetArea = {
+local PlayerTeleportRevive = {}
+
+PlayerTeleportRevive.TARGET_AREA = {
     [5390] = true,
     [1519] = true,
     [5148] = true,
@@ -11,22 +13,23 @@ local TargetArea = {
     [5151] = true,
     [7486] = true,
 }
-local TargetMap = 0
-local TargetX = -8437.3
-local TargetY = 942.03
-local TargetZ = 98.6
-local TargetO = 5.4
 
-local function TeleportAndRevive(eventId, delay, repeats, player)
-    player:Teleport(TargetMap, TargetX, TargetY, TargetZ, TargetO)
+PlayerTeleportRevive.TARGET_MAP = 0
+PlayerTeleportRevive.TARGET_X = -8437.3
+PlayerTeleportRevive.TARGET_Y = 942.03
+PlayerTeleportRevive.TARGET_Z = 98.6
+PlayerTeleportRevive.TARGET_O = 5.4
+
+function PlayerTeleportRevive.TeleportAndRevive(eventId, delay, repeats, player)
+    player:Teleport(PlayerTeleportRevive.TARGET_MAP, PlayerTeleportRevive.TARGET_X, PlayerTeleportRevive.TARGET_Y, PlayerTeleportRevive.TARGET_Z, PlayerTeleportRevive.TARGET_O)
     player:ResurrectPlayer(100, false)
 end
 
-local function PlayerReleasesSpirit(event, player)
+function PlayerTeleportRevive.PlayerReleasesSpirit(event, player)
     local playerArea = player:GetAreaId()
-    if TargetArea[playerArea] then
-        player:RegisterEvent(TeleportAndRevive, 3000, 1)
+    if PlayerTeleportRevive.TARGET_AREA[playerArea] then
+        player:RegisterEvent(PlayerTeleportRevive.TeleportAndRevive, 3000, 1)
     end
 end
 
-RegisterPlayerEvent(35, PlayerReleasesSpirit)
+RegisterPlayerEvent(35, PlayerTeleportRevive.PlayerReleasesSpirit)

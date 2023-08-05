@@ -1,3 +1,4 @@
+--[[
 local CheatCommands = {};
 
 CheatCommands.Config={
@@ -295,3 +296,4 @@ end
 RegisterPlayerEvent(42, OnScriptCommand)
 
 
+]]

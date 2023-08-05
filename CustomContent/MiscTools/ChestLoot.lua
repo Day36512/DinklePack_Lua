@@ -22,7 +22,7 @@ local MaxXP = {
     153900, 160400, 167100, 173900, 180800, 187900, 195000, 202300, 209800, 217400
 }
 
-local function OnGameObjectUse(event, go, player)
+local function Chesticles_One_OnGameObjectUse(event, go, player)
     local gameObjectId = go:GetEntry()
     local guid = go:GetGUIDLow()
     local playerGuid = player:GetGUIDLow()
@@ -92,10 +92,10 @@ local function OnGameObjectUse(event, go, player)
 end
 end
 
-RegisterGameObjectEvent(MainGameObjectId, 14, OnGameObjectUse)
+RegisterGameObjectEvent(MainGameObjectId, 14, Chesticles_One_OnGameObjectUse)
 
 for _, objectID in ipairs(SecondaryGameObjectIds) do
-    RegisterGameObjectEvent(objectID, 14, OnGameObjectUse)
+    RegisterGameObjectEvent(objectID, 14, Chesticles_One_OnGameObjectUse)
 end
 
 

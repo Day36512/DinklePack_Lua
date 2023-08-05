@@ -1,4 +1,6 @@
-local ITEM_EQUIPMENT_SLOTS = {
+local PlayerInfo = {}
+
+PlayerInfo.ITEM_EQUIPMENT_SLOTS = {
     [0]  = "HEAD",
     [1]  = "NECK",
     [2]  = "SHOULDERS",
@@ -20,9 +22,9 @@ local ITEM_EQUIPMENT_SLOTS = {
     [18] = "TABARD"
 }
 
-local function ShowPlayerInfo(event, player, command)
+function PlayerInfo.ShowPlayerInfo(event, player, command)
     if command == "items" then
-        for slot, slotName in pairs(ITEM_EQUIPMENT_SLOTS) do
+        for slot, slotName in pairs(PlayerInfo.ITEM_EQUIPMENT_SLOTS) do
             local item = player:GetEquippedItemBySlot(slot)
             if item then
                 local itemId = item:GetEntry()
@@ -50,4 +52,4 @@ local function ShowPlayerInfo(event, player, command)
     end
 end
 
-RegisterPlayerEvent(42, ShowPlayerInfo)
+RegisterPlayerEvent(42, PlayerInfo.ShowPlayerInfo)

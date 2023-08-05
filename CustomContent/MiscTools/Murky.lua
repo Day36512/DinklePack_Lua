@@ -1,9 +1,13 @@
-function MurkyOnSpawn(event, creature)
-local owner = creature:GetOwner()
-if not owner then
-    return
-end
-local playerName = owner:GetName()
+local Murky = {}
+
+Murky.NPC_ID = 15186
+
+function Murky.OnSpawn(event, creature)
+    local owner = creature:GetOwner()
+    if not owner then
+        return
+    end
+    local playerName = owner:GetName()
 
     local dialogue = {
         "Mrglglglgl! Murky here, reporting for duty!",
@@ -30,4 +34,4 @@ local playerName = owner:GetName()
     creature:SendUnitSay(dialogue[math.random(#dialogue)], 0)
 end
 
-RegisterCreatureEvent(15186, 5, MurkyOnSpawn) -- register the function to be called on Murky's spawn
+RegisterCreatureEvent(Murky.NPC_ID, 5, Murky.OnSpawn) -- register the function to be called on Murky's spawn

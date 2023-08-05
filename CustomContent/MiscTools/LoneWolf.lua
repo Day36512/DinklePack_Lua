@@ -1,39 +1,38 @@
--- IDs of the spells in question
-local SPELL_23989 = 23989
-local SPELL_80028 = 80028
-local SPELL_2641 = 2641
-local SPELL_883 = 883
+local HunterTalents = {}
 
--- Event handler for when the player learns a new spell
-local function OnLearnSpell(event, player, spellId)
-    if spellId == SPELL_23989 then
-        player:CastSpell(player, SPELL_80028, true)
-        player:CastSpell(player, SPELL_2641, true)
+HunterTalents.SPELL_IDS = {
+    READINESS = 23989,
+    LONE_WOLF = 80028,
+    CALL_PET = 2641,
+    CALL_PET_VANILLA = 883
+}
+
+function HunterTalents.OnLearnSpell(event, player, spellId)
+    if spellId == HunterTalents.SPELL_IDS.READINESS then
+        player:CastSpell(player, HunterTalents.SPELL_IDS.LONE_WOLF, true)
+        player:CastSpell(player, HunterTalents.SPELL_IDS.CALL_PET, true)
     end
 end
 
--- Event handler for when the player casts a spell
-local function OnSpellCast(event, player, spell, skipCheck)
+function HunterTalents.OnSpellCast(event, player, spell, skipCheck)
     local spellId = spell:GetEntry()
-    if player:HasSpell(SPELL_23989) then
-        if spellId == SPELL_883 then
-            if player:HasAura(SPELL_80028) then
-                player:RemoveAura(SPELL_80028)
+    if player:HasSpell(HunterTalents.SPELL_IDS.READINESS) then
+        if spellId == HunterTalents.SPELL_IDS.CALL_PET_VANILLA then
+            if player:HasAura(HunterTalents.SPELL_IDS.LONE_WOLF) then
+                player:RemoveAura(HunterTalents.SPELL_IDS.LONE_WOLF)
             end
-        elseif spellId == SPELL_2641 then
-            player:CastSpell(player, SPELL_80028, true)
+        elseif spellId == HunterTalents.SPELL_IDS.CALL_PET then
+            player:CastSpell(player, HunterTalents.SPELL_IDS.LONE_WOLF, true)
         end
     end
 end
 
--- Event handler for when the player resets talents
-local function OnTalentsReset(event, player, noCost)
-    if player:HasAura(SPELL_80028) then
-        player:RemoveAura(SPELL_80028)
+function HunterTalents.OnTalentsReset(event, player, noCost)
+    if player:HasAura(HunterTalents.SPELL_IDS.LONE_WOLF) then
+        player:RemoveAura(HunterTalents.SPELL_IDS.LONE_WOLF)
     end
 end
 
--- Register the event handlers
-RegisterPlayerEvent(44, OnLearnSpell)
-RegisterPlayerEvent(5, OnSpellCast)
-RegisterPlayerEvent(17, OnTalentsReset)
+RegisterPlayerEvent(44, HunterTalents.OnLearnSpell)
+RegisterPlayerEvent(5, HunterTalents.OnSpellCast)
+RegisterPlayerEvent(17, HunterTalents.OnTalentsReset)

@@ -1,18 +1,22 @@
-local SPELL_SHOCKWAVE = 46968
-local SPELL_TO_LEARN = 920356
-local SPELL_TO_UNLEARN = 920356
+local ShockwaveManager = {}
 
-local function OnLearnSpell(event, player, spellId)
-    if spellId == SPELL_SHOCKWAVE then
-        player:LearnSpell(SPELL_TO_LEARN)
+ShockwaveManager.SPELLS = {
+    SHOCKWAVE = 46968,
+    TO_LEARN = 920356,
+    TO_UNLEARN = 920356
+}
+
+function ShockwaveManager.OnLearnSpell(event, player, spellId)
+    if spellId == ShockwaveManager.SPELLS.SHOCKWAVE then
+        player:LearnSpell(ShockwaveManager.SPELLS.TO_LEARN)
     end
 end
 
-local function OnTalentsReset(event, player, noCost)
-    if player:HasSpell(SPELL_TO_UNLEARN) then
-        player:RemoveSpell(SPELL_TO_UNLEARN)
+function ShockwaveManager.OnTalentsReset(event, player, noCost)
+    if player:HasSpell(ShockwaveManager.SPELLS.TO_UNLEARN) then
+        player:RemoveSpell(ShockwaveManager.SPELLS.TO_UNLEARN)
     end
 end
 
-RegisterPlayerEvent(44, OnLearnSpell)
-RegisterPlayerEvent(17, OnTalentsReset)
+RegisterPlayerEvent(44, ShockwaveManager.OnLearnSpell)
+RegisterPlayerEvent(17, ShockwaveManager.OnTalentsReset)

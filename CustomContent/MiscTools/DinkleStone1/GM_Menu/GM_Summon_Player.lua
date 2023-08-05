@@ -3,7 +3,7 @@
 
 ]]
 
-local GossipID = 9910002
+local GM_SUMMON_GossipID = 9910002
 --(Start) Pulles for the guid for the player
 local function getPlayerCharacterGUID(player)
     local query = CharDBQuery(string.format("SELECT guid FROM characters WHERE name='%s'", player:GetName()))
@@ -27,7 +27,7 @@ function PLayerListSummonGossip(event, player)
 	player:GossipMenuAddItem(0, "|TInterface\\Icons\\Inv_misc_tournaments_banner_orc:26|t Horde", 0, 3)
 	player:GossipMenuAddItem(0, "|TInterface\\Icons\\Mail_gmicon:26|t GMs", 0, 4)
 	player:GossipMenuAddItem(4, "|TInterface\\Icons\\Achievement_bg_returnxflags_def_wsg:34|t [Back]", 0, 98)
-	player:GossipSendMenu(1, player, GossipID)
+	player:GossipSendMenu(1, player, GM_SUMMON_GossipID)
 end
 local function PLayerListAllianceGossip(event, player)
 	player:GossipClearMenu()
@@ -44,7 +44,7 @@ local function PLayerListAllianceGossip(event, player)
 		end
 	end
 	player:GossipMenuAddItem(4, "|TInterface\\Icons\\Achievement_bg_returnxflags_def_wsg:34|t [Back]", 0, 1)
-	player:GossipSendMenu(1, player, GossipID)
+	player:GossipSendMenu(1, player, GM_SUMMON_GossipID)
 end
 local function PLayerListHordeGossip(event, player)
 	player:GossipClearMenu()
@@ -61,7 +61,7 @@ local function PLayerListHordeGossip(event, player)
 		end
 	end	
 	player:GossipMenuAddItem(4, "|TInterface\\Icons\\Achievement_bg_returnxflags_def_wsg:34|t [Back]", 0, 1)
-	player:GossipSendMenu(1, player, GossipID)
+	player:GossipSendMenu(1, player, GM_SUMMON_GossipID)
 end
 local function PLayerListGMsGossip(event, player)
 	player:GossipClearMenu()
@@ -79,11 +79,11 @@ local function PLayerListGMsGossip(event, player)
 	end
 	
 	player:GossipMenuAddItem(4, "|TInterface\\Icons\\Achievement_bg_returnxflags_def_wsg:34|t [Back]", 0, 1)
-	player:GossipSendMenu(1, player, GossipID)
+	player:GossipSendMenu(1, player, GM_SUMMON_GossipID)
 end
 
 --(Start)
-local function OnSelect(event, player, _, sender, intid, code)
+local function GM_SUMMON_OnSelect(event, player, _, sender, intid, code)
 local PlayerName = player:GetName()
 	if(intid == 1) then --List
 		PLayerListGossip(event, player)
@@ -134,4 +134,4 @@ local PlayerName = player:GetName()
 	end
 end
 --(End)
-RegisterPlayerGossipEvent(GossipID, 2, OnSelect)
+RegisterPlayerGossipEvent(GM_SUMMON_GossipID, 2, GM_SUMMON_OnSelect)

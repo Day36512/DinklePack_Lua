@@ -1,8 +1,4 @@
---[[
-
-Not used anymore.
-
-local function BELT_OnEquip(event, player, item, bag, slot)
+local function BELTY_OnEquip(event, player, item, bag, slot)
     local beltSlot = player:GetEquippedItemBySlot(5)
 
     if (beltSlot and beltSlot:GetEntry() == item:GetEntry()) then
@@ -14,5 +10,5 @@ local function BELT_OnEquip(event, player, item, bag, slot)
     end
 end
 
-RegisterPlayerEvent(29, BELT_OnEquip)
-]]
+RegisterPlayerEvent(29, BELTY_OnEquip)
+

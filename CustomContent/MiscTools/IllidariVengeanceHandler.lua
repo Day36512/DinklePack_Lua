@@ -1,4 +1,6 @@
-local function OnSpellCast(event, player, spell, skipCheck)
+local DhSpellModifier = {}
+
+function DhSpellModifier.OnSpellCast(event, player, spell, skipCheck)
     local target = player:GetSelection()
     if target == nil then
         return
@@ -14,4 +16,4 @@ local function OnSpellCast(event, player, spell, skipCheck)
     end
 end
 
-RegisterPlayerEvent(5, OnSpellCast)
+RegisterPlayerEvent(5, DhSpellModifier.OnSpellCast)

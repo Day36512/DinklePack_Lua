@@ -7,7 +7,7 @@ Notes: Opens the a menu for other menus from a item.
 ]]
 local enabled = true
 local MenuMenus = true
-local GossipID = 9910000
+local GM_MENU_GossipID = 9910000
 
 function GMSettingsMenuGossip(event, player)
 	if player:GetGMRank() < 3 then
@@ -22,13 +22,13 @@ function GMSettingsMenuGossip(event, player)
 	player:GossipMenuAddItem(0, "|TInterface\\Icons\\Inv_gizmo_supersappercharge:30:30:-40|t Reload Eluna", 0, 95, false, "Are you sure?")
 	player:GossipMenuAddItem(4, "|TInterface\\Icons\\Achievement_bg_returnxflags_def_wsg:45:45:-40|t [Back]", 0, 9999)
 	
-	player:GossipSendMenu(1, player, GossipID)
+	player:GossipSendMenu(1, player, GM_MENU_GossipID)
 
 end
 
 
 --(Start)
-local function OnSelect(event, player, _, sender, intid, code)
+local function GM_MENU_OnSelect(event, player, _, sender, intid, code)
 local PlayerName = player:GetName()
 	
 	if(intid == 2) then --List
@@ -55,5 +55,5 @@ local PlayerName = player:GetName()
 end
 --(End)
 if enabled then
-RegisterPlayerGossipEvent(GossipID, 2, OnSelect)
+RegisterPlayerGossipEvent(GM_MENU_GossipID, 2, GM_MENU_OnSelect)
 end

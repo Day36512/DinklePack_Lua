@@ -1,13 +1,15 @@
-local itemIds = {60202, 800024}
-local auraId = 80012
-local newSpellId = 80018
-local DK_CLASS_ID = 6
-local HEALTH_THRESHOLD_HIGH = 80
-local HEALTH_THRESHOLD_LOW = 60
+local DKHealthCheck = {}
 
-local healthCheckEventRegistered = {}
+DKHealthCheck.ITEM_IDS = {60202, 800024}
+DKHealthCheck.AURA_ID = 80012
+DKHealthCheck.NEW_SPELL_ID = 80018
+DKHealthCheck.DK_CLASS_ID = 6
+DKHealthCheck.HEALTH_THRESHOLD_HIGH = 80
+DKHealthCheck.HEALTH_THRESHOLD_LOW = 60
 
-local function IsInTable(value, table)
+DKHealthCheck.DKHealthCheckEventRegistered = {}
+
+function DKHealthCheck.IsInTable(value, table)
     for _, v in pairs(table) do
         if v == value then
             return true
@@ -16,69 +18,68 @@ local function IsInTable(value, table)
     return false
 end
 
-local function SoW_CastSpellIfHealthAbove80(player, playerClass)
-    if playerClass ~= DK_CLASS_ID or not player:HasAura(auraId) then
+function DKHealthCheck.CastSpellIfHealthAbove80(player, playerClass)
+    if playerClass ~= DKHealthCheck.DK_CLASS_ID or not player:HasAura(DKHealthCheck.AURA_ID) then
         return
     end
 
     local healthPercent = player:GetHealthPct()
-    local hasNewSpellAura = player:HasAura(newSpellId)
+    local hasNewSpellAura = player:HasAura(DKHealthCheck.NEW_SPELL_ID)
 
-    if healthPercent > HEALTH_THRESHOLD_HIGH and not hasNewSpellAura then
-        player:CastSpell(player, newSpellId, true)
-    elseif healthPercent < HEALTH_THRESHOLD_LOW and hasNewSpellAura then
-        player:RemoveAura(newSpellId)
+    if healthPercent > DKHealthCheck.HEALTH_THRESHOLD_HIGH and not hasNewSpellAura then
+        player:CastSpell(player, DKHealthCheck.NEW_SPELL_ID, true)
+    elseif healthPercent < DKHealthCheck.HEALTH_THRESHOLD_LOW and hasNewSpellAura then
+        player:RemoveAura(DKHealthCheck.NEW_SPELL_ID)
     end
 end
 
-local function CheckPlayerHealth(eventId, delay, repeats, player)
-    if not player:HasAura(auraId) then
-        player:RemoveEvents(CheckPlayerHealth)
-        healthCheckEventRegistered[player:GetGUID()] = false
+function DKHealthCheck.CheckPlayerHealth(eventId, delay, repeats, player)
+    if not player:HasAura(DKHealthCheck.AURA_ID) then
+        player:RemoveEvents(DKHealthCheck.CheckPlayerHealth)
+        DKHealthCheck.DKHealthCheckEventRegistered[player:GetGUID()] = false
         return
     end
 
     local playerClass = player:GetClass()
-    SoW_CastSpellIfHealthAbove80(player, playerClass)
+    DKHealthCheck.CastSpellIfHealthAbove80(player, playerClass)
 end
 
-local function SoW_OnEquip(event, player, item, bag, slot)
+function DKHealthCheck.OnEquip(event, player, item, bag, slot)
     local playerClass = player:GetClass()
 
-    if playerClass ~= DK_CLASS_ID then
+    if playerClass ~= DKHealthCheck.DK_CLASS_ID then
         return
     end
 
-    if item:IsEquipped() and IsInTable(item:GetEntry(), itemIds) and player:HasAura(auraId) then
-        if not healthCheckEventRegistered[player:GetGUID()] then
-            player:RegisterEvent(CheckPlayerHealth, 2000, 0, player)
-            healthCheckEventRegistered[player:GetGUID()] = true
+    if item:IsEquipped() and DKHealthCheck.IsInTable(item:GetEntry(), DKHealthCheck.ITEM_IDS) and player:HasAura(DKHealthCheck.AURA_ID) then
+        if not DKHealthCheck.DKHealthCheckEventRegistered[player:GetGUID()] then
+            player:RegisterEvent(DKHealthCheck.CheckPlayerHealth, 2000, 0, player)
+            DKHealthCheck.DKHealthCheckEventRegistered[player:GetGUID()] = true
         end
-    elseif player:HasAura(newSpellId) then
-        player:RemoveAura(newSpellId)
+    elseif player:HasAura(DKHealthCheck.NEW_SPELL_ID) then
+        player:RemoveAura(DKHealthCheck.NEW_SPELL_ID)
     end
 end
 
-local function SoW_OnLogout(event, player)
-    player:RemoveEvents(CheckPlayerHealth)
-    healthCheckEventRegistered[player:GetGUID()] = false
+function DKHealthCheck.OnLogout(event, player)
+    player:RemoveEvents(DKHealthCheck.CheckPlayerHealth)
+    DKHealthCheck.DKHealthCheckEventRegistered[player:GetGUID()] = false
 end
 
-local function SoW_OnLogin(event, player)
+function DKHealthCheck.OnLogin(event, player)
     local playerClass = player:GetClass()
 
-    if playerClass == DK_CLASS_ID then
-        for _, itemId in ipairs(itemIds) do
+    if playerClass == DKHealthCheck.DK_CLASS_ID then
+        for _, itemId in ipairs(DKHealthCheck.ITEM_IDS) do
             local item = player:GetItemByEntry(itemId)
             if item and item:IsEquipped() then
-                SoW_OnEquip(nil, player, item, 0, 8)
+                DKHealthCheck.OnEquip(nil, player, item, 0, 8)
                 break
             end
         end
     end
 end
 
-RegisterPlayerEvent(29, SoW_OnEquip)
-RegisterPlayerEvent(4, SoW_OnLogout)
-RegisterPlayerEvent(3, SoW_OnLogin)
-
+RegisterPlayerEvent(29, DKHealthCheck.OnEquip)
+RegisterPlayerEvent(4, DKHealthCheck.OnLogout)
+RegisterPlayerEvent(3, DKHealthCheck.OnLogin)

@@ -1,18 +1,22 @@
-local SPELL_BLADESTORM = 46924
-local SPELL_TO_LEARN = 994999
-local SPELL_TO_UNLEARN = 994999
+local Bladestorm = {}
 
-local function OnLearnSpell(event, player, spellId)
-    if spellId == SPELL_BLADESTORM then
-        player:LearnSpell(SPELL_TO_LEARN)
+Bladestorm.SPELL_IDS = {
+    BLADESTORM = 46924,
+    TO_LEARN = 994999,
+    TO_UNLEARN = 994999
+}
+
+function Bladestorm.OnLearnSpell(event, player, spellId)
+    if spellId == Bladestorm.SPELL_IDS.BLADESTORM then
+        player:LearnSpell(Bladestorm.SPELL_IDS.TO_LEARN)
     end
 end
 
-local function OnTalentsReset(event, player, noCost)
-    if player:HasSpell(SPELL_TO_UNLEARN) then
-        player:RemoveSpell(SPELL_TO_UNLEARN)
+function Bladestorm.OnTalentsReset(event, player, noCost)
+    if player:HasSpell(Bladestorm.SPELL_IDS.TO_UNLEARN) then
+        player:RemoveSpell(Bladestorm.SPELL_IDS.TO_UNLEARN)
     end
 end
 
-RegisterPlayerEvent(44, OnLearnSpell)
-RegisterPlayerEvent(17, OnTalentsReset)
+RegisterPlayerEvent(44, Bladestorm.OnLearnSpell)
+RegisterPlayerEvent(17, Bladestorm.OnTalentsReset)

@@ -1,7 +1,9 @@
-local SPELL_SYMBIOSIS = 100261
+local Symbiosis = {}
+
+Symbiosis.SPELL_SYMBIOSIS = 100261
 
 -- Define the spell list based on the target's class
-local SYMBIOSIS_SPELLS = {
+Symbiosis.SYMBIOSIS_SPELLS = {
     [1]  = {100262, 2687}, -- Warriors
     [2]  = {31884, 64205}, -- Paladins
     [3]  = {13809, 5384},  -- Hunters
@@ -14,8 +16,8 @@ local SYMBIOSIS_SPELLS = {
 }
 
 -- Remove all symbiosis spells and auras from the druid
-local function RemoveSymbiosisSpells(druid)
-    for _, spellIDs in pairs(SYMBIOSIS_SPELLS) do
+function Symbiosis.RemoveSymbiosisSpells(druid)
+    for _, spellIDs in pairs(Symbiosis.SYMBIOSIS_SPELLS) do
         for _, spellID in ipairs(spellIDs) do
             if druid:HasSpell(spellID) then
                 druid:RemoveAura(spellID)
@@ -25,8 +27,8 @@ local function RemoveSymbiosisSpells(druid)
     end
 end
 
-local function OnCastSymbiosis(event, player, spell, skipCheck)
-    if spell:GetEntry() ~= SPELL_SYMBIOSIS then
+function Symbiosis.OnCastSymbiosis(event, player, spell, skipCheck)
+    if spell:GetEntry() ~= Symbiosis.SPELL_SYMBIOSIS then
         return
     end
 
@@ -50,10 +52,10 @@ local function OnCastSymbiosis(event, player, spell, skipCheck)
         targetClass = 6
     end
 
-    local symbiosisSpells = SYMBIOSIS_SPELLS[targetClass]
+    local symbiosisSpells = Symbiosis.SYMBIOSIS_SPELLS[targetClass]
 
     if symbiosisSpells then
-        RemoveSymbiosisSpells(player)
+        Symbiosis.RemoveSymbiosisSpells(player)
 
         if player:HasAura(52005) then
             player:RemoveAura(52005)
@@ -70,14 +72,4 @@ local function OnCastSymbiosis(event, player, spell, skipCheck)
     end
 end
 
-RegisterPlayerEvent(5, OnCastSymbiosis)
-
-
-
-RegisterPlayerEvent(5, OnCastSymbiosis)
-
-
-
-
-
-
+RegisterPlayerEvent(5, Symbiosis.OnCastSymbiosis)

@@ -1,7 +1,9 @@
-local NPC_ID = 90006
+local GearDistributor = {}
+
+GearDistributor.NPC_ID = 90006
 
 -- Prebis raiding gear for each class and specialization
-local classGear = {
+GearDistributor.classGear = {
  [1] = {name = "Mage",
         ["DPS"] = {22267, 22403, 23264, 20697, 14152, 19597, 22870, 11662, 19683, 19684, 22339, 22433, 12930, 22268, 20069, 13938},
     },
@@ -41,9 +43,9 @@ local classGear = {
 
 
 
-function onGossipSelect(event, player, creature, sender, intid, code, menu_id)
+function GearDistributor.onGossipSelect(event, player, creature, sender, intid, code, menu_id)
     if (intid >= 1 and intid <= 9) then
-        local class = classGear[intid]
+        local class = GearDistributor.classGear[intid]
         local roles = {}
         for k, v in pairs(class) do
             if k ~= "name" then
@@ -60,7 +62,7 @@ function onGossipSelect(event, player, creature, sender, intid, code, menu_id)
         local classIndex = math.floor(intid / 100)
         local roleIndex = intid % 100
 
-        local class = classGear[classIndex]
+        local class = GearDistributor.classGear[classIndex]
         local roles = {}
         for k, v in pairs(class) do
             if k ~= "name" then
@@ -77,8 +79,7 @@ function onGossipSelect(event, player, creature, sender, intid, code, menu_id)
     end
 end
 
-
-function onGossipHello(event, player, creature)
+function GearDistributor.onGossipHello(event, player, creature)
     player:GossipClearMenu()
 
     local jokes = {
@@ -87,20 +88,20 @@ function onGossipHello(event, player, creature)
         "What do you call a Draenei with no legs? Grounded.",
         "What do you call a Draenei who loves to dance? A 'hoof-er'!",
         "How do Draenei stay fit? They do plenty of Exodar-cise!",
-		"Why don't draenei ever get lost? They have a built-in GPS: the Light!",
-		"Why did the draenei shaman join a band? To play the elekk-tric guitar!"
+        "Why don't draenei ever get lost? They have a built-in GPS: the Light!",
+        "Why did the draenei shaman join a band? To play the elekk-tric guitar!"
     }
 
     local jokeIndex = math.random(1, #jokes)
     creature:SendUnitSay(jokes[jokeIndex], 0)
 
     for i = 1, 9 do
-        local class = classGear[i]
+        local class = GearDistributor.classGear[i]
         player:GossipMenuAddItem(0, class.name, 0, i, false, "", 0)
     end
 
     player:GossipSendMenu(1, creature)
 end
 
-RegisterCreatureGossipEvent(NPC_ID, 1, onGossipHello)
-RegisterCreatureGossipEvent(NPC_ID, 2, onGossipSelect)
+RegisterCreatureGossipEvent(GearDistributor.NPC_ID, 1, GearDistributor.onGossipHello)
+RegisterCreatureGossipEvent(GearDistributor.NPC_ID, 2, GearDistributor.onGossipSelect)

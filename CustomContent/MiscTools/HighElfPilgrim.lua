@@ -1,12 +1,14 @@
-local HighElfPilgrim_Entry = 100152
+local HighElfPilgrim = {}
 
-local function HighElfPilgrim_GossipHello(event, player, unit)
+HighElfPilgrim.entry = 100152
+
+function HighElfPilgrim.GossipHello(event, player, unit)
     player:GossipClearMenu()
     player:GossipMenuAddItem(0, "Tell me about yourself, Pilgrim.", 0, 1)
     player:GossipSendMenu(1, unit)
 end
 
-local function HighElfPilgrim_GossipSelect(event, player, unit, sender, intid, code)
+function HighElfPilgrim.GossipSelect(event, player, unit, sender, intid, code)
     player:GossipClearMenu()
 
     if (intid == 1) then
@@ -34,5 +36,5 @@ local function HighElfPilgrim_GossipSelect(event, player, unit, sender, intid, c
     end
 end
 
-RegisterCreatureGossipEvent(HighElfPilgrim_Entry, 1, HighElfPilgrim_GossipHello)
-RegisterCreatureGossipEvent(HighElfPilgrim_Entry, 2, HighElfPilgrim_GossipSelect)
+RegisterCreatureGossipEvent(HighElfPilgrim.entry, 1, HighElfPilgrim.GossipHello)
+RegisterCreatureGossipEvent(HighElfPilgrim.entry, 2, HighElfPilgrim.GossipSelect)

@@ -1,9 +1,11 @@
-local ITEM_ID = 60090 -- The item ID to check for
-local SPELL_ID = 46619 -- The spell ID to cast
-local CAST_CHANCE = 30 -- The chance percentage to cast the spell
-local DELAY = 1000 -- Delay in milliseconds (1000 ms = 1 second)
+local DeathTrigger = {}
 
-local function HasEquippedItem(player, itemID)
+DeathTrigger.ITEM_ID = 60090 -- The item ID to check for
+DeathTrigger.SPELL_ID = 46619 -- The spell ID to cast
+DeathTrigger.CAST_CHANCE = 30 -- The chance percentage to cast the spell
+DeathTrigger.DELAY = 1000 -- Delay in milliseconds (1000 ms = 1 second)
+
+function DeathTrigger.HasEquippedItem(player, itemID)
     for slot = 1, 18 do
         local item = player:GetEquippedItemBySlot(slot)
         if item and item:GetEntry() == itemID then
@@ -13,23 +15,23 @@ local function HasEquippedItem(player, itemID)
     return false
 end
 
-local function CastDelayedSpell(playerGUID)
+function DeathTrigger.CastDelayedSpell(playerGUID)
     local player = GetPlayerByGUID(playerGUID)
     if player then
-        player:CastSpell(player, SPELL_ID, true)
+        player:CastSpell(player, DeathTrigger.SPELL_ID, true)
     end
 end
 
-local function OnPlayerDeath(event, killer, killed)
+function DeathTrigger.OnPlayerDeath(event, killer, killed)
     -- Check if the killed player has the item equipped
-    if HasEquippedItem(killed, ITEM_ID) then
+    if DeathTrigger.HasEquippedItem(killed, DeathTrigger.ITEM_ID) then
         -- Roll for the chance to cast the spell
-        if math.random(1, 100) <= CAST_CHANCE then
+        if math.random(1, 100) <= DeathTrigger.CAST_CHANCE then
             local killedGUID = killed:GetGUID()
             -- Schedule the delayed spell cast
-            CreateLuaEvent(function() CastDelayedSpell(killedGUID) end, DELAY, 1)
+            CreateLuaEvent(function() DeathTrigger.CastDelayedSpell(killedGUID) end, DeathTrigger.DELAY, 1)
         end
     end
 end
 
-RegisterPlayerEvent(8, OnPlayerDeath) -- Register the event handler for player death
+RegisterPlayerEvent(8, DeathTrigger.OnPlayerDeath) -- Register the event handler for player death

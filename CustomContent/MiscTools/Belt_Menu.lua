@@ -103,7 +103,7 @@ local function Aura(player, id)
 	end
 end
 --(Start)
-local function OnSelect(event, player, _, sender, intid, code)
+local function BeltOnSelect(event, player, _, sender, intid, code)
 	local playerID = player:GetGUIDLow()	
 	local currentPage = player_currentPage[playerID]
 
@@ -217,5 +217,5 @@ local function beltMenuCommand(event, player, command)
 	end
 end
 --(end)
-RegisterPlayerGossipEvent(GossipID, 2, OnSelect)
+RegisterPlayerGossipEvent(GossipID, 2, BeltOnSelect)
 RegisterPlayerEvent(42, beltMenuCommand)

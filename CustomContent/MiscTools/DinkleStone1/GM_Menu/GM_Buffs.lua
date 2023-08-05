@@ -3,7 +3,7 @@
 
 ]]
 
-local GossipID = 9910003
+local GM_BUFFS_GossipID = 9910003
 local GMSpells = {
 	["NoTimeLimit"] = {
 			{"Saronite Barrier\nReduce All Damage Taken by 99%.", 63364},
@@ -51,11 +51,11 @@ function GMBuffsGossip(event, player)
 			player:GossipMenuAddItem(0,"|cff03d3fc[Cast]|r "..v[1], 0, v[2])		
 	end
 	player:GossipMenuAddItem(4, "|TInterface\\Icons\\Achievement_bg_returnxflags_def_wsg:34|t [Back]", 0, 98)
-	player:GossipSendMenu(1, player, GossipID)
+	player:GossipSendMenu(1, player, GM_BUFFS_GossipID)
 end
 
 --(Start)
-local function OnSelect(event, player, _, sender, intid, code)
+local function GM_BUFFS_OnSelect(event, player, _, sender, intid, code)
 local PlayerName = player:GetName()
 	if(intid == 1) then --List
 		GMBuffsGossip(event, player)
@@ -100,10 +100,10 @@ end
 --(Start) Command: Check
 local function PrintRewardStatsCheck(event, player, command)
 	if (command == "heal" and player:GetGMRank() >= 3 )then
-		OnSelect(event, player, _, sender, 2, code)
+		GM_BUFFS_OnSelect(event, player, _, sender, 2, code)
 		return false
 	end
 end
 --(end)
-RegisterPlayerGossipEvent(GossipID, 2, OnSelect)
+RegisterPlayerGossipEvent(GM_BUFFS_GossipID, 2, GM_BUFFS_OnSelect)
 RegisterPlayerEvent(42, PrintRewardStatsCheck)

@@ -1,4 +1,8 @@
-local enableScript = false -- Set this to true to enable the script, false to disable
+--[[
+
+local PlayerDetails = {}
+PlayerDetails.ENABLE_SCRIPT = false -- Set this to true to enable the script, false to disable
+PlayerDetails.EVENT_ID = 3 -- ID for the Player Login event
 
 local function OnPlayerLogin(event, player)
     -- Get race mask, class mask, team, and faction for the player
@@ -51,6 +55,8 @@ local function OnPlayerLogin(event, player)
     end
 end
 
-if enableScript then
-    RegisterPlayerEvent(3, OnPlayerLogin)
+if PlayerDetails.ENABLE_SCRIPT then
+    RegisterPlayerEvent(PlayerDetails.EVENT_ID, OnPlayerLogin)
 end
+
+]]

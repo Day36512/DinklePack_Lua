@@ -1,89 +1,44 @@
-local Zone1 = 4714
-local Zone2 = 5435
+local SpiritResurrect = {}
 
-local TargetMap1 = 0
-local TargetX1 = -1594.44
-local TargetY1 = 1904.70
-local TargetZ1 = 12.98
-local TargetO1 = 1.57
+SpiritResurrect.Zone1 = 4714
+SpiritResurrect.Zone2 = 5435
+SpiritResurrect.Zone3 = 4706
 
-local TargetMap2 = 0
-local TargetX2 = -1389.73
-local TargetY2 = 1373.48
-local TargetZ2 = 35.75
-local TargetO2 = 3.17
+SpiritResurrect.TargetLocations = {
+    [1] = {map = 0, x = -1594.44, y = 1904.70, z = 12.98, o = 1.57},
+    [2] = {map = 0, x = -1389.73, y = 1373.48, z = 35.75, o = 3.17},
+    [3] = {map = 0, x = -1916.49, y = 2577.45, z = 1.635, o = 1.18},
+    [4] = {map = 0, x = -1941.6, y = 970.86, z = 75.895, o = 0.4677},
+    [5] = {map = 0, x = -2151.961, y = 1670.61, z = -38.0146, o = 4.626}
+}
 
-local TargetMap3 = 0
-local TargetX3 = -1916.49
-local TargetY3 = 2577.45
-local TargetZ3 = 1.635
-local TargetO3 = 1.18
-
-local TargetMap4 = 0
-local TargetX4 = -1941.6 
-local TargetY4 = 970.86 
-local TargetZ4 = 75.895 
-local TargetO4 = 0.4677
-
-local TargetMap5 = 0
-local TargetX5 = -2151.961 
-local TargetY5 = 1670.61 
-local TargetZ5 = -38.0146 
-local TargetO5 = 4.626
-
-local function distance(x1, y1, x2, y2)
+function SpiritResurrect.distance(x1, y1, x2, y2)
     return math.sqrt((x2 - x1) ^ 2 + (y2 - y1) ^ 2)
 end
 
-local function TeleportAndRevive(player, targetMap, targetX, targetY, targetZ, targetO)
-    player:Teleport(targetMap, targetX, targetY, targetZ, targetO)
+function SpiritResurrect.TeleportAndRevive(player, location)
+    player:Teleport(location.map, location.x, location.y, location.z, location.o)
     player:ResurrectPlayer(100, false)
 end
 
-local function PlayerReleasesSpirit(event, player)
+function SpiritResurrect.PlayerReleasesSpirit(event, player)
     local playerZone = player:GetZoneId()
     local playerX, playerY = player:GetX(), player:GetY()
 
     local closestLocation = 1
-    local closestDistance = distance(playerX, playerY, TargetX1, TargetY1)
+    local closestDistance = SpiritResurrect.distance(playerX, playerY, SpiritResurrect.TargetLocations[1].x, SpiritResurrect.TargetLocations[1].y)
 
-    local distance2 = distance(playerX, playerY, TargetX2, TargetY2)
-    if distance2 < closestDistance then
-        closestLocation = 2
-        closestDistance = distance2
-    end
-
-    local distance3 = distance(playerX, playerY, TargetX3, TargetY3)
-    if distance3 < closestDistance then
-        closestLocation = 3
-        closestDistance = distance3
-    end
-
-    local distance4 = distance(playerX, playerY, TargetX4, TargetY4)
-    if distance4 < closestDistance then
-        closestLocation = 4
-        closestDistance = distance4
-    end
-
-    local distance5 = distance(playerX, playerY, TargetX5, TargetY5)
-    if distance5 < closestDistance then
-        closestLocation = 5
-    end
-
-    if playerZone == Zone1 or playerZone == Zone2 then
-                if closestLocation == 1 then
-            player:RegisterEvent(function(_, _, _, p) TeleportAndRevive(p, TargetMap1, TargetX1, TargetY1, TargetZ1, TargetO1) end, 2000, 1)
-        elseif closestLocation == 2 then
-            player:RegisterEvent(function(_, _, _, p) TeleportAndRevive(p, TargetMap2, TargetX2, TargetY2, TargetZ2, TargetO2) end, 2000, 1)
-        elseif closestLocation == 3 then
-            player:RegisterEvent(function(_, _, _, p) TeleportAndRevive(p, TargetMap3, TargetX3, TargetY3, TargetZ3, TargetO3) end, 2000, 1)
-        elseif closestLocation == 4 then
-            player:RegisterEvent(function(_, _, _, p) TeleportAndRevive(p, TargetMap4, TargetX4, TargetY4, TargetZ4, TargetO4) end, 2000, 1)
-        else
-            player:RegisterEvent(function(_, _, _, p) TeleportAndRevive(p, TargetMap5, TargetX5, TargetY5, TargetZ5, TargetO5) end, 2000, 1)
+    for i = 2, #SpiritResurrect.TargetLocations do
+        local dist = SpiritResurrect.distance(playerX, playerY, SpiritResurrect.TargetLocations[i].x, SpiritResurrect.TargetLocations[i].y)
+        if dist < closestDistance then
+            closestLocation = i
+            closestDistance = dist
         end
+    end
 
-end
+    if playerZone == SpiritResurrect.Zone1 or playerZone == SpiritResurrect.Zone2 or playerZone == SpiritResurrect.Zone3 then
+        player:RegisterEvent(function(_, _, _, p) SpiritResurrect.TeleportAndRevive(p, SpiritResurrect.TargetLocations[closestLocation]) end, 2000, 1)
+    end
 end
 
-RegisterPlayerEvent(35, PlayerReleasesSpirit)
+RegisterPlayerEvent(35, SpiritResurrect.PlayerReleasesSpirit)
