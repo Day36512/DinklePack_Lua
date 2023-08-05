@@ -1,3 +1,5 @@
+--[[
+
 --Needs lots and lots of work. 
 
 local NPC_ABOMINABLE_GREENCH = 13602 -- Replace this with the correct entry ID for Abominable Greench
@@ -114,3 +116,4 @@ RegisterCreatureEvent(NPC_ABOMINABLE_GREENCH, 4, Greench_OnDied)
 RegisterCreatureEvent(NPC_ABOMINABLE_GREENCH, 9, Greench_OnDamageTaken)
 RegisterCreatureEvent(NPC_ABOMINABLE_GREENCH, 5, Greench_OnSpawn)
 
+]]

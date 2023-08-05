@@ -87,7 +87,7 @@ function CastMeteor(eventId, delay, calls, creature)
     end
 end
 
-local function OnEnterCombat(event, creature, target)
+local function OnEnterCombatSetis(event, creature, target)
     creature:SendUnitYell("Your doom is upon you!", 0)
 	creature:RegisterEvent(SpawnMinions, 100, 1)
     creature:RegisterEvent(SpawnMinions, 36000, 0) -- Spawn minions every 20 seconds
@@ -100,15 +100,15 @@ local function OnEnterCombat(event, creature, target)
 end
 
 
-local function OnLeaveCombat(event, creature)
+local function OnLeaveCombatSetis(event, creature)
     creature:RemoveEvents()
 end
 
-local function OnDied(event, creature, killer)
+local function OnDiedSetis(event, creature, killer)
     creature:SendUnitYell("My death is... only the beginning...", 0)
     creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(14471, 1, OnEnterCombat)
-RegisterCreatureEvent(14471, 2, OnLeaveCombat)
-RegisterCreatureEvent(14471, 4, OnDied)
+RegisterCreatureEvent(14471, 1, OnEnterCombatSetis)
+RegisterCreatureEvent(14471, 2, OnLeaveCombatSetis)
+RegisterCreatureEvent(14471, 4, OnDiedSetis)

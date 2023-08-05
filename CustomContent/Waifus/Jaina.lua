@@ -1,3 +1,5 @@
+--[[
+
 local NPC_IDS = {401111}
 local ITEM_ID = 60124
 
@@ -109,5 +111,5 @@ for i, v in ipairs(NPC_IDS) do
     RegisterCreatureEvent(v, 4, OnDied) -- Event 4 = CREATURE_EVENT_ON_DIED
     RegisterCreatureEvent(v, 23, OnReset) -- Event 23 = CREATURE_EVENT_ON_RESET
 end
-
+]]
 

@@ -1,12 +1,14 @@
-local NPC_ID = 90009
-local GOSSIP_ICON = 0
-local KARAZHAN_MAP_ID = 532
-local KARAZHAN_X = -11089.735
-local KARAZHAN_Y = -1988.7
-local KARAZHAN_Z = 49.755
-local KARAZHAN_ORIENTATION = 6
+local KarazhanTeleporter = {}
 
-local function OnGossipHello(event, player, object)
+KarazhanTeleporter.NPC_ID = 90009
+KarazhanTeleporter.GOSSIP_ICON = 0
+KarazhanTeleporter.KARAZHAN_MAP_ID = 532
+KarazhanTeleporter.KARAZHAN_X = -11089.735
+KarazhanTeleporter.KARAZHAN_Y = -1988.7
+KarazhanTeleporter.KARAZHAN_Z = 49.755
+KarazhanTeleporter.KARAZHAN_ORIENTATION = 6
+
+function KarazhanTeleporter.OnGossipHello(event, player, object)
     player:GossipClearMenu()
 
     -- Check player level
@@ -17,18 +19,18 @@ local function OnGossipHello(event, player, object)
     end
 
     -- Add teleport option
-    player:GossipMenuAddItem(GOSSIP_ICON, "Teleport me to Karazhan.", 0, 1)
+    player:GossipMenuAddItem(KarazhanTeleporter.GOSSIP_ICON, "Teleport me to Karazhan.", 0, 1)
 
     player:GossipSendMenu(1, object)
 end
 
-local function OnGossipSelect(event, player, object, sender, intid, code)
+function KarazhanTeleporter.OnGossipSelect(event, player, object, sender, intid, code)
     if intid == 1 then
         -- Teleport the player to Karazhan
-        player:Teleport(KARAZHAN_MAP_ID, KARAZHAN_X, KARAZHAN_Y, KARAZHAN_Z, KARAZHAN_ORIENTATION)
+        player:Teleport(KarazhanTeleporter.KARAZHAN_MAP_ID, KarazhanTeleporter.KARAZHAN_X, KarazhanTeleporter.KARAZHAN_Y, KarazhanTeleporter.KARAZHAN_Z, KarazhanTeleporter.KARAZHAN_ORIENTATION)
         player:GossipComplete()
     end
 end
 
-RegisterCreatureGossipEvent(NPC_ID, 1, OnGossipHello)
-RegisterCreatureGossipEvent(NPC_ID, 2, OnGossipSelect)
+RegisterCreatureGossipEvent(KarazhanTeleporter.NPC_ID, 1, KarazhanTeleporter.OnGossipHello)
+RegisterCreatureGossipEvent(KarazhanTeleporter.NPC_ID, 2, KarazhanTeleporter.OnGossipSelect)

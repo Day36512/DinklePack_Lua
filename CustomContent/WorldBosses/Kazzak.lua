@@ -91,7 +91,7 @@ function CastMarkOfKazzak(eventId, delay, calls, creature)
     end
 end
 
-local function OnEnterCombat(event, creature, target)
+local function KazzakOnEnterCombat(event, creature, target)
     creature:SendUnitYell("All mortals will perish!", 0)
 	creature:RegisterEvent(SpawnMinions, 100, 1)
     creature:RegisterEvent(SpawnMinions, 24000, 0) -- Spawn minions every 20 seconds
@@ -105,15 +105,15 @@ local function OnEnterCombat(event, creature, target)
 end
 
 
-local function OnLeaveCombat(event, creature)
+local function KazzakOnLeaveCombat(event, creature)
     creature:RemoveEvents()
 end
 
-local function OnDied(event, creature, killer)
+local function KazzakOnDied(event, creature, killer)
     creature:SendUnitYell("Your victory is... temporary...", 0)
     creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(12397, 1, OnEnterCombat)
-RegisterCreatureEvent(12397, 2, OnLeaveCombat)
-RegisterCreatureEvent(12397, 4, OnDied)
+RegisterCreatureEvent(12397, 1, KazzakOnEnterCombat)
+RegisterCreatureEvent(12397, 2, KazzakOnLeaveCombat)
+RegisterCreatureEvent(12397, 4, KazzakOnDied)

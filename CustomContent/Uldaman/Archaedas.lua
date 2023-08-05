@@ -1,14 +1,18 @@
-local ArchaedasEntry = 2748
-local EarthenGuardianEntry = 7076
-local VaultWarderEntry = 10120
-local RoomObjectEntry = 133234 
-local HostileFaction = 14 
+local ArchaedasEvent = {}
 
-local function SetHostileAndEnterCombat(player, entry, activateOne)
+ArchaedasEvent.NPC_IDS = {
+    ARCHAEDAS = 2748,
+    EARTHEN_GUARDIAN = 7076,
+    VAULT_WARDER = 10120
+}
+ArchaedasEvent.OBJECT_ID = 133234
+ArchaedasEvent.HOSTILE_FACTION = 14
+
+function ArchaedasEvent.SetHostileAndEnterCombat(player, entry, activateOne)
     local creatures = player:GetCreaturesInRange(100, entry)
     for _, creature in ipairs(creatures) do
         if not creature:IsInCombat() then
-            creature:SetFaction(HostileFaction)
+            creature:SetFaction(ArchaedasEvent.HOSTILE_FACTION)
             creature:SetReactState(1) 
             creature:RemoveAllAuras() -- Remove Auras with Crowd Control effect
             creature:AttackStart(player)
@@ -19,11 +23,11 @@ local function SetHostileAndEnterCombat(player, entry, activateOne)
     end
 end
 
-local function ActivateNextVaultWarder(event, creature, killer)
-    local creatures = creature:GetCreaturesInRange(100, VaultWarderEntry)
+function ArchaedasEvent.ActivateNextVaultWarder(event, creature, killer)
+    local creatures = creature:GetCreaturesInRange(100, ArchaedasEvent.NPC_IDS.VAULT_WARDER)
     for _, nextCreature in ipairs(creatures) do
         if not nextCreature:IsInCombat() then
-            nextCreature:SetFaction(HostileFaction)
+            nextCreature:SetFaction(ArchaedasEvent.HOSTILE_FACTION)
             nextCreature:SetReactState(1) 
             nextCreature:RemoveAllAuras() -- Remove Auras with Crowd Control effect
             nextCreature:AttackStart(killer)
@@ -32,13 +36,13 @@ local function ActivateNextVaultWarder(event, creature, killer)
     end
 end
 
-local function RoomObjectUse(event, go, player)
+function ArchaedasEvent.RoomObjectUse(event, go, player)
     if not player:IsInCombat() then
         player:SendBroadcastMessage("Archaedas, the Earthen Guardians, and the Vault Warders are waking up...")
 
-        SetHostileAndEnterCombat(player, ArchaedasEntry, false)
-        SetHostileAndEnterCombat(player, EarthenGuardianEntry, false)
-        SetHostileAndEnterCombat(player, VaultWarderEntry, true)
+        ArchaedasEvent.SetHostileAndEnterCombat(player, ArchaedasEvent.NPC_IDS.ARCHAEDAS, false)
+        ArchaedasEvent.SetHostileAndEnterCombat(player, ArchaedasEvent.NPC_IDS.EARTHEN_GUARDIAN, false)
+        ArchaedasEvent.SetHostileAndEnterCombat(player, ArchaedasEvent.NPC_IDS.VAULT_WARDER, true)
     else
         player:SendBroadcastMessage("You cannot use the object while in combat.")
     end
@@ -46,5 +50,5 @@ local function RoomObjectUse(event, go, player)
     return true
 end
 
-RegisterGameObjectEvent(RoomObjectEntry, 14, RoomObjectUse)
-RegisterCreatureEvent(VaultWarderEntry, 4, ActivateNextVaultWarder)
+RegisterGameObjectEvent(ArchaedasEvent.OBJECT_ID, 14, ArchaedasEvent.RoomObjectUse)
+RegisterCreatureEvent(ArchaedasEvent.NPC_IDS.VAULT_WARDER, 4, ArchaedasEvent.ActivateNextVaultWarder)
