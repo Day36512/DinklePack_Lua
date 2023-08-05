@@ -1,40 +1,54 @@
-local function hasItem90000(player)
-return player:GetItemCount(90000) > 0
+local HardcoreMode = {}
+
+HardcoreMode.ITEMS = {
+    CUSTOM_STARTER_1 = 60002,
+    CUSTOM_STARTER_2 = 10594,
+    CUSTOM_STARTER_3 = 65000,
+    ITEM_90000 = 90000
+}
+
+HardcoreMode.SPELLS = {
+    MURKY_1 = 24939,
+    MURKY_2 = 100117,
+    MURKY_3 = 100118,
+    MURKY_4 = 100105
+}
+
+function HardcoreMode.hasItem90000(player)
+    return player:GetItemCount(HardcoreMode.ITEMS.ITEM_90000) > 0
 end
 
--- Remove custom starter items
-local function removeItems(player)
-local removed = false
-local items = {60002, 10594, 65000}
-for _, entry in ipairs(items) do
-local itemCount = player:GetItemCount(entry)
-if itemCount > 0 then
-for i = 0, itemCount - 1 do
-player:RemoveItem(entry, 1)
-end
-removed = true
-end
-end
-return removed
+function HardcoreMode.removeItems(player)
+    local removed = false
+    for _, entry in pairs(HardcoreMode.ITEMS) do
+        local itemCount = player:GetItemCount(entry)
+        if itemCount > 0 then
+            for i = 0, itemCount - 1 do
+                player:RemoveItem(entry, 1)
+            end
+            removed = true
+        end
+    end
+    return removed
 end
 
--- Remove Murky
-local function removeSpell(player)
-	player:RemoveSpell(24939)
-    player:RemoveSpell(100117)
-    player:RemoveSpell(100118)
-	player:RemoveSpell(100105)
+function HardcoreMode.removeSpell(player)
+    for _, spellId in pairs(HardcoreMode.SPELLS) do
+        player:RemoveSpell(spellId)
+    end
 end
 
--- Script body
-local function onLogin(event, player)
-if hasItem90000(player) then
-if removeItems(player) then
-player:SendBroadcastMessage("Welcome to Hardcore Mode. Please watch your step!")
-end
-removeSpell(player)
-end
+function HardcoreMode.onLogin(event, player)
+    player:RegisterEvent(HardcoreMode.delayedLogin, 3500, 1)  -- the function is executed after a delay of 3.5 seconds
 end
 
--- Register the script to be triggered on player login
-RegisterPlayerEvent(3, onLogin)
+function HardcoreMode.delayedLogin(eventId, delay, repeats, player)
+    if HardcoreMode.hasItem90000(player) then
+        if HardcoreMode.removeItems(player) then
+            player:SendBroadcastMessage("Welcome to Hardcore Mode. Please watch your step!")
+        end
+        HardcoreMode.removeSpell(player)
+    end
+end
+
+RegisterPlayerEvent(3, HardcoreMode.onLogin)

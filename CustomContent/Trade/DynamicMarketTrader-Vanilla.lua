@@ -1,6 +1,5 @@
 --[[
 DynamicMarketTrader
-
     This script was developed by Dinkledork and will be updated perioidcally. 
 	
     Please support my work by visiting my Patreon page: https://www.patreon.com/Dinklepack5
@@ -111,7 +110,7 @@ local categories = {
         { name = "|TInterface\\Icons\\inv_misc_herb_08:36:36:-42|tKhadgar's Whisker", id = 3358, price = 330 },
         { name = "|TInterface\\Icons\\inv_misc_flower_03:36:36:-42|tWintersbite", id = 3819, price = 744 },
         { name = "|TInterface\\Icons\\inv_misc_herb_19:36:36:-42|tFirebloom", id = 4625, price = 574 },
-		{ name = "|TInterface\\Icons\\inv_misc_herb_08:36:36:-42|tHeart of the Wild", id = 10286, price = 1280 },
+		{ name = "|TInterface\\Icons\\inv_misc_herb_08:36:36:-42|tHeart of the Wild", id = 3358, price = 1280 },
         { name = "|TInterface\\Icons\\inv_misc_herb_17:36:36:-42|tPurple Lotus", id = 8831, price = 599 },
         { name = "|TInterface\\Icons\\inv_misc_herb_13:36:36:-42|tArthas' Tears", id = 8836, price = 1520 },
         { name = "|TInterface\\Icons\\inv_misc_herb_18:36:36:-42|tSungrass", id = 8838, price = 2598 },
@@ -172,7 +171,7 @@ local categories = {
         { name = "|TInterface\\Icons\\inv_misc_pelt_bear_ruin_05:36:36:-42|tRuined Leather Scraps", id = 2934, price = 13 },
         { name = "|TInterface\\Icons\\inv_misc_leatherscrap_03:36:36:-42|tLight Leather", id = 2318, price = 48 },
         { name = "|TInterface\\Icons\\inv_misc_leatherscrap_05:36:36:-42|tMedium Leather", id = 2319, price = 1399 }, 
-        { name = "|TInterface\\Icons\\inv_misc_leatherscrap_07:36:36:-42|tHeavy Leather", id = 3234, price = 3100 },
+        { name = "|TInterface\\Icons\\inv_misc_leatherscrap_07:36:36:-42|tHeavy Leather", id = 4234, price = 3100 },
         { name = "|TInterface\\Icons\\inv_misc_leatherscrap_08:36:36:-42|tThick Leather", id = 4304, price = 4500 },
         { name = "|TInterface\\Icons\\inv_misc_leatherscrap_02:36:36:-42|tRugged Leather", id = 8170, price = 9786 },
         { name = "|TInterface\\Icons\\inv_misc_pelt_wolf_ruin_02:36:36:-42|tLight Hide", id = 783, price = 94 },
@@ -329,8 +328,8 @@ local categories = {
         { name = "|TInterface\\Icons\\inv_misc_gem_stone_01:36:36:-42|tJade", id = 1529, price = 3374 },
         { name = "|TInterface\\Icons\\inv_misc_gem_pearl_01:36:36:-42|tBlack Pearl", id = 7971, price = 4400 },
 		{ name = "|TInterface\\Icons\\inv_misc_gem_pearl_04:36:36:-42|tGolden Pearl", id = 7971, price = 45450 },
-        { name = "|TInterface\\Icons\\inv_misc_gem_opal_02:36:36:-42|tCitrine", id = 3864, price = 1200 },        
-		{ name = "|TInterface\\Icons\\inv_misc_gem_crystal_02:36:36:-42|Aquamarine", id = 7909, price = 1648 },   
+        { name = "|TInterface\\Icons\\inv_misc_gem_opal_02:36:36:-42|tCitrine", id = 3864, price = 1200 },    
+		{ name = "|TInterface\\Icons\\inv_misc_gem_crystal_02:36:36:-42|Aquamarine", id = 7909, price = 1648 },   		
         { name = "|TInterface\\Icons\\inv_misc_gem_01:36:36:-42|tSouldarite", id = 19774, price = 77000 },
         { name = "|TInterface\\Icons\\inv_misc_gem_ruby_02:36:36:-42|tStar Ruby", id = 7910, price = 11100 },
         { name = "|TInterface\\Icons\\inv_misc_gem_opal_01:36:36:-42|tLarge Opal", id = 12799, price = 7000 },
@@ -545,7 +544,6 @@ local function OnGossipSelectVanillaTrader(event, player, object, sender, intid,
     elseif sender == BUY_CATEGORY or sender == SELL_CATEGORY then
         local category = intidToEntity[intid]
         if category then
-            player:GossipMenuAddItem(7, "|cff8b0000Back|r", BUY_SELL, sender == BUY_CATEGORY and 0 or 1)
             for i, item in ipairs(category.items) do
                 local price = item.price * (sender == BUY_CATEGORY and BUY_PERCENTAGE or SELL_PERCENTAGE) * getPriceMultiplier()
                 if sender == BUY_CATEGORY or (sender == SELL_CATEGORY and player:HasItem(item.id)) then
@@ -559,38 +557,34 @@ local function OnGossipSelectVanillaTrader(event, player, object, sender, intid,
         local quantity = tonumber(code)
         local item = intidToEntity[intid]
         if quantity and item then
-            local unitPrice
-            local totalPrice
+            local unitPrice = item.price * (sender == BUY_QUANTITY and BUY_PERCENTAGE or SELL_PERCENTAGE) * getPriceMultiplier()
+            local totalPrice = unitPrice * quantity
             if sender == BUY_QUANTITY then 
-    unitPrice = item.price * BUY_PERCENTAGE * getPriceMultiplier()
-    totalPrice = unitPrice * quantity
-    if player:GetCoinage() < totalPrice then
-        player:SendBroadcastMessage("You do not have enough money.")
-        ShowMainMenu(player, object)
-        return
-    end
-    player:ModifyMoney(-totalPrice)
-    local maxStackSize = 20  -- Adjust as necessary for different items
-    local numFullStacks = math.floor(quantity / maxStackSize)
-    local remainder = quantity % maxStackSize
-    for i = 1, numFullStacks do
-        SendMail("Your purchased item", "Here is a stack of items you purchased.", player:GetGUIDLow(), player:GetGUIDLow(), 62, 0, 0, 0, item.id, maxStackSize)
-    end
-    if remainder > 0 then
-        SendMail("Your purchased item", "Here is the remaining items you purchased.", player:GetGUIDLow(), player:GetGUIDLow(), 62, 0, 0, 0, item.id, remainder)
-    end
-	player:SendBroadcastMessage("You bought |cffffffff" .. quantity .. "x|r " .. GetItemString(item) .. " for |cffffffff" .. convertMoney(totalPrice) .. "|r. The items were sent to your mailbox.")
-            else 
+                if player:GetCoinage() < totalPrice then
+                    player:SendBroadcastMessage("You do not have enough money.")
+                    ShowMainMenu(player, object)
+                    return
+                end
+                player:ModifyMoney(-totalPrice)
+                local maxStackSize = 20
+                local numFullStacks = math.floor(quantity / maxStackSize)
+                local remainder = quantity % maxStackSize
+                for i = 1, numFullStacks do
+                    SendMail("Your purchased item", "Here is a stack of items you purchased.", player:GetGUIDLow(), player:GetGUIDLow(), 62, 0, 0, 0, item.id, maxStackSize)
+                end
+                if remainder > 0 then
+                    SendMail("Your purchased item", "Here is the remaining items you purchased.", player:GetGUIDLow(), player:GetGUIDLow(), 62, 0, 0, 0, item.id, remainder)
+                end
+                player:SendBroadcastMessage("You bought |cffffffff" .. quantity .. "x|r " .. GetItemString(item) .. " for |cffffffff" .. convertMoney(totalPrice) .. "|r. The items were sent to your mailbox.")
+            else
                 if not player:HasItem(item.id, quantity) then
                     player:SendBroadcastMessage("You do not have enough items.")
                     ShowMainMenu(player, object)
                     return
                 end
-                unitPrice = item.price * SELL_PERCENTAGE * getPriceMultiplier()
-                totalPrice = unitPrice * quantity
                 player:RemoveItem(item.id, quantity) 
                 player:ModifyMoney(totalPrice) 
-	player:SendBroadcastMessage("You sold |cffffffff" .. quantity .. "x|r " .. GetItemString(item) .. " for |cffffffff" .. convertMoney(totalPrice) .. "|r.")
+                player:SendBroadcastMessage("You sold |cffffffff" .. quantity .. "x|r " .. GetItemString(item) .. " for |cffffffff" .. convertMoney(totalPrice) .. "|r.")
             end
             player:GossipClearMenu()
             ShowMainMenu(player, object)
@@ -601,6 +595,8 @@ local function OnGossipSelectVanillaTrader(event, player, object, sender, intid,
         ShowMainMenu(player, object)
     end
 end
+
+
 
 local eventId = CreateLuaEvent(UpdateFluctuation, 3600000, 0)
 
@@ -681,8 +677,6 @@ local function HandleSellPercentageCommandVanillaTrader(event, player, command)
     end
 end
 
-
-
 RegisterPlayerEvent(42, HandleBuyPercentageCommandVanillaTrader)
 RegisterPlayerEvent(42, HandleSellPercentageCommandVanillaTrader)
 RegisterPlayerEvent(42, HandleFluctuationsCommandVanillaTrader)
@@ -693,4 +687,3 @@ for _, NPCID in ipairs(NPCIDs) do
     RegisterCreatureGossipEvent(NPCID, 1, OnGossipHelloVanillaTrader)
     RegisterCreatureGossipEvent(NPCID, 2, OnGossipSelectVanillaTrader)
 end
-

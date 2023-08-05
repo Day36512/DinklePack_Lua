@@ -44,18 +44,15 @@ local function StartSermon(player)
     end
 end
 
-local function OnPlayerLogin(event, player)
+
+local function Gpriest_OnPlayerMapChange(event, player)
     StartSermon(player)
 end
 
-local function OnPlayerMapChange(event, player)
+local function GPriest_OnPlayerUpdateZone(event, player, newZone, newArea)
     StartSermon(player)
 end
 
-local function OnPlayerUpdateZone(event, player, newZone, newArea)
-    StartSermon(player)
-end
 
-RegisterPlayerEvent(3, OnPlayerLogin)
-RegisterPlayerEvent(28, OnPlayerMapChange)
-RegisterPlayerEvent(27, OnPlayerUpdateZone)
+RegisterPlayerEvent(28, Gpriest_OnPlayerMapChange)
+RegisterPlayerEvent(27, GPriest_OnPlayerUpdateZone)

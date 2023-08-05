@@ -1,18 +1,20 @@
-local NPC_DEFIAS_RITUALIST = 100165
-local SPELL_CAST_ON_SPAWN = 67040
+local StormwindDefiasRitualist = {}
 
-local function DefiasRitualist_OnSpawn(event, creature)
-    creature:CastSpell(creature, SPELL_CAST_ON_SPAWN, false)
+StormwindDefiasRitualist.NPC_ID = 100165
+StormwindDefiasRitualist.SPELL_ID = 67040
+
+function StormwindDefiasRitualist.OnSpawn(event, creature)
+    creature:CastSpell(creature, StormwindDefiasRitualist.SPELL_ID, false)
 end
 
-local function DefiasRitualist_RecastSpell(event, delay, pCall, creature)
-    creature:CastSpell(creature, SPELL_CAST_ON_SPAWN, false)
+function StormwindDefiasRitualist.RecastSpell(event, delay, pCall, creature)
+    creature:CastSpell(creature, StormwindDefiasRitualist.SPELL_ID, false)
 end
 
-local function DefiasRitualist_OnLeaveCombat(event, creature)
+function StormwindDefiasRitualist.OnLeaveCombat(event, creature)
     creature:RemoveEvents()
-    creature:RegisterEvent(DefiasRitualist_RecastSpell, 8000, 1) 
+    creature:RegisterEvent(StormwindDefiasRitualist.RecastSpell, 8000, 1) 
 end
 
-RegisterCreatureEvent(NPC_DEFIAS_RITUALIST, 5, DefiasRitualist_OnSpawn)
-RegisterCreatureEvent(NPC_DEFIAS_RITUALIST, 2, DefiasRitualist_OnLeaveCombat)
+RegisterCreatureEvent(StormwindDefiasRitualist.NPC_ID, 5, StormwindDefiasRitualist.OnSpawn)
+RegisterCreatureEvent(StormwindDefiasRitualist.NPC_ID, 2, StormwindDefiasRitualist.OnLeaveCombat)

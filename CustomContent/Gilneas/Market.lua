@@ -1,6 +1,8 @@
-local NPCID = 1400057
+GMarketScript = {}
 
-local marketText = {
+GMarketScript.NPCID = 1400057
+
+GMarketScript.marketText = {
     "Fresh fruits and vegetables here! Get them while they're still ripe!",
     "Step right up! I have the juiciest apples in all of Azeroth!",
     "Come take a look at my homegrown pumpkins! Perfect for making pies or carving for the upcoming festival.",
@@ -13,40 +15,35 @@ local marketText = {
 	"Attention all cooks! I have some rare ingredients that will take your recipes to the next level.",
 }
 
-local function SendMarketText(eventId, delay, repeats, npc)
+function GMarketScript.SendMarketText(eventId, delay, repeats, npc)
     local index = npc:GetData("marketIndex") or 1
-    npc:SendUnitSay(marketText[index], 0)
+    npc:SendUnitSay(GMarketScript.marketText[index], 0)
 	npc:PerformEmote(396)
     index = index + 1
     
-    if index > #marketText then
+    if index > #GMarketScript.marketText then
         index = 1 
     end
 
     npc:SetData("marketIndex", index)
-    npc:RegisterEvent(SendMarketText, 10000, 1)
+    npc:RegisterEvent(GMarketScript.SendMarketText, 10000, 1)
 end
 
-local function StartMarket(player)
-    local priest = player:GetNearestCreature(500, NPCID)
+function GMarketScript.StartMarket(player)
+    local priest = player:GetNearestCreature(500, GMarketScript.NPCID)
     if priest and not priest:GetData("marketStarted") then
         priest:SetData("marketStarted", true)
-        priest:RegisterEvent(SendMarketText, 3000, 1)
+        priest:RegisterEvent(GMarketScript.SendMarketText, 3000, 1)
     end
 end
 
-local function OnPlayerLogin(event, player)
-    StartMarket(player)
+function GMarketScript.GMarket_OnPlayerMapChange(event, player)
+    GMarketScript.StartMarket(player)
 end
 
-local function OnPlayerMapChange(event, player)
-    StartMarket(player)
+function GMarketScript.GMarket_OnPlayerUpdateZone(event, player, newZone, newArea)
+    GMarketScript.StartMarket(player)
 end
 
-local function OnPlayerUpdateZone(event, player, newZone, newArea)
-    StartMarket(player)
-end
-
-RegisterPlayerEvent(3, OnPlayerLogin)
-RegisterPlayerEvent(28, OnPlayerMapChange)
-RegisterPlayerEvent(27, OnPlayerUpdateZone)
+RegisterPlayerEvent(28, GMarketScript.GMarket_OnPlayerMapChange)
+RegisterPlayerEvent(27, GMarketScript.GMarket_OnPlayerUpdateZone)

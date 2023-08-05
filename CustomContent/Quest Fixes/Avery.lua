@@ -1,35 +1,39 @@
-local NPC_AVERY = 100164
-local SPELL_CAST_ON_SPAWN = 67040
-local SPELL_SHADOW_BOLT = 695
+local Avery = {}
 
-local function Avery_OnSpawn(event, creature)
-    creature:CastSpell(creature, SPELL_CAST_ON_SPAWN, false)
+Avery.NPC_ID = 100164
+Avery.SPELL_IDS = {
+    CAST_ON_SPAWN = 67040,
+    SHADOW_BOLT = 695
+}
+
+function Avery.OnSpawn(event, creature)
+    creature:CastSpell(creature, Avery.SPELL_IDS.CAST_ON_SPAWN, false)
 end
 
-local function Avery_ShadowBolt(event, delay, pCall, creature)
-    creature:CastSpell(creature:GetVictim(), SPELL_SHADOW_BOLT, false)
+function Avery.ShadowBolt(event, delay, pCall, creature)
+    creature:CastSpell(creature:GetVictim(), Avery.SPELL_IDS.SHADOW_BOLT, false)
 end
 
-local function Avery_RecastSpell(event, delay, pCall, creature)
-    creature:CastSpell(creature, SPELL_CAST_ON_SPAWN, false)
+function Avery.RecastSpell(event, delay, pCall, creature)
+    creature:CastSpell(creature, Avery.SPELL_IDS.CAST_ON_SPAWN, false)
 end
 
-local function Avery_OnEnterCombat(event, creature)
+function Avery.OnEnterCombat(event, creature)
     creature:SendUnitYell("I will not permit you to interfere!", 0)
-    creature:RegisterEvent(Avery_ShadowBolt, 3000, 0) -- Cast Shadow Bolt every 3 seconds
+    creature:RegisterEvent(Avery.ShadowBolt, 3000, 0) -- Cast Shadow Bolt every 3 seconds
 end
 
-local function Avery_OnLeaveCombat(event, creature)
+function Avery.OnLeaveCombat(event, creature)
     creature:RemoveEvents()
-    creature:RegisterEvent(Avery_RecastSpell, 8000, 1) -- Recast the spell 5 seconds after leaving combat
+    creature:RegisterEvent(Avery.RecastSpell, 8000, 1) -- Recast the spell 5 seconds after leaving combat
 end
 
-local function Avery_OnDied(event, creature)
+function Avery.OnDied(event, creature)
     creature:RemoveEvents()
     creature:SendUnitSay("We were so...close....", 0)
 end
 
-RegisterCreatureEvent(NPC_AVERY, 5, Avery_OnSpawn)
-RegisterCreatureEvent(NPC_AVERY, 1, Avery_OnEnterCombat)
-RegisterCreatureEvent(NPC_AVERY, 2, Avery_OnLeaveCombat)
-RegisterCreatureEvent(NPC_AVERY, 4, Avery_OnDied)
+RegisterCreatureEvent(Avery.NPC_ID, 5, Avery.OnSpawn)
+RegisterCreatureEvent(Avery.NPC_ID, 1, Avery.OnEnterCombat)
+RegisterCreatureEvent(Avery.NPC_ID, 2, Avery.OnLeaveCombat)
+RegisterCreatureEvent(Avery.NPC_ID, 4, Avery.OnDied)

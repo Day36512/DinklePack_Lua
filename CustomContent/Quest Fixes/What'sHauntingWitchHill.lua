@@ -1,31 +1,36 @@
-local RISEN_SPIRITS_ID = 23554
-local RISEN_HUSKS_ID = 23555
-local RESTLESS_SPIRITS_ID = 23861
-local DESPAWN_TIME = 8000 -- 8 seconds in milliseconds
-local RANGE_TO_GIVE_CREDIT = 30
+local RestlessSpiritsWhWh = {}
 
-local function GiveKillCredit(eventId, delay, repeats, player)
+RestlessSpiritsWhWh.NPC_IDS = {
+    RISEN_SPIRITS_ID = 23554,
+    RISEN_HUSKS_ID = 23555,
+    RESTLESS_SPIRITS_ID = 23861
+}
+
+RestlessSpiritsWhWh.DESPAWN_TIME = 8000
+RestlessSpiritsWhWh.RANGE_TO_GIVE_CREDIT = 30
+
+function RestlessSpiritsWhWh.GiveKillCredit(eventId, delay, repeats, player)
     if player then
-        player:KilledMonsterCredit(RESTLESS_SPIRITS_ID)
+        player:KilledMonsterCredit(RestlessSpiritsWhWh.NPC_IDS.RESTLESS_SPIRITS_ID)
     end
 end
 
-local function SpawnRestlessSpirit(event, creature, killer)
-    if creature:GetEntry() == RISEN_SPIRITS_ID or creature:GetEntry() == RISEN_HUSKS_ID then
+function RestlessSpiritsWhWh.SpawnRestlessSpirit(event, creature, killer)
+    if creature:GetEntry() == RestlessSpiritsWhWh.NPC_IDS.RISEN_SPIRITS_ID or creature:GetEntry() == RestlessSpiritsWhWh.NPC_IDS.RISEN_HUSKS_ID then
         local x, y, z, o = creature:GetLocation()
-        local spawnedCreature = creature:SpawnCreature(RESTLESS_SPIRITS_ID, x, y, z, o, 3, DESPAWN_TIME)
+        local spawnedCreature = creature:SpawnCreature(RestlessSpiritsWhWh.NPC_IDS.RESTLESS_SPIRITS_ID, x, y, z, o, 3, RestlessSpiritsWhWh.DESPAWN_TIME)
 
         if spawnedCreature then
-            local playersInRange = creature:GetPlayersInRange(RANGE_TO_GIVE_CREDIT)
+            local playersInRange = creature:GetPlayersInRange(RestlessSpiritsWhWh.RANGE_TO_GIVE_CREDIT)
 
             for _, player in pairs(playersInRange) do
                 if player:IsPlayer() then
-                    player:RegisterEvent(GiveKillCredit, 2000, 1)
+                    player:RegisterEvent(RestlessSpiritsWhWh.GiveKillCredit, 2000, 1)
                 end
             end
         end
     end
 end
 
-RegisterCreatureEvent(RISEN_SPIRITS_ID, 4, SpawnRestlessSpirit)
-RegisterCreatureEvent(RISEN_HUSKS_ID, 4, SpawnRestlessSpirit)
+RegisterCreatureEvent(RestlessSpiritsWhWh.NPC_IDS.RISEN_SPIRITS_ID, 4, RestlessSpiritsWhWh.SpawnRestlessSpirit)
+RegisterCreatureEvent(RestlessSpiritsWhWh.NPC_IDS.RISEN_HUSKS_ID, 4, RestlessSpiritsWhWh.SpawnRestlessSpirit)

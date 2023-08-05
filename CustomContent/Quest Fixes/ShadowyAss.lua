@@ -1,30 +1,23 @@
-local creatureID = 2434 
-local range = 10 
-local spellID = 1786 
-local auraID = 42347 
-local delay = 3000 
+local ShadowAss = {}
 
+ShadowAss.CREATURE_ID = 2434 
+ShadowAss.RANGE = 15 
+ShadowAss.SPELL_ID = 1786 
+ShadowAss.AURA_ID = 42347 
+ShadowAss.DELAY = 3000 
 
-local function SHADOW_ASS_CheckNearbyCreatures(event, creature)
-   
-    creature:AddAura(spellID, creature)
+function ShadowAss.CheckNearbyCreatures(event, creature)
+    creature:AddAura(ShadowAss.SPELL_ID, creature)
 
-    local creaturesNearby = creature:GetCreaturesInRange(range, creatureID)
-  --  print("[INFO] Spawned creature with GUID " .. tostring(creature:GetGUID()) .. " at (" .. tostring(creature:GetX()) .. ", " .. tostring(creature:GetY()) .. ", " .. tostring(creature:GetZ()) .. ")")
-  --  print("[INFO] Checking for nearby creatures...")
+    local creaturesNearby = creature:GetCreaturesInRange(ShadowAss.RANGE, ShadowAss.CREATURE_ID)
     if #creaturesNearby > 0 then
-   --     print("[INFO] Another creature of ID " .. creatureID .. " found within " .. range .. " yards. Despawning newly spawned creature.")
         creature:DespawnOrUnsummon(0)
-    else
-    --    print("[INFO] No other creatures of ID " .. creatureID .. " found within " .. range .. " yards.")
     end
 end
 
-
-local function SHADOW_ASS_AddAuraOnLeaveCombat(event, creature)
-creature:AddAura(spellID, creature)
+function ShadowAss.AddAuraOnLeaveCombat(event, creature)
+    creature:AddAura(ShadowAss.SPELL_ID, creature)
 end
 
-
-RegisterCreatureEvent(creatureID, 5, SHADOW_ASS_CheckNearbyCreatures)
-RegisterCreatureEvent(creatureID, 2, SHADOW_ASS_AddAuraOnLeaveCombat)
+RegisterCreatureEvent(ShadowAss.CREATURE_ID, 5, ShadowAss.CheckNearbyCreatures)
+RegisterCreatureEvent(ShadowAss.CREATURE_ID, 2, ShadowAss.AddAuraOnLeaveCombat)

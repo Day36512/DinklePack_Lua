@@ -1,7 +1,9 @@
-local NPC_ENTRY = 400163
-local DESPAWN_TIME = 60000 -- 1 minute in milliseconds
-local SPELLS = {6668, 11540, 11541, 11542, 11543, 11544, 55420}
-local LOCATIONS = {
+local HeCapstoneLow = {}
+
+HeCapstoneLow.NPC_ID = 400163
+HeCapstoneLow.DESPAWN_TIME = 60000 -- 1 minute in milliseconds
+HeCapstoneLow.SPELL_IDS = {6668, 11540, 11541, 11542, 11543, 11544, 55420}
+HeCapstoneLow.LOCATIONS = {
     {-8896.97, 1029.82, 126.82},
     {-889.738, 1024.24, 126.82},
     {-8907.96, 1027.43, 126.82},
@@ -27,23 +29,23 @@ local LOCATIONS = {
     {-8927.4277, 1057.37, 156}
 }
 
-local function CastRandomSpell(eventId, delay, repeats, creature)
-    local spellId = SPELLS[math.random(#SPELLS)]
+function HeCapstoneLow.CastRandomSpell(eventId, delay, repeats, creature)
+    local spellId = HeCapstoneLow.SPELL_IDS[math.random(#HeCapstoneLow.SPELL_IDS)]
     creature:CastSpell(creature, spellId, true)
 end
 
-local function OnSpawn(event, creature)
-    creature:RegisterEvent(CastRandomSpell, 3000, 0) -- 3 seconds
+function HeCapstoneLow.OnSpawn(event, creature)
+    creature:RegisterEvent(HeCapstoneLow.CastRandomSpell, 3000, 0) -- 3 seconds
 end
 
-local function OnQuestComplete(event, player, quest)
+function HeCapstoneLow.OnQuestComplete(event, player, quest)
     if quest:GetId() == 30039 then
-        for i, location in ipairs(LOCATIONS) do
+        for i, location in ipairs(HeCapstoneLow.LOCATIONS) do
             local x, y, z = table.unpack(location)
-            player:SpawnCreature(NPC_ENTRY, x, y, z, 0, 1, DESPAWN_TIME)
+            player:SpawnCreature(HeCapstoneLow.NPC_ID, x, y, z, 0, 1, HeCapstoneLow.DESPAWN_TIME)
         end
     end
 end
 
-RegisterPlayerEvent(54, OnQuestComplete)
-RegisterCreatureEvent(NPC_ENTRY, 5, OnSpawn)
+RegisterPlayerEvent(54, HeCapstoneLow.OnQuestComplete)
+RegisterCreatureEvent(HeCapstoneLow.NPC_ID, 5, HeCapstoneLow.OnSpawn)

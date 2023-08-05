@@ -1,21 +1,26 @@
-local CRAWLER_BOI = 3812
+local CrawlerBoi = {}
 
-local function CastClaw(eventId, delay, calls, creature)
-    creature:CastSpell(creature:GetVictim(), 16829, true)
+CrawlerBoi.NPC_ID = 3812
+CrawlerBoi.SPELL_IDS = {
+    CLAW = 16829
+}
+
+function CrawlerBoi.CastClaw(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), CrawlerBoi.SPELL_IDS.CLAW, true)
 end
     
-local function CrawlerBoi_OnEnterCombat(event, creature, target)
-    creature:RegisterEvent(CastClaw, 4000, 0)
+function CrawlerBoi.OnEnterCombat(event, creature, target)
+    creature:RegisterEvent(CrawlerBoi.CastClaw, 4000, 0)
 end
 
-local function CrawlerBoi_OnLeaveCombat(event, creature)
+function CrawlerBoi.OnLeaveCombat(event, creature)
     creature:RemoveEvents()
 end
 
-local function CrawlerBoi_OnDied(event, creature, killer)
+function CrawlerBoi.OnDied(event, creature, killer)
     creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(CRAWLER_BOI, 1, CrawlerBoi_OnEnterCombat)
-RegisterCreatureEvent(CRAWLER_BOI, 2, CrawlerBoi_OnLeaveCombat)
-RegisterCreatureEvent(CRAWLER_BOI, 4, CrawlerBoi_OnDied)
+RegisterCreatureEvent(CrawlerBoi.NPC_ID, 1, CrawlerBoi.OnEnterCombat)
+RegisterCreatureEvent(CrawlerBoi.NPC_ID, 2, CrawlerBoi.OnLeaveCombat)
+RegisterCreatureEvent(CrawlerBoi.NPC_ID, 4, CrawlerBoi.OnDied)

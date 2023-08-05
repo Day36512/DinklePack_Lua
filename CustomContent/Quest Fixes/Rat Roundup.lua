@@ -1,42 +1,42 @@
-local PLAYER_SPELL = 21050
-local QUEST_TO_COMPLETE = 6661
-local CREATURE_TO_CHECK = 12997
-local CHECK_RANGE = 4.0
+local RatQuestCompleter = {}
 
-local playerSpellCastCount = {}
-local checkRangeEventId = nil
+RatQuestCompleter.PLAYER_SPELL = 21050
+RatQuestCompleter.QUEST_TO_COMPLETE = 6661
+RatQuestCompleter.CREATURE_TO_CHECK = 12997
+RatQuestCompleter.CHECK_RANGE = 4.0
 
-local function IsCreatureInRange(player, creatureEntry, range)
+RatQuestCompleter.playerSpellCastCount = {}
+
+function RatQuestCompleter.IsCreatureInRange(player, creatureEntry, range)
     local creatures = player:GetCreaturesInRange(range, creatureEntry, 2) -- 2 for friendly
     return #creatures > 0
 end
 
-local function CheckRange(eventId, delay, repeats)
-    for playerGuid, count in pairs(playerSpellCastCount) do
-        if count >= 5 then
-            local player = GetPlayerByGUID(playerGuid)
-            if player and player:HasQuest(QUEST_TO_COMPLETE) then
-                if IsCreatureInRange(player, CREATURE_TO_CHECK, CHECK_RANGE) then
-                    player:CompleteQuest(QUEST_TO_COMPLETE)
-                    playerSpellCastCount[playerGuid] = 0
-                end
+function RatQuestCompleter.CheckRange(eventId, delay, repeats, player)
+    local playerGuid = player:GetGUIDLow()
+    local count = RatQuestCompleter.playerSpellCastCount[playerGuid] or 0
+    if count >= 5 then
+        if player:HasQuest(RatQuestCompleter.QUEST_TO_COMPLETE) then
+            if RatQuestCompleter.IsCreatureInRange(player, RatQuestCompleter.CREATURE_TO_CHECK, RatQuestCompleter.CHECK_RANGE) then
+                player:CompleteQuest(RatQuestCompleter.QUEST_TO_COMPLETE)
+                RatQuestCompleter.playerSpellCastCount[playerGuid] = 0
             end
         end
     end
 end
 
 RegisterPlayerEvent(5, function(_, player, spell)
-    if spell:GetEntry() == PLAYER_SPELL then
+    if spell:GetEntry() == RatQuestCompleter.PLAYER_SPELL then
         local playerGuid = player:GetGUIDLow()
 
-        if not playerSpellCastCount[playerGuid] then
-            playerSpellCastCount[playerGuid] = 0
+        if not RatQuestCompleter.playerSpellCastCount[playerGuid] then
+            RatQuestCompleter.playerSpellCastCount[playerGuid] = 0
         end
 
-        playerSpellCastCount[playerGuid] = playerSpellCastCount[playerGuid] + 1
+        RatQuestCompleter.playerSpellCastCount[playerGuid] = RatQuestCompleter.playerSpellCastCount[playerGuid] + 1
 
-        if playerSpellCastCount[playerGuid] >= 5 and not checkRangeEventId then
-            checkRangeEventId = CreateLuaEvent(CheckRange, 1000, 0)
+        if RatQuestCompleter.playerSpellCastCount[playerGuid] >= 5 then
+            player:RegisterEvent(RatQuestCompleter.CheckRange, 1000, 0)
         end
     end
 end)

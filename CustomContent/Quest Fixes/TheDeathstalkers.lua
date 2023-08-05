@@ -1,17 +1,17 @@
-local NPC_ID = 6497 -- Set this to the NPC ID you wish to interact with
-local QUEST_ID = 1886 -- Set this to the Quest ID to check if the player has it
-local FACTION_HOSTILE = 1630 -- Set this to the faction ID for hostile
+local DeathstalkersNPCInteraction = {}
 
-local function OnGossipHello(event, player, object)
+DeathstalkersNPCInteraction.NPC_ID = 6497
+DeathstalkersNPCInteraction.QUEST_ID = 1886
+DeathstalkersNPCInteraction.FACTION_HOSTILE = 1630
 
-    if player:HasQuest(QUEST_ID) then
-      
+function DeathstalkersNPCInteraction.OnGossipHello(event, player, object)
+    if player:HasQuest(DeathstalkersNPCInteraction.QUEST_ID) then
         object:SendUnitYell("The Deathstalkers will not be getting their way today!", 0)
-        object:SetFaction(FACTION_HOSTILE)
+        object:SetFaction(DeathstalkersNPCInteraction.FACTION_HOSTILE)
         object:AttackStart(player)
     else
-       
         return false -- This will allow the default gossip menu to be displayed
     end
 end
-RegisterCreatureGossipEvent(NPC_ID, 1, OnGossipHello)
+
+RegisterCreatureGossipEvent(DeathstalkersNPCInteraction.NPC_ID, 1, DeathstalkersNPCInteraction.OnGossipHello)

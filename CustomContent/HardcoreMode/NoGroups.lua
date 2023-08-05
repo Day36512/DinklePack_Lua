@@ -3,7 +3,6 @@ local CHALLENGE_NAMES = {[800051] = "Pacifist Mode"} -- challenge names
 
 local HasItem = function(player, itemId) return player:HasItem(itemId) end
 local GetPlayerByGUID = GetPlayerByGUID
-local SendWorldMessage = function(message) SendWorldMessage(message) end
 
 local SPELLS_TO_CAST = {[800051] = 80092} 
 
@@ -14,27 +13,26 @@ local function RemoveItemAndNotify(player)
             player:RemoveItem(item, itemCount) 
             local spellToCast = SPELLS_TO_CAST[item]
             player:CastSpell(player, 12158, true) 
-			player:PlayDirectSound(183253)
+            player:PlayDirectSound(183253)
             if spellToCast then
                 player:CastSpell(player, spellToCast, true) 
             end
-			local message = "|cFFFF0000Player " .. player:GetName() .. " failed the " .. CHALLENGE_NAMES[item] .. " challenge for participating in a group.|r"
+            local message = "|cFFFF0000Player " .. player:GetName() .. " failed the " .. CHALLENGE_NAMES[item] .. " challenge for participating in a group.|r"
             print(message)
             SendWorldMessage(message)
         end
     end
 end
 
-
-local function OnGroupMemberAdd(event, group, guid)
+local function ChallengeOnGroupMemberAdd(event, group, guid)
     local player = GetPlayerByGUID(guid)
     RemoveItemAndNotify(player)
 end
 
-local function OnGroupCreate(event, group, leaderGuid, groupType)
+local function ChallengeOnGroupCreate(event, group, leaderGuid, groupType)
     local leader = GetPlayerByGUID(leaderGuid)
     RemoveItemAndNotify(leader)
 end
 
-RegisterGroupEvent(1, OnGroupMemberAdd)
-RegisterGroupEvent(2, OnGroupCreate)
+RegisterGroupEvent(1, ChallengeOnGroupMemberAdd)
+RegisterGroupEvent(2, ChallengeOnGroupCreate)

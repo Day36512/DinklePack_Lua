@@ -1,12 +1,15 @@
-local CLOSE_DISTANCE = 5 
+local RFDPortal = {}
 
-function RFD_OnEnter(event, go, player)
-    go:RegisterEvent(RFD_CheckForPlayersEntrance, 1000, 0)
+RFDPortal.GO_ID = 900001
+RFDPortal.CLOSE_DISTANCE = 5 
+
+function RFDPortal.OnEnter(event, go, player)
+    go:RegisterEvent(RFDPortal.CheckForPlayersEntrance, 1000, 0)
 end
 
-function RFD_CheckForPlayersEntrance(event, delay, repeat_times, go, player)
-    local players_in_range = go:GetPlayersInRange(CLOSE_DISTANCE)
-    for _, player in pairs(players_in_range) do
+function RFDPortal.CheckForPlayersEntrance(event, delay, repeat_times, go)
+    local playersInRange = go:GetPlayersInRange(RFDPortal.CLOSE_DISTANCE)
+    for _, player in pairs(playersInRange) do
         if player:GetLevel() >= 25 then
             player:Teleport(129, 2593.040, 1106.7067, 51.36396, 4.7)
         else
@@ -15,5 +18,4 @@ function RFD_CheckForPlayersEntrance(event, delay, repeat_times, go, player)
     end
 end
 
-
-RegisterGameObjectEvent(900001, 2, RFD_OnEnter)
+RegisterGameObjectEvent(RFDPortal.GO_ID, 2, RFDPortal.OnEnter)

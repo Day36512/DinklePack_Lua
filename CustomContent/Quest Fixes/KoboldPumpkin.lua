@@ -1,22 +1,22 @@
--- Constants for our script
-local GAMEOBJECT_ID = 2883
-local CREATURE_ID = 100168
-local SPAWN_TYPE = TEMPSUMMON_TIMED_OR_DEAD_DESPAWN
-local DESPAWN_TIMER = 60000  
+local PumpkinKobold = {}
 
+PumpkinKobold.GO_ID = 2883
+PumpkinKobold.CREATURE_ID = 100168
+PumpkinKobold.SPAWN_TYPE = TEMPSUMMON_TIMED_OR_DEAD_DESPAWN
+PumpkinKobold.DESPAWN_TIMER = 60000
 
-local function PumpkinOnCreatureSpawn(event, creature)
+function PumpkinKobold.OnCreatureSpawn(event, creature)
     local player = creature:GetNearestPlayer()
     if player then
         creature:AttackStart(player)
-        creature:SendUnitSay("You no take pumpkin!", 0)
+        creature:SendUnitSay("You no take Pumpkin!", 0)
     end
 end
 
-local function PumpkinOnGameObjectUse(event, go, player)
+function PumpkinKobold.OnGameObjectUse(event, go, player)
     local x, y, z, o = go:GetLocation()
-    go:SpawnCreature(CREATURE_ID, x, y, z, o, SPAWN_TYPE, DESPAWN_TIMER)
+    go:SpawnCreature(PumpkinKobold.CREATURE_ID, x, y, z, o, PumpkinKobold.SPAWN_TYPE, PumpkinKobold.DESPAWN_TIMER)
 end
 
-RegisterGameObjectEvent(GAMEOBJECT_ID, 14, PumpkinOnGameObjectUse)
-RegisterCreatureEvent(CREATURE_ID, 5, PumpkinOnCreatureSpawn)
+RegisterGameObjectEvent(PumpkinKobold.GO_ID, 14, PumpkinKobold.OnGameObjectUse)
+RegisterCreatureEvent(PumpkinKobold.CREATURE_ID, 5, PumpkinKobold.OnCreatureSpawn)

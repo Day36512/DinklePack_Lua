@@ -1,11 +1,14 @@
-local CLOSE_DISTANCE = 5 
+local GrimPortal = {}
 
-function GRIM_OnEnter(event, go, player)
-    go:RegisterEvent(GRIM_CheckForPlayersEntrance, 1000, 0)
+GrimPortal.GO_ID = 900002
+GrimPortal.CLOSE_DISTANCE = 5 
+
+function GrimPortal.OnEnter(event, go, player)
+    go:RegisterEvent(GrimPortal.CheckForPlayersEntrance, 1000, 0)
 end
 
-function GRIM_CheckForPlayersEntrance(event, delay, repeat_times, go, player)
-    local players_in_range = go:GetPlayersInRange(CLOSE_DISTANCE)
+function GrimPortal.CheckForPlayersEntrance(event, delay, repeat_times, go)
+    local players_in_range = go:GetPlayersInRange(GrimPortal.CLOSE_DISTANCE)
 
     for _, player in pairs(players_in_range) do
         if player:GetGMRank() >= 3 then
@@ -14,7 +17,6 @@ function GRIM_CheckForPlayersEntrance(event, delay, repeat_times, go, player)
         else
             if player:GetLevel() >= 60 then
                 if player:IsInGroup() and player:GetGroup():IsRaid() then
-					
                     player:Teleport(670, -620.997, -201.813, 271.998, 5.0454)  -- updated coordinates
                 else
                     player:SendBroadcastMessage("You need to be in a raid group to use this portal.")
@@ -26,5 +28,4 @@ function GRIM_CheckForPlayersEntrance(event, delay, repeat_times, go, player)
     end
 end
 
-
-RegisterGameObjectEvent(900002, 2, GRIM_OnEnter)
+RegisterGameObjectEvent(GrimPortal.GO_ID, 2, GrimPortal.OnEnter)
