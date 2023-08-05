@@ -1,17 +1,19 @@
-local questIds = {9265, 9264, 9263, 9262, 9261, 9260}
-local itemId = 22892
-local itemCount = 3
-local totalLooted = {}
+local QuestCompletionModule = {}
 
-local function OnLootItem(event, player, item, count)
-  if item:GetEntry() == itemId then
-    for _, questId in pairs(questIds) do
+QuestCompletionModule.questIds = {9265, 9264, 9263, 9262, 9261, 9260}
+QuestCompletionModule.itemId = 22892
+QuestCompletionModule.itemCount = 3
+QuestCompletionModule.totalLooted = {}
+
+function QuestCompletionModule.OnLootItem(event, player, item, count)
+  if item:GetEntry() == QuestCompletionModule.itemId then
+    for _, questId in pairs(QuestCompletionModule.questIds) do
       if player:HasQuest(questId) then
-        if not totalLooted[questId] then
-          totalLooted[questId] = 0
+        if not QuestCompletionModule.totalLooted[questId] then
+          QuestCompletionModule.totalLooted[questId] = 0
         end
-        totalLooted[questId] = totalLooted[questId] + count
-        if totalLooted[questId] >= itemCount then
+        QuestCompletionModule.totalLooted[questId] = QuestCompletionModule.totalLooted[questId] + count
+        if QuestCompletionModule.totalLooted[questId] >= QuestCompletionModule.itemCount then
           player:CompleteQuest(questId)
         end
       end
@@ -19,4 +21,4 @@ local function OnLootItem(event, player, item, count)
   end
 end
 
-RegisterPlayerEvent(32, OnLootItem)
+RegisterPlayerEvent(32, QuestCompletionModule.OnLootItem)

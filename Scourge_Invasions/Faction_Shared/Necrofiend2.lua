@@ -1,36 +1,37 @@
-local Necrofiend = {}
+local NecrofiendTwo = {}
+NecrofiendTwo.NPC_ID = 11551
 
-function Necrofiend.OnEnterCombat(event, creature, target)
-  creature:RegisterEvent(Necrofiend.WebSpray, 12000, 0, creature)
-  creature:RegisterEvent(Necrofiend.CastBanefulPoison, 7000, 0, creature)
-  creature:RegisterEvent(Necrofiend.DeadlyPoison, 10000, 0, creature)
+function NecrofiendTwo.OnEnterCombat(event, creature, target)
+    creature:RegisterEvent(NecrofiendTwo.WebSpray, 12000, 0, creature)
+    creature:RegisterEvent(NecrofiendTwo.CastBanefulPoison, 7000, 0, creature)
+    creature:RegisterEvent(NecrofiendTwo.DeadlyPoison, 10000, 0, creature)
 end
 
-function Necrofiend.WebSpray(event, delay, calls, creature)
-  creature:CastSpell(creature:GetVictim(), 55508, true)
+function NecrofiendTwo.WebSpray(event, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), 55508, true)
 end
 
-function Necrofiend.DeadlyPoison(event, delay, calls, creature)
-  creature:CastSpell(creature:GetVictim(), 34616, true)
+function NecrofiendTwo.DeadlyPoison(event, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), 34616, true)
 end
 
-function Necrofiend.CastBanefulPoison(event, delay, calls, creature)
-  local targets = creature:GetAITargets(10)
-  if #targets == 0 then
-    return
-  end
-  local target = targets[math.random(#targets)]
-  creature:CastSpell(target, 15475, true)
+function NecrofiendTwo.CastBanefulPoison(event, delay, calls, creature)
+    local targets = creature:GetAITargets(10)
+    if #targets == 0 then
+        return
+    end
+    local target = targets[math.random(#targets)]
+    creature:CastSpell(target, 15475, true)
 end
 
-function Necrofiend.OnLeaveCombat(event, creature)
-  creature:RemoveEvents()
+function NecrofiendTwo.OnLeaveCombat(event, creature)
+    creature:RemoveEvents()
 end
 
-function Necrofiend.OnDied(event, creature, killer)
-  creature:RemoveEvents()
+function NecrofiendTwo.OnDied(event, creature, killer)
+    creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(11551, 1, Necrofiend.OnEnterCombat)
-RegisterCreatureEvent(11551, 2, Necrofiend.OnLeaveCombat)
-RegisterCreatureEvent(11551, 4, Necrofiend.OnDied)
+RegisterCreatureEvent(NecrofiendTwo.NPC_ID, 1, NecrofiendTwo.OnEnterCombat)
+RegisterCreatureEvent(NecrofiendTwo.NPC_ID, 2, NecrofiendTwo.OnLeaveCombat)
+RegisterCreatureEvent(NecrofiendTwo.NPC_ID, 4, NecrofiendTwo.OnDied)

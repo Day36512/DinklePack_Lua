@@ -1,9 +1,11 @@
-local ITEM_ID = 800050 
-local MAX_NPC_SPAWN = 3 
-local ATTACK_CHANCE = 15
-local DAZE_SPELL_ID = 100201 
+local AttackerSpawnModule = {}
 
-local creatureEntriesByLevelBracket = {
+AttackerSpawnModule.ITEM_ID = 800050 
+AttackerSpawnModule.MAX_NPC_SPAWN = 3 
+AttackerSpawnModule.ATTACK_CHANCE = 15
+AttackerSpawnModule.DAZE_SPELL_ID = 100201 
+
+AttackerSpawnModule.creatureEntriesByLevelBracket = {
     [1] = {38},
     [11] = {16303},
     [21] = {485},
@@ -14,7 +16,7 @@ local creatureEntriesByLevelBracket = {
     [71] = {26948}, 
 }
 
-local extraCreatureEntriesByLevelBracket = {
+AttackerSpawnModule.extraCreatureEntriesByLevelBracket = {
     [1] = {99},
     [11] = {11519},
     [21] = {4829},
@@ -25,27 +27,20 @@ local extraCreatureEntriesByLevelBracket = {
     [71] = {28793}, 
 }
 
-local function HasRequiredItem(player)
-    return player:HasItem(ITEM_ID)
+function AttackerSpawnModule.HasRequiredItem(player)
+    return player:HasItem(AttackerSpawnModule.ITEM_ID)
 end
 
-local function GetCreatureEntriesForLevel(level)
-    local sortedBrackets = {}
-    for bracket, _ in pairs(creatureEntriesByLevelBracket) do
-        table.insert(sortedBrackets, bracket)
-    end
-    table.sort(sortedBrackets, function(a, b) return a > b end)  -- sort in descending order
-
-    for _, bracket in ipairs(sortedBrackets) do
+function AttackerSpawnModule.GetCreatureEntriesForLevel(level)
+    for bracket, _ in pairs(AttackerSpawnModule.creatureEntriesByLevelBracket) do
         if level >= bracket then
-            return creatureEntriesByLevelBracket[bracket]
+            return AttackerSpawnModule.creatureEntriesByLevelBracket[bracket], AttackerSpawnModule.extraCreatureEntriesByLevelBracket[bracket]
         end
     end
-    return {} 
+    return {}, {} 
 end
 
-
-local function GetRandomPositionWithinLOS(player)
+function AttackerSpawnModule.GetRandomPositionWithinLOS(player)
     local x, y, z, o = player:GetLocation()
     local tries = 0
     local max_tries = 20
@@ -58,70 +53,81 @@ local function GetRandomPositionWithinLOS(player)
         end
         tries = tries + 1
     end
-    return x, y -- if no position found within LOS, return original player position
+    return x, y
 end
 
-local function SetCreatureHealthRelativeToPlayer(player, creature)
-    local playerHealth = player:GetHealth()
+function AttackerSpawnModule.SetCreatureHealthRelativeToPlayer(player, creature)
+    local playerHealth = player:GetMaxHealth()
     local newHealth = playerHealth * 0.92
     creature:SetMaxHealth(newHealth)
     creature:SetHealth(newHealth)
 end
 
+function AttackerSpawnModule.GetExtraCreatureEntriesForLevel(level)
+    for bracket, _ in pairs(AttackerSpawnModule.extraCreatureEntriesByLevelBracket) do
+        if level >= bracket then
+            return AttackerSpawnModule.extraCreatureEntriesByLevelBracket[bracket]
+        end
+    end
+    return {} 
+end
 
-local function SpawnAttacker(event, player)
-	if player:GetMap():IsBattleground() then
+
+function AttackerSpawnModule.SpawnAttacker(event, player)
+    if player:GetMap():IsBattleground() or not AttackerSpawnModule.HasRequiredItem(player) then
         return
     end
-    if not HasRequiredItem(player) then
-        return
-    end
-    
+
     local chance = math.random(100)
-    if chance <= ATTACK_CHANCE then 
+    if chance <= AttackerSpawnModule.ATTACK_CHANCE then 
+        local level = player:GetLevel()
+        local creatureEntries = AttackerSpawnModule.GetCreatureEntriesForLevel(level)
+
+        if #creatureEntries == 0 then
+            player:SendBroadcastMessage("No creatures to spawn for your level.")
+            return
+        end
+
         local mapId = player:GetMapId()
         local x, y, z, o = player:GetLocation()
-        local level = player:GetLevel()
-        local npcCount = math.random(1, MAX_NPC_SPAWN)
-        local creatureEntries = GetCreatureEntriesForLevel(level)
+        local npcCount = math.random(1, AttackerSpawnModule.MAX_NPC_SPAWN)
 
         if player:IsMounted() and not player:IsFlying() then
             local dazeChance = math.random(100)
             if dazeChance <= 50 then
                 player:Dismount()
-                player:CastSpell(player, DAZE_SPELL_ID, true)
+                player:CastSpell(player, AttackerSpawnModule.DAZE_SPELL_ID, true)
                 player:SendBroadcastMessage("You have been knocked off your mount!")
             end
         end
 
         if not player:IsOnVehicle() then
-            if #creatureEntries > 0 then
-                for i = 1, npcCount do
-                    local selectedCreature = creatureEntries[math.random(#creatureEntries)]
-                    local randomX, randomY = GetRandomPositionWithinLOS(player)
-                    local spawnedCreature = player:SpawnCreature(selectedCreature, randomX, randomY, z, o, 4, 130000)
-                    SetCreatureHealthRelativeToPlayer(player, spawnedCreature)
-                    spawnedCreature:SetLevel(level)
-                    spawnedCreature:AttackStart(player)
-					spawnedCreature:DespawnOrUnsummon(180000)
-                end
+            -- Spawn normal creatures
+            for i = 1, npcCount do
+                local selectedCreature = creatureEntries[math.random(#creatureEntries)]
+                local randomX, randomY = AttackerSpawnModule.GetRandomPositionWithinLOS(player)
+                local spawnedCreature = player:SpawnCreature(selectedCreature, randomX, randomY, z, o, 4, 130000)
+                AttackerSpawnModule.SetCreatureHealthRelativeToPlayer(player, spawnedCreature)
+                spawnedCreature:SetLevel(level)
+                spawnedCreature:AttackStart(player)
+                spawnedCreature:DespawnOrUnsummon(180000)
+            end
 
-                -- 1% chance to spawn an extra creature
-                local extraChance = math.random(100)
-                if extraChance <= 1 then
-                    local extraCreatureEntry = extraCreatureEntriesByLevelBracket[level]
-                    if extraCreatureEntry then
-                        local randomX, randomY = GetRandomPositionWithinLOS(player)
-                        local spawnedExtraCreature = player:SpawnCreature(extraCreatureEntry, randomX, randomY, z, o, 4, 180000)
-                        spawnedExtraCreature:SetLevel(level)
-                        spawnedExtraCreature:AttackStart(player)
-                    end
-                end
-            else
-                player:SendBroadcastMessage("No creatures to spawn for your level.")
+            -- Chance to spawn an extra creature
+            local extraCreatureEntries = AttackerSpawnModule.GetExtraCreatureEntriesForLevel(level)
+            local isExtra = math.random(100) <= 2 and #extraCreatureEntries > 0
+            if isExtra then
+                local selectedExtraCreature = extraCreatureEntries[math.random(#extraCreatureEntries)]
+                local randomX, randomY = AttackerSpawnModule.GetRandomPositionWithinLOS(player)
+                local spawnedExtraCreature = player:SpawnCreature(selectedExtraCreature, randomX, randomY, z, o, 4, 130000)
+                AttackerSpawnModule.SetCreatureHealthRelativeToPlayer(player, spawnedExtraCreature)
+                spawnedExtraCreature:SetLevel(level)
+                spawnedExtraCreature:AttackStart(player)
+                spawnedExtraCreature:DespawnOrUnsummon(180000)
             end
         end
     end
 end
 
-RegisterPlayerEvent(27, SpawnAttacker)
+
+RegisterPlayerEvent(27, AttackerSpawnModule.SpawnAttacker)

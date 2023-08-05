@@ -1,4 +1,6 @@
-local Rattlegore = {};
+local Rattlegore = {}
+
+Rattlegore.npcId = 11622
 
 local function Thunderclap(eventId, delay, calls, creature)
     creature:CastSpell(creature:GetVictim(), 26554, true)
@@ -24,7 +26,7 @@ local function SweepingStrikes(eventId, delay, calls, creature)
     creature:CastSpell(creature, 18765, true)
 end
 
-function Stun(eventId, delay, calls, creature)
+local function Stun(eventId, delay, calls, creature)
     local targets = creature:GetAITargets(10)
     if #targets == 0 then
         return
@@ -33,7 +35,7 @@ function Stun(eventId, delay, calls, creature)
     creature:CastSpell(target, 17308, true)
 end
 
-local function OnEnterCombat(event, creature, target)
+function Rattlegore.OnEnterCombat(event, creature, target)
     creature:RegisterEvent(Thunderclap, math.random(5000, 9000), 0)
     creature:RegisterEvent(WhirlwindKnockback, math.random(11000, 15000), 0)
     creature:RegisterEvent(Stun, math.random(14000, 18000), 0)
@@ -43,22 +45,22 @@ local function OnEnterCombat(event, creature, target)
     creature:RegisterEvent(SweepingStrikes, 100, 1)
 end
 
-local function OnHealthUpdate(event, creature, value)
+function Rattlegore.OnHealthUpdate(event, creature, value)
     if (creature:GetHealthPct() <= 20) then
         creature:RemoveEvents()
         creature:RegisterEvent(Enrage, 100, 1)
     end
 end
 
-local function OnLeaveCombat(event, creature)
+function Rattlegore.OnLeaveCombat(event, creature)
     creature:RemoveEvents()
 end
 
-local function OnDied(event, creature, killer)
+function Rattlegore.OnDied(event, creature, killer)
     creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(11622, 1, OnEnterCombat)
-RegisterCreatureEvent(11622, 9, OnHealthUpdate)
-RegisterCreatureEvent(11622, 2, OnLeaveCombat)
-RegisterCreatureEvent(11622, 4, OnDied)
+RegisterCreatureEvent(Rattlegore.npcId, 1, Rattlegore.OnEnterCombat)
+RegisterCreatureEvent(Rattlegore.npcId, 9, Rattlegore.OnHealthUpdate)
+RegisterCreatureEvent(Rattlegore.npcId, 2, Rattlegore.OnLeaveCombat)
+RegisterCreatureEvent(Rattlegore.npcId, 4, Rattlegore.OnDied)

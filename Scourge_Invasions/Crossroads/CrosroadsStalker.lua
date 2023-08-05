@@ -1,49 +1,60 @@
+UndeadRogueModule = {}
+
 local NPC_UNDEAD_ROGUE = 400114
 local NPC_TARGET = 3338
 local NPC_ADDITIONAL_TARGET = 70000
 local NPC_HUT_FIRE = 29692
 
-local SPELL_SINISTER_STRIKE = 1752
-local SPELL_EVASION = 5277
-local SPELL_GOUGE = 12540
-local SPELL_CAST_DEATH = 5
+local SPELLS = {
+    SINISTER_STRIKE = 1752,
+    EVASION = 5277,
+    GOUGE = 12540,
+    CAST_DEATH = 5
+}
 
 local FIRE_SPAWN_CHANCE = 20
 local FIRE_SPAWN_RADIUS = 20
 local FIRE_DESPAWN_TIME = 600000
 
+local NEAREST_CREATURE_DISTANCE = 50
+local DESPAWN_TIME_AFTER_DEATH = 10000
+
+local function castSpell(creature, target, spellId)
+    creature:CastSpell(target, spellId, true)
+end
+
 local function CastSinisterStrike(eventId, delay, calls, creature)
-    creature:CastSpell(creature:GetVictim(), SPELL_SINISTER_STRIKE, true)
+    castSpell(creature, creature:GetVictim(), SPELLS.SINISTER_STRIKE)
 end
 
 local function CastGouge(eventId, delay, calls, creature)
-    creature:CastSpell(creature:GetVictim(), SPELL_GOUGE, true)
+    castSpell(creature, creature:GetVictim(), SPELLS.GOUGE)
 end
 
 local function CastSpellOnTarget(creature, targetNPC)
-    creature:CastSpell(targetNPC, SPELL_CAST_DEATH, true)
+    castSpell(creature, targetNPC, SPELLS.CAST_DEATH)
 end
 
-local function UndeadRogue_OnEnterCombat(event, creature, target)
+function UndeadRogueModule.OnEnterCombat(event, creature, target)
     creature:RegisterEvent(CastSinisterStrike, math.random(4000, 6000), 0)
     creature:RegisterEvent(CastGouge, math.random(14000, 18000), 0)
     
-    local targetNPC = creature:GetNearestCreature(50, NPC_TARGET)
+    local targetNPC = creature:GetNearestCreature(NEAREST_CREATURE_DISTANCE, NPC_TARGET)
     if targetNPC then
         CastSpellOnTarget(creature, targetNPC)
     end
 
-    local additionalTargetNPC = creature:GetNearestCreature(50, NPC_ADDITIONAL_TARGET)
+    local additionalTargetNPC = creature:GetNearestCreature(NEAREST_CREATURE_DISTANCE, NPC_ADDITIONAL_TARGET)
     if additionalTargetNPC then
         CastSpellOnTarget(creature, additionalTargetNPC)
     end
 end
 
-local function UndeadRogue_OnLeaveCombat(event, creature)
+function UndeadRogueModule.OnLeaveCombat(event, creature)
     creature:RemoveEvents()
 end
 
-local function UndeadRogue_OnWaypointReached(event, creature)
+function UndeadRogueModule.OnWaypointReached(event, creature)
     local chance = math.random(1, 100)
     local areaId = creature:GetAreaId()
     if chance <= FIRE_SPAWN_CHANCE and (areaId == 380 or areaId == 69) then
@@ -55,20 +66,20 @@ local function UndeadRogue_OnWaypointReached(event, creature)
     end
 end
 
-local function UndeadRogue_OnDamageTaken(event, creature, attacker, damage)
+function UndeadRogueModule.OnDamageTaken(event, creature, attacker, damage)
     local healthPct = creature:GetHealthPct()
-    if healthPct <= 30 and not creature:HasAura(SPELL_EVASION) then
-        creature:CastSpell(creature, SPELL_EVASION, true)
+    if healthPct <= 30 and not creature:HasAura(SPELLS.EVASION) then
+        castSpell(creature, creature, SPELLS.EVASION)
     end
 end
 
-local function UndeadRogue_OnDied(event, creature, killer)
+function UndeadRogueModule.OnDied(event, creature, killer)
     creature:RemoveEvents()
-    creature:DespawnOrUnsummon(10000)
+    creature:DespawnOrUnsummon(DESPAWN_TIME_AFTER_DEATH)
 end
 
-RegisterCreatureEvent(NPC_UNDEAD_ROGUE, 1, UndeadRogue_OnEnterCombat)
-RegisterCreatureEvent(NPC_UNDEAD_ROGUE, 2, UndeadRogue_OnLeaveCombat)
-RegisterCreatureEvent(NPC_UNDEAD_ROGUE, 4, UndeadRogue_OnDied)
-RegisterCreatureEvent(NPC_UNDEAD_ROGUE, 9, UndeadRogue_OnDamageTaken)
-RegisterCreatureEvent(NPC_UNDEAD_ROGUE, 6, UndeadRogue_OnWaypointReached)
+RegisterCreatureEvent(NPC_UNDEAD_ROGUE, 1, UndeadRogueModule.OnEnterCombat)
+RegisterCreatureEvent(NPC_UNDEAD_ROGUE, 2, UndeadRogueModule.OnLeaveCombat)
+RegisterCreatureEvent(NPC_UNDEAD_ROGUE, 4, UndeadRogueModule.OnDied)
+RegisterCreatureEvent(NPC_UNDEAD_ROGUE, 9, UndeadRogueModule.OnDamageTaken)
+RegisterCreatureEvent(NPC_UNDEAD_ROGUE, 6, UndeadRogueModule.OnWaypointReached)

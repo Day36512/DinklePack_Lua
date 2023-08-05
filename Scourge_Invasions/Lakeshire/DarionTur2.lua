@@ -1,8 +1,9 @@
-local NPC_ID_DAMION_TUR = 400079
-local SOUND_ID = 20436
+local DamionTur = {}
+DamionTur.NPC_ID = 400079
+DamionTur.SOUND_ID = 183260
 
-local function OnDamionTurSpawn(event, creature)
-    creature:PlayDirectSound(SOUND_ID)
+function DamionTur.OnSpawn(event, creature)
+    creature:PlayDirectSound(DamionTur.SOUND_ID)
 end
 
-RegisterCreatureEvent(NPC_ID_DAMION_TUR, 5, OnDamionTurSpawn)
+RegisterCreatureEvent(DamionTur.NPC_ID, 5, DamionTur.OnSpawn)

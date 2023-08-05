@@ -1,4 +1,6 @@
-local RShredder = {};
+local RShredder = {}
+
+RShredder.NPC_ID = 400044
 
 function RShredder.OnSpawn(event, creature)
 	creature:CastSpell(creature, 100169, true)
@@ -10,5 +12,5 @@ function RShredder.OnDied(event, creature)
     creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(400044, 4, RShredder.OnDied)
-RegisterCreatureEvent(400044, 5, RShredder.OnSpawn)
+RegisterCreatureEvent(RShredder.NPC_ID, 4, RShredder.OnDied)
+RegisterCreatureEvent(RShredder.NPC_ID, 5, RShredder.OnSpawn)

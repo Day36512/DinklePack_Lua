@@ -1,34 +1,35 @@
--- Creature ID for the creature that gives the quests
-local CREATURE_ID = 400096
+local QuestSoundHandler = {}
 
--- Quest and sound IDs for the quests that should trigger the sounds
-local QUEST_ACCEPT = {
-    [30015] = 20439,
-    [30016] = 20441,
-    [30017] = 20443,
-	[30018] = 20449
+QuestSoundHandler.CREATURE_ID = 400096
+
+QuestSoundHandler.QUEST_ACCEPT = {
+    [30015] = 183263,
+    [30016] = 183265,
+    [30017] = 183267,
+    [30018] = 183269
 }
 
-local QUEST_COMPLETE = {
-    [30014] = 20438,
-    [30015] = 20440,
-    [30016] = 20442,
-    [30017] = 20444,
-	[30018] = 20450
+QuestSoundHandler.QUEST_COMPLETE = {
+    [30014] = 183262,
+    [30015] = 183264,
+    [30016] = 183266,
+    [30017] = 183268,
+    [30018] = 183270
 }
 
--- Register the event for quest accept
-RegisterCreatureEvent(CREATURE_ID, 31, function(event, player, creature, quest)
-    local soundID = QUEST_ACCEPT[quest:GetId()]
+function QuestSoundHandler.OnQuestAccept(event, player, creature, quest)
+    local soundID = QuestSoundHandler.QUEST_ACCEPT[quest:GetId()]
     if soundID then
-        player:PlayDistanceSound(soundID)
+        player:PlayDirectSound(soundID)
     end
-end)
+end
 
--- Register the event for quest reward
-RegisterCreatureEvent(CREATURE_ID, 34, function(event, player, creature, quest)
-    local soundID = QUEST_COMPLETE[quest:GetId()]
+function QuestSoundHandler.OnQuestReward(event, player, creature, quest)
+    local soundID = QuestSoundHandler.QUEST_COMPLETE[quest:GetId()]
     if soundID then
-        creature:PlayDistanceSound(soundID)
+        creature:PlayDirectSound(soundID)
     end
-end)
+end
+
+RegisterCreatureEvent(QuestSoundHandler.CREATURE_ID, 31, QuestSoundHandler.OnQuestAccept)
+RegisterCreatureEvent(QuestSoundHandler.CREATURE_ID, 34, QuestSoundHandler.OnQuestReward)

@@ -1,4 +1,4 @@
-local GAME_EVENT_ID = 17 -- Set the game event ID
+local GAME_EVENT_ID = 92 -- Set the game event ID
 local npcIds = {3085, 841, 348, 8965, 1678, 8962, 8963, 5608, 5607, 847, 791, 381, 3361, 789, 5620, 3089, 9982, 6727, 6166, 379, 346, 1680} -- Add your NPC entries here
 local targetLocations = {
     {x = -9195.19, y = -2157.19, z = 57.186},

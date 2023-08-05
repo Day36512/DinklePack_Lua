@@ -1,24 +1,26 @@
-local NPC_ID = 400034 -- The ID of the NPC you want players to get kill credit for
+local TrapPlacer = {}
+
+TrapPlacer.NPC_ID = 400034 -- The ID of the NPC you want players to get kill credit for
 
 -- List of allowed zones (use zone ID)
-local ALLOWED_ZONES = {
+TrapPlacer.ALLOWED_ZONES = {
     1519, -- SW City
-	12,	
-	14,
-	1637
+    12,	
+    14,
+    1637
 }
 
 -- List of allowed spell IDs
-local ALLOWED_SPELLS = {
+TrapPlacer.ALLOWED_SPELLS = {
     100144, -- Spell 1
     100142, 
     100143,
-	100145, 
+    100145, 
     -- Add more spells here as needed
 }
 
 -- Define the indexOf function for tables
-function table.indexOf(t, value)
+function TrapPlacer.indexOf(t, value)
     for k, v in ipairs(t) do
         if v == value then
             return k
@@ -27,19 +29,19 @@ function table.indexOf(t, value)
     return -1
 end
 
-function OnPlayerCastSpell(event, player, spell)
+function TrapPlacer.OnPlayerCastSpell(event, player, spell)
     local spellId = spell:GetEntry()
     local zoneId = player:GetZoneId()
 
-    if table.indexOf(ALLOWED_SPELLS, spellId) ~= -1 then
-        if table.indexOf(ALLOWED_ZONES, zoneId) == -1 then
+    if TrapPlacer.indexOf(TrapPlacer.ALLOWED_SPELLS, spellId) ~= -1 then
+        if TrapPlacer.indexOf(TrapPlacer.ALLOWED_ZONES, zoneId) == -1 then
             spell:Cancel()
             player:SendBroadcastMessage("You cannot use that here.")
         else
-            player:KilledMonsterCredit(NPC_ID)
-            player:SendBroadcastMessage("You have successfuly placed a trap!")
+            player:KilledMonsterCredit(TrapPlacer.NPC_ID)
+            player:SendBroadcastMessage("You have successfully placed a trap!")
         end
     end
 end
 
-RegisterPlayerEvent(5, OnPlayerCastSpell)
+RegisterPlayerEvent(5, TrapPlacer.OnPlayerCastSpell)

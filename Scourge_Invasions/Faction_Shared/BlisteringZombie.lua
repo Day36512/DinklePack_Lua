@@ -1,5 +1,6 @@
-local BlisteringZombie = {};
+local BLISTERING_ONE_NPC_ID = 400029
 
+BlisteringZombieOne = {}
 
 local function CastSpit(eventId, delay, calls, creature)
     creature:CastSpell(creature:GetVictim(), 25262, true)
@@ -15,25 +16,20 @@ local function CastSpecialSpell(eventId, delay, calls, creature)
     end
 end
 
-local function OnEnterCombat(event, creature, target)
+function BlisteringZombieOne.OnEnterCombat(event, creature, target)
     creature:RegisterEvent(CastSpit, 5000, 0)
     creature:RegisterEvent(CastSpecialSpell, 1000, 0)
 end
 
-local function OnLeaveCombat(event, creature)
+function BlisteringZombieOne.OnLeaveCombat(event, creature)
     creature:RemoveEvents()
 end
 
-
-
-local function OnDied(event, creature, killer)
+function BlisteringZombieOne.OnDied(event, creature, killer)
     creature:DespawnOrUnsummon(5000)
     creature:RemoveEvents()
 end
 
-
-RegisterCreatureEvent(400029, 1, OnEnterCombat)
-RegisterCreatureEvent(400029, 2, OnLeaveCombat)
-RegisterCreatureEvent(400029, 4, OnDied)
-
-
+RegisterCreatureEvent(BLISTERING_ONE_NPC_ID, 1, BlisteringZombieOne.OnEnterCombat)
+RegisterCreatureEvent(BLISTERING_ONE_NPC_ID, 2, BlisteringZombieOne.OnLeaveCombat)
+RegisterCreatureEvent(BLISTERING_ONE_NPC_ID, 4, BlisteringZombieOne.OnDied)

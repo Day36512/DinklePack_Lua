@@ -1,3 +1,5 @@
+HordeGuardModule = {}
+
 local NPC_IDS = {400104}
 local ITEM_ID = 60124
 
@@ -101,7 +103,7 @@ local function RegisterAbilities(creature, weaponType)
 end
 
 
-local function OnEnterCombat(event, creature, target)
+function HordeGuardModule.OnEnterCombat(event, creature, target)
     local weaponType = creature:GetData("weaponType")
     if weaponType and not creature:GetData("abilitiesRegistered") then
         RegisterAbilities(creature, weaponType)
@@ -109,7 +111,7 @@ local function OnEnterCombat(event, creature, target)
 end
 
 
-local function OnLeaveCombat(event, creature)
+function HordeGuardModule.OnLeaveCombat(event, creature)
 	creature:RemoveEvents()
 	-- creature:EmoteState(375)
     creature:SetData("abilitiesRegistered", false)
@@ -120,7 +122,7 @@ local function DespawnCreature(eventId, delay, calls, creature)
     creature:DespawnOrUnsummon()
 end
 
-local function OnGossipSelect(event, player, creature, sender, intid, code)
+function HordeGuardModule.OnGossipSelect(event, player, creature, sender, intid, code)
     if intid == 0 then
         OnGossipHello(event, player, creature)
     elseif intid >= 1001 and intid <= 1003 then
@@ -166,7 +168,7 @@ local function OnGossipSelect(event, player, creature, sender, intid, code)
     end
 end
 
-local function OnCreatureDied(event, creature, killer)
+function HordeGuardModule.OnCreatureDied(event, creature, killer)
     creature:SetEquipmentSlots(0, 0, 0)
 	creature:SetData("equipmentSet", false)
     creature:RemoveEvents()
@@ -175,8 +177,8 @@ end
 
 for _, npcId in ipairs(NPC_IDS) do
     RegisterCreatureGossipEvent(npcId, 1, OnGossipHello)
-    RegisterCreatureGossipEvent(npcId, 2, OnGossipSelect)
-    RegisterCreatureEvent(npcId, 1, OnEnterCombat)
-    RegisterCreatureEvent(npcId, 2, OnLeaveCombat)
-    RegisterCreatureEvent(npcId, 4, OnCreatureDied)
+    RegisterCreatureGossipEvent(npcId, 2, HordeGuardModule.OnGossipSelect)
+    RegisterCreatureEvent(npcId, 1, HordeGuardModule.OnEnterCombat)
+    RegisterCreatureEvent(npcId, 2, HordeGuardModule.OnLeaveCombat)
+    RegisterCreatureEvent(npcId, 4, HordeGuardModule.OnCreatureDied)
 end

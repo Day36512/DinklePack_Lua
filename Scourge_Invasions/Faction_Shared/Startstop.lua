@@ -1,22 +1,23 @@
-local holidayEventIds = {17, 91, 92}
+local EventFixer = {}
+EventFixer.holidayEventIds = {17, 91, 92}
 
 -- add a boolean flag
-local hasScriptRun = false
+EventFixer.hasScriptRun = false
 
-local function OnPlayerLogin(event, player)
+local function FixEvents(eventId, delay, repeats, player)
     -- check the flag
-    if hasScriptRun then
+    if EventFixer.hasScriptRun then
         print("Event Fix Script has already run, skipping...")
         return
-    else
-        print("Running Event Fix Script for the first time...")
     end
-    
+
     if not player:IsInWorld() then
         return
     end
 
-    for _, eventId in ipairs(holidayEventIds) do
+    print("Running Event Fix Script for the first time...")
+
+    for _, eventId in ipairs(EventFixer.holidayEventIds) do
         local isHolidayActive = IsGameEventActive(eventId)
 
         if isHolidayActive then
@@ -26,8 +27,12 @@ local function OnPlayerLogin(event, player)
     end
     
     -- set the flag to true after the first run
-    hasScriptRun = true
+    EventFixer.hasScriptRun = true
     print("Event Fix Script run complete, will not run again until server restart")
 end
 
-RegisterPlayerEvent(3, OnPlayerLogin)
+local function FixItOnPlayerLogin(event, player)
+    player:RegisterEvent(FixEvents, 2000, 1) -- 2 seconds delay
+end
+
+RegisterPlayerEvent(3, FixItOnPlayerLogin)

@@ -1,5 +1,7 @@
 local SpiritofThalgorath = {}
 
+SpiritofThalgorath.NPC_ID = 400103
+
 function SpiritofThalgorath.OnSpawn(event, creature)
     creature:SendUnitYell("You will not defeat me so easily!", 0)
 end
@@ -36,7 +38,7 @@ function SpiritofThalgorath.OnDied(event, creature, killer)
     creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(400103, 5, SpiritofThalgorath.OnSpawn)
-RegisterCreatureEvent(400103, 1, SpiritofThalgorath.OnEnterCombat)
-RegisterCreatureEvent(400103, 2, SpiritofThalgorath.OnLeaveCombat)
-RegisterCreatureEvent(400103, 4, SpiritofThalgorath.OnDied)
+RegisterCreatureEvent(SpiritofThalgorath.NPC_ID, 5, SpiritofThalgorath.OnSpawn)
+RegisterCreatureEvent(SpiritofThalgorath.NPC_ID, 1, SpiritofThalgorath.OnEnterCombat)
+RegisterCreatureEvent(SpiritofThalgorath.NPC_ID, 2, SpiritofThalgorath.OnLeaveCombat)
+RegisterCreatureEvent(SpiritofThalgorath.NPC_ID, 4, SpiritofThalgorath.OnDied)
