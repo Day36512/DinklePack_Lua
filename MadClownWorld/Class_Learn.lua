@@ -32,6 +32,7 @@ local Spells = {
 		{51723, 25, "Fan of Knives"},
 		{31224, 60, "Cloak of Shadows"},
 		{5938, 60, "Shiv"},
+		{32645, 60, "Envenom"},
 		{57934, 45, "Tricks of the Trade"},
 		{30262, 1, "NPC Bot: Sendto Smoke Flare"},
 		{674, 1, "Dual Wield"},
@@ -119,13 +120,42 @@ function CheckSpell(player)
 end
 
 
+local UnlearnSpells = {24939, 24969, 100116, 100117, 100118}
+local TriggerItems = {800048, 90000, 800085}
+
+local function CheckUnlearnSpells(player)
+    for _, itemId in ipairs(TriggerItems) do
+        if player:HasItem(itemId, 1) then
+            for _, spellId in ipairs(UnlearnSpells) do
+                if player:HasSpell(spellId) then
+                    player:RemoveSpell(spellId)
+                    player:SendBroadcastMessage("A challenge mode item in your inventory has caused you to forget a spell.")
+                end
+            end
+        end
+    end
+end
+
+local function SendPatreonMessage(eventid, delay, repeats, player)
+    player:SendBroadcastMessage("|cff00ff00Thank you to all my wonderful supporters! Your patreon pledges go a long way in ensuring we continue to get cool stuff for the repack. If you'd like to donate, you can visit our page here: |cffffffffpatreon.com/Dinklepack5")
+end
+
+local function Delay(eventid, delay, repeats, player)
+    CheckSpell(player)
+    CheckRaceSkill(player)
+    CheckUnlearnSpells(player) 
+end
+
 local function Delay(eventid, delay, repeats, player)
 	CheckSpell(player)
 	CheckRaceSkill(player)
+	CheckUnlearnSpells(player) 
 end
 
 local function RunCheck_Login(event, player)
-	player:RegisterEvent(Delay, 10000, 1, player)
+	player:RegisterEvent(Delay, 4500, 1, player)
+	player:RegisterEvent(SendPatreonMessage, 13000, 1, player)
+
 end
 local function RunCheck_LevelUP(event, player)
 	player:RegisterEvent(Delay, 3000, 1, player)
