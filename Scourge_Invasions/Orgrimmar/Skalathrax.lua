@@ -8,7 +8,7 @@ creature:SetDisableGravity(true)
 creature:SetReactState(0)
 creature:SetRegeneratingHealth(false)
 creature:SendUnitYell("Your warm flesh will freeze under the shadow of my wings!", 0)
-creature:PlayDirectSound(20429)
+creature:PlayDirectSound(183274)
 creature:CastSpell(creature, 100151, true)
 creature:CastSpell(creature, 17683, true)
 

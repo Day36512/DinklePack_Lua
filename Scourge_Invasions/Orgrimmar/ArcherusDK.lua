@@ -1,83 +1,91 @@
-local ArcherusDK = {};
-local hasCastIceboundFortitude = false;
+local ArcherusDK = {}
 
-local function CastIcyTouch(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 49896, true)
+ArcherusDK.NPC_ID = 400046
+ArcherusDK.hasCastIceboundFortitude = false
+
+ArcherusDK.spells = {
+    ICY_TOUCH = 49896,
+    PLAGUE_STRIKE = 49917,
+    BLOOD_BOIL = 48721,
+    DEATH_AND_DECAY = 43265,
+    DEATH_STRIKE = 49999,
+    ANTI_MAGIC_SHIELD = 24021,
+    ANTI_MAGIC_ZONE = 51052,
+    SPECIAL_SPELL = 5,
+    ICEBOUND_FORTITUDE = 48792
+}
+
+function ArcherusDK.CastIcyTouch(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), ArcherusDK.spells.ICY_TOUCH, true)
 end
 
-local function CastPlagueStrike(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 49917, true)
+function ArcherusDK.CastPlagueStrike(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), ArcherusDK.spells.PLAGUE_STRIKE, true)
 end
 
-local function CastBloodBoil(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 48721, true)
+function ArcherusDK.CastBloodBoil(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), ArcherusDK.spells.BLOOD_BOIL, true)
 end
 
-local function CastDnD(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 43265, true)
+function ArcherusDK.CastDnD(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), ArcherusDK.spells.DEATH_AND_DECAY, true)
 end
 
-local function CastDeathstrike(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 49999, true)
+function ArcherusDK.CastDeathstrike(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), ArcherusDK.spells.DEATH_STRIKE, true)
 end
 
-
-local function CastAntiMagicShield(eventId, delay, calls, creature)
-creature:CastSpell(creature, 24021, true)
+function ArcherusDK.CastAntiMagicShield(eventId, delay, calls, creature)
+    creature:CastSpell(creature, ArcherusDK.spells.ANTI_MAGIC_SHIELD, true)
 end
 
-local function CastAntiMagicZone(eventId, delay, calls, creature)
-creature:CastSpell(creature, 51052, true)
+function ArcherusDK.CastAntiMagicZone(eventId, delay, calls, creature)
+    creature:CastSpell(creature, ArcherusDK.spells.ANTI_MAGIC_ZONE, true)
 end
 
-local function CastSpecialSpell(eventId, delay, calls, creature)
-  local victim = creature:GetVictim()
-  if not victim then
-    return
-  end
-  if victim:GetEntry() == 32666 or victim:GetEntry() == 32667 or victim:GetEntry() == 31144 or victim:GetEntry() == 31146 then
-    creature:CastSpell(victim, 5, true)
-  end
+function ArcherusDK.CastSpecialSpell(eventId, delay, calls, creature)
+    local victim = creature:GetVictim()
+    if not victim then
+        return
+    end
+    if victim:GetEntry() == 32666 or victim:GetEntry() == 32667 or victim:GetEntry() == 31144 or victim:GetEntry() == 31146 then
+        creature:CastSpell(victim, ArcherusDK.spells.SPECIAL_SPELL, true)
+    end
 end
 
-
-local function OnEnterCombat(event, creature, target)
-creature:RegisterEvent(CastIcyTouch, 5000, 0)
-creature:RegisterEvent(CastPlagueStrike, 6000, 0)
-creature:RegisterEvent(CastDeathstrike, 25000, 0)
-creature:RegisterEvent(CastBloodBoil, math.random(12000, 18000), 0)
-creature:RegisterEvent(CastDnD, 100, 1)
-creature:RegisterEvent(CastSpecialSpell, 1000, 0)
+function ArcherusDK.OnEnterCombat(event, creature, target)
+    creature:RegisterEvent(ArcherusDK.CastIcyTouch, 5000, 0)
+    creature:RegisterEvent(ArcherusDK.CastPlagueStrike, 6000, 0)
+    creature:RegisterEvent(ArcherusDK.CastDeathstrike, 25000, 0)
+    creature:RegisterEvent(ArcherusDK.CastBloodBoil, math.random(12000, 18000), 0)
+    creature:RegisterEvent(ArcherusDK.CastDnD, 100, 1)
+    creature:RegisterEvent(ArcherusDK.CastSpecialSpell, 1000, 0)
 end
 
-local function OnLeaveCombat(event, creature)
-creature:RemoveEvents()
-creature:RegisterEvent(CastAntiMagicShield, 18000, 0)
-creature:RegisterEvent(CastAntiMagicZone, 18000, 0)
+function ArcherusDK.OnLeaveCombat(event, creature)
+    creature:RemoveEvents()
+    creature:RegisterEvent(ArcherusDK.CastAntiMagicShield, 18000, 0)
+    creature:RegisterEvent(ArcherusDK.CastAntiMagicZone, 18000, 0)
 end
 
-local function OnDied(event, creature, killer)
-creature:RemoveEvents()
+function ArcherusDK.OnDied(event, creature, killer)
+    creature:RemoveEvents()
 end
 
-local function OnSpawn(event, creature)
-creature:RegisterEvent(CastAntiMagicShield, 18000, 0)
-creature:RegisterEvent(CastAntiMagicZone, 36000, 0)
+function ArcherusDK.OnSpawn(event, creature)
+    creature:RegisterEvent(ArcherusDK.CastAntiMagicShield, 18000, 0)
+    creature:RegisterEvent(ArcherusDK.CastAntiMagicZone, 36000, 0)
 end
 
-local function CastBloodBoil(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 48721, true)
+function ArcherusDK.OnHealthCheck(event, creature, victim, health)
+    if (creature:GetHealthPct() <= 20 and not ArcherusDK.hasCastIceboundFortitude) then
+        creature:CastSpell(creature, ArcherusDK.spells.ICEBOUND_FORTITUDE, true)
+        ArcherusDK.hasCastIceboundFortitude = true
+    end
 end
 
-local function OnHealthCheck(event, creature, victim, health)
-if (creature:GetHealthPct() <= 20 and not hasCastIceboundFortitude) then
-creature:CastSpell(creature, 48792, true)
-hasCastIceboundFortitude = true
-end
-end
-
-RegisterCreatureEvent(400046, 1, OnEnterCombat)
-RegisterCreatureEvent(400046, 2, OnLeaveCombat)
-RegisterCreatureEvent(400046, 4, OnDied)
-RegisterCreatureEvent(400046, 5, OnSpawn)
-RegisterCreatureEvent(400046, 9, OnHealthCheck)
+RegisterCreatureEvent(ArcherusDK.NPC_ID, 1, ArcherusDK.OnEnterCombat)
+RegisterCreatureEvent(ArcherusDK.NPC_ID, 2, ArcherusDK.OnLeaveCombat)
+RegisterCreatureEvent(ArcherusDK.NPC_ID, 4, ArcherusDK.OnDied)
+RegisterCreatureEvent(ArcherusDK.NPC_ID, 5, ArcherusDK.OnSpawn)
+RegisterCreatureEvent(ArcherusDK.NPC_ID, 9, ArcherusDK.OnHealthCheck)

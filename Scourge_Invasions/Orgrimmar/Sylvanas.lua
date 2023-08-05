@@ -1,76 +1,86 @@
-local Sylvanas = {};
+local SylvanasOrgrimmar = {}
 
-function Sylvanas.OnEnterCombat(event, creature, target)
-	creature:RegisterEvent(Sylvanas.CastRapidShot, 7100, 0)
-	creature:RegisterEvent(Sylvanas.CastMultiShot, 6100, 0)
-	creature:RegisterEvent(Sylvanas.CastExplosiveShot, 6600, 0)
-	creature:RegisterEvent(Sylvanas.CastBlackArrow, 15300, 0)
-	creature:RegisterEvent(Sylvanas.CastShoot, 499, 0)
+SylvanasOrgrimmar.NPC_ID = 400071
+SylvanasOrgrimmar.SPELL_IDS = {
+    RAPID_SHOT = 71251,
+    SHOOT = 39079,
+    MULTI_SHOT = 59713,
+    EXPLOSIVE_SHOT = 60053,
+    BLACK_ARROW = 63672,
+    SHADOWSTEP = 58984
+}
+
+function SylvanasOrgrimmar.OnEnterCombat(event, creature, target)
+    creature:RegisterEvent(SylvanasOrgrimmar.CastRapidShot, 7100, 0)
+    creature:RegisterEvent(SylvanasOrgrimmar.CastMultiShot, 6100, 0)
+    creature:RegisterEvent(SylvanasOrgrimmar.CastExplosiveShot, 6600, 0)
+    creature:RegisterEvent(SylvanasOrgrimmar.CastBlackArrow, 15300, 0)
+    creature:RegisterEvent(SylvanasOrgrimmar.CastShoot, 499, 0)
 end
 
-function Sylvanas.OnLeaveCombat(event, creature)
-	creature:RemoveEvents()
+function SylvanasOrgrimmar.OnLeaveCombat(event, creature)
+    creature:RemoveEvents()
 end
 
-function Sylvanas.OnDied(event, creature, killer)
-	creature:RemoveEvents()
+function SylvanasOrgrimmar.OnDied(event, creature, killer)
+    creature:RemoveEvents()
 end
 
-function Sylvanas.CastRapidShot(event, delay, calls, creature)
-	local victim = creature:GetVictim()
-	if not creature:IsCasting() or creature:IsCasting(71251) then
-		creature:CastSpell(victim, 71251, true)
-	end
+function SylvanasOrgrimmar.CastRapidShot(event, delay, calls, creature)
+    local victim = creature:GetVictim()
+    if not creature:IsCasting() or creature:IsCasting(SylvanasOrgrimmar.SPELL_IDS.RAPID_SHOT) then
+        creature:CastSpell(victim, SylvanasOrgrimmar.SPELL_IDS.RAPID_SHOT, true)
+    end
 end
 
-function Sylvanas.CastShoot(event, delay, calls, creature)
-	local victim = creature:GetVictim()
-	if not creature:IsCasting() or not creature:IsCasting(71251) then
-		creature:CastSpell(victim, 39079, true)
-	end
+function SylvanasOrgrimmar.CastShoot(event, delay, calls, creature)
+    local victim = creature:GetVictim()
+    if not creature:IsCasting() or not creature:IsCasting(SylvanasOrgrimmar.SPELL_IDS.RAPID_SHOT) then
+        creature:CastSpell(victim, SylvanasOrgrimmar.SPELL_IDS.SHOOT, true)
+    end
 end
 
-function Sylvanas.CastMultiShot(event, delay, calls, creature)
-	local victim = creature:GetVictim()
-	if not creature:IsCasting() or not creature:IsCasting(71251) then
-		creature:CastSpell(victim, 59713, true)
-	end
+function SylvanasOrgrimmar.CastMultiShot(event, delay, calls, creature)
+    local victim = creature:GetVictim()
+    if not creature:IsCasting() or not creature:IsCasting(SylvanasOrgrimmar.SPELL_IDS.RAPID_SHOT) then
+        creature:CastSpell(victim, SylvanasOrgrimmar.SPELL_IDS.MULTI_SHOT, true)
+    end
 end
 
-function Sylvanas.CastExplosiveShot(event, delay, calls, creature)
-	local victim = creature:GetVictim()
-	if not creature:IsCasting() or not creature:IsCasting(71251) then
-		creature:CastSpell(victim, 60053, true)
-	end
+function SylvanasOrgrimmar.CastExplosiveShot(event, delay, calls, creature)
+    local victim = creature:GetVictim()
+    if not creature:IsCasting() or not creature:IsCasting(SylvanasOrgrimmar.SPELL_IDS.RAPID_SHOT) then
+        creature:CastSpell(victim, SylvanasOrgrimmar.SPELL_IDS.EXPLOSIVE_SHOT, true)
+    end
 end
 
-function Sylvanas.CastBlackArrow(event, delay, calls, creature)
-	local victim = creature:GetVictim()
-	if not creature:IsCasting() or not creature:IsCasting(71251) then
-		creature:CastSpell(victim, 63672, true)
-	end
+function SylvanasOrgrimmar.CastBlackArrow(event, delay, calls, creature)
+    local victim = creature:GetVictim()
+    if not creature:IsCasting() or not creature:IsCasting(SylvanasOrgrimmar.SPELL_IDS.RAPID_SHOT) then
+        creature:CastSpell(victim, SylvanasOrgrimmar.SPELL_IDS.BLACK_ARROW, true)
+    end
 end
 
-function Sylvanas.OnSpawn(event, creature)
-creature:SendUnitSay("Hello Thrall. You didn't think I'd let you have all the fun, did you?", 0)
-creature:CastSpell(creature, 51908, true)
+function SylvanasOrgrimmar.OnSpawn(event, creature)
+    creature:SendUnitSay("Hello Thrall. You didn't think I'd let you have all the fun, did you?", 0)
+    creature:CastSpell(creature, SylvanasOrgrimmar.SPELL_IDS.SHADOWSTEP, true)
 end
 
-function Sylvanas.OnHealthCheck(event, creature, attacker, damage)
-if (creature:GetHealth() - damage) <= 15 then
-creature:RegisterEvent(Sylvanas.Shadowstep, 4800, 1)
-end
-end
-
-function Sylvanas.Shadowstep(event, delay, calls, creature)
-creature:CastSpell(creature, 51908, true)
-creature:CastSpell(creature, 58984, true)
-creature:SendUnitYell("Thrall...I must be going. Hopefully I thinned enough of the scourge forces for you...now you can handle the rest.", 0)
-creature:DespawnOrUnsummon(5000)
+function SylvanasOrgrimmar.OnHealthCheck(event, creature, attacker, damage)
+    if (creature:GetHealth() - damage) <= 15 then
+        creature:RegisterEvent(SylvanasOrgrimmar.CastShadowstep, 4800, 1)
+    end
 end
 
-RegisterCreatureEvent(400071, 9, Sylvanas.OnHealthCheck)
-RegisterCreatureEvent(400071, 5, Sylvanas.OnSpawn)
-RegisterCreatureEvent(400071, 1, Sylvanas.OnEnterCombat)
-RegisterCreatureEvent(400071, 2, Sylvanas.OnLeaveCombat)
-RegisterCreatureEvent(400071, 4, Sylvanas.OnDied)
+function SylvanasOrgrimmar.CastShadowstep(event, delay, calls, creature)
+    creature:CastSpell(creature, SylvanasOrgrimmar.SPELL_IDS.SHADOWSTEP, true)
+    creature:CastSpell(creature, SylvanasOrgrimmar.SPELL_IDS.SHADOWSTEP, true)
+    creature:SendUnitYell("Thrall...I must be going. Hopefully I thinned enough of the scourge forces for you...now you can handle the rest.", 0)
+    creature:DespawnOrUnsummon(5000)
+end
+
+RegisterCreatureEvent(SylvanasOrgrimmar.NPC_ID, 9, SylvanasOrgrimmar.OnHealthCheck)
+RegisterCreatureEvent(SylvanasOrgrimmar.NPC_ID, 5, SylvanasOrgrimmar.OnSpawn)
+RegisterCreatureEvent(SylvanasOrgrimmar.NPC_ID, 1, SylvanasOrgrimmar.OnEnterCombat)
+RegisterCreatureEvent(SylvanasOrgrimmar.NPC_ID, 2, SylvanasOrgrimmar.OnLeaveCombat)
+RegisterCreatureEvent(SylvanasOrgrimmar.NPC_ID, 4, SylvanasOrgrimmar.OnDied)

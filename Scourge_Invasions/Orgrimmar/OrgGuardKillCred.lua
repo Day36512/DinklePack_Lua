@@ -1,41 +1,29 @@
--- A table of NPC IDs to be considered as valid targets
-local OG_ID = {400059, 400060, 400061, 400014, 400041, 400040, 400039, 3296}
--- The ID of the spell that is used to interact with the NPCs
-local SPELL_ID = 100183
+local HealingEvent = {}
 
--- A function that is triggered whenever a player casts a spell
-function OnSpellCast(event, caster, spell)
-    -- Get the target of the spell being cast
+HealingEvent.TARGET_NPC_IDS = {400059, 400060, 400061, 400014, 400041, 400040, 400039, 3296}
+HealingEvent.SPELL_ID = 100183
+HealingEvent.CREDIT_NPC_ID = 400039
+
+function HealingEvent.OnSpellCast(event, player, spell)
     local target = spell:GetTarget()
 
-    -- If the target exists and the spell being cast is the specified spell
-    if target and spell:GetEntry() == SPELL_ID then
-        -- A flag to determine if the target is a valid NPC
+    if target and spell:GetEntry() == HealingEvent.SPELL_ID then
         local isValidTarget = false
 
-        -- Iterate through the table of valid NPC IDs
-        for _, OGID in ipairs(OG_ID) do
-            -- If the target's NPC ID matches one of the valid IDs
-            if target:GetEntry() == OGID then
-                -- Set the flag to true
+        for _, NPCID in ipairs(HealingEvent.TARGET_NPC_IDS) do
+            if target:GetEntry() == NPCID then
                 isValidTarget = true
-                -- Break out of the loop
                 break
             end
         end
 
-        -- If the target is not a valid NPC or if the target's health is greater than 90%
         if not isValidTarget or target:GetHealthPct() > 90 then
-            -- Send a broadcast message to the player
-            caster:SendBroadcastMessage("That defender is doing fine. Find one that needs more help!")
-            -- Cancel the spell
+            player:SendBroadcastMessage("That defender is doing fine. Find one that needs more help!")
             spell:Cancel()
         else
-            -- Give kill credit to NPC ID 400039
-            caster:KilledMonsterCredit(400039)
+            player:KilledMonsterCredit(HealingEvent.CREDIT_NPC_ID)
         end
     end
 end
 
--- Register the function to be triggered whenever a player casts a spell (event 5)
-RegisterPlayerEvent(5, OnSpellCast)
+RegisterPlayerEvent(5, HealingEvent.OnSpellCast)

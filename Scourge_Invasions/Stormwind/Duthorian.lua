@@ -1,21 +1,26 @@
-local DuthorianRall = {};
+local DuthorianRall = {}
 
-local function CastJoL(eventId, delay, calls, creature)
-    creature:CastSpell(creature:GetVictim(), 20185, true)
+DuthorianRall.NPC_ID = 6171
+DuthorianRall.SPELL_IDS = {
+    JUDGEMENT_OF_LIGHT = 20185
+}
+
+function DuthorianRall.CastJoL(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), DuthorianRall.SPELL_IDS.JUDGEMENT_OF_LIGHT, true)
 end
 
-local function OnEnterCombat(event, creature, target)
-	    creature:RegisterEvent(CastJoL, 5000, 0)
-	end
+function DuthorianRall.OnEnterCombat(event, creature, target)
+    creature:RegisterEvent(DuthorianRall.CastJoL, 5000, 0)
+end
 	
-local function OnLeaveCombat(event, creature)
+function DuthorianRall.OnLeaveCombat(event, creature)
     creature:RemoveEvents()
 end
 
-local function OnDied(event, creature, killer)
+function DuthorianRall.OnDied(event, creature, killer)
     creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(6171, 1, OnEnterCombat)
-RegisterCreatureEvent(6171, 2, OnLeaveCombat)
-RegisterCreatureEvent(6171, 4, OnDied)
+RegisterCreatureEvent(DuthorianRall.NPC_ID, 1, DuthorianRall.OnEnterCombat)
+RegisterCreatureEvent(DuthorianRall.NPC_ID, 2, DuthorianRall.OnLeaveCombat)
+RegisterCreatureEvent(DuthorianRall.NPC_ID, 4, DuthorianRall.OnDied)

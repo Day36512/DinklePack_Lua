@@ -1,46 +1,54 @@
-local Bolvar = {}
+local Bolvarsup = {}
 
-local function CastAS(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 32699, true)
+Bolvarsup.NPC_ID = 1748
+Bolvarsup.SPELL_IDS = {
+    AS = 32699,
+    HOR = 53595,
+    SUNDER = 58461,
+    AVENGING_WRATH = 31884,
+    KINGS = 20217
+}
+
+function Bolvarsup.CastAS(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), Bolvarsup.SPELL_IDS.AS, true)
 end
 
-local function CastHOR(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 53595, true)
+function Bolvarsup.CastHOR(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), Bolvarsup.SPELL_IDS.HOR, true)
 end
 
-local function CastSunder(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 58461, true)
+function Bolvarsup.CastSunder(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), Bolvarsup.SPELL_IDS.SUNDER, true)
 end
 
-local function CastAvengingWrath(event, creature)
-creature:CastSpell(creature, 31884, true)
+function Bolvarsup.CastAvengingWrath(event, creature)
+    creature:CastSpell(creature, Bolvarsup.SPELL_IDS.AVENGING_WRATH, true)
 end
 
-local function CastKings(event, creature)
-creature:CastSpell(creature, 20217, true)
+function Bolvarsup.CastKings(event, creature)
+    creature:CastSpell(creature, Bolvarsup.SPELL_IDS.KINGS, true)
 end
 
-local function OnEnterCombat(event, creature, target)
-creature:RegisterEvent(CastAS, 12600, 0)
-creature:RegisterEvent(CastHOR, 5000, 0)
-creature:RegisterEvent(CastSunder, 10000, 0)
-creature:RegisterEvent(CastAvengingWrath, 1, 1)
+function Bolvarsup.OnEnterCombat(event, creature, target)
+    creature:RegisterEvent(Bolvarsup.CastAS, 12600, 0)
+    creature:RegisterEvent(Bolvarsup.CastHOR, 5000, 0)
+    creature:RegisterEvent(Bolvarsup.CastSunder, 10000, 0)
+    creature:RegisterEvent(Bolvarsup.CastAvengingWrath, 1, 1)
 end
 
-local function OnLeaveCombat(event, creature)
-creature:RemoveEvents()
+function Bolvarsup.OnLeaveCombat(event, creature)
+    creature:RemoveEvents()
 end
 
-local function OnDied(event, creature, killer)
-creature:RemoveEvents()
+function Bolvarsup.OnDied(event, creature, killer)
+    creature:RemoveEvents()
 end
 
-local function OnSpawn(event, creature)
-creature:CastSpell(creature, 20217, true)
+function Bolvarsup.OnSpawn(event, creature)
+    creature:CastSpell(creature, Bolvarsup.SPELL_IDS.KINGS, true)
 end
 
-RegisterCreatureEvent(1748, 1, OnEnterCombat)
-RegisterCreatureEvent(1748, 2, OnLeaveCombat)
-RegisterCreatureEvent(1748, 4, OnDied)
-RegisterCreatureEvent(1748, 5, OnSpawn)
-
+RegisterCreatureEvent(Bolvarsup.NPC_ID, 1, Bolvarsup.OnEnterCombat)
+RegisterCreatureEvent(Bolvarsup.NPC_ID, 2, Bolvarsup.OnLeaveCombat)
+RegisterCreatureEvent(Bolvarsup.NPC_ID, 4, Bolvarsup.OnDied)
+RegisterCreatureEvent(Bolvarsup.NPC_ID, 5, Bolvarsup.OnSpawn)

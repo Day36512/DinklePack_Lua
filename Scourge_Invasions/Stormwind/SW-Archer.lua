@@ -1,31 +1,38 @@
-local Archer = {};
+local ArcherSW = {}
 
-local function CastShoot(eventId, delay, calls, creature)
-    creature:CastSpell(creature:GetVictim(), 37770, true)
+ArcherSW.NPC_ID = 400033
+ArcherSW.SPELL_IDS = {
+    SHOOT = 37770,
+    SERPENT_STING = 36984,
+    MULTI_SHOT = 30990
+}
+
+function ArcherSW.CastShoot(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), ArcherSW.SPELL_IDS.SHOOT, true)
 end
 
-local function CastSerpentSting(eventId, delay, calls, creature)
-    creature:CastSpell(creature:GetVictim(), 36984, true)
+function ArcherSW.CastSerpentSting(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), ArcherSW.SPELL_IDS.SERPENT_STING, true)
 end
 
-local function CastMultiShot(eventId, delay, calls, creature)
-    creature:CastSpell(creature:GetVictim(), 30990, true)
+function ArcherSW.CastMultiShot(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), ArcherSW.SPELL_IDS.MULTI_SHOT, true)
 end
 
-local function OnEnterCombat(event, creature, target)
-	    creature:RegisterEvent(CastShoot, 750, 0)
-		creature:RegisterEvent(CastShoot, 15000, 0)
-		creature:RegisterEvent(CastMultiShot, 5000, 0)
-	end
-	
-local function OnLeaveCombat(event, creature)
+function ArcherSW.OnEnterCombat(event, creature, target)
+    creature:RegisterEvent(ArcherSW.CastShoot, 750, 0)
+    creature:RegisterEvent(ArcherSW.CastShoot, 15000, 0)
+    creature:RegisterEvent(ArcherSW.CastMultiShot, 5000, 0)
+end
+
+function ArcherSW.OnLeaveCombat(event, creature)
     creature:RemoveEvents()
 end
 
-local function OnDied(event, creature, killer)
+function ArcherSW.OnDied(event, creature, killer)
     creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(400033, 1, OnEnterCombat)
-RegisterCreatureEvent(400033, 2, OnLeaveCombat)
-RegisterCreatureEvent(400033, 4, OnDied)
+RegisterCreatureEvent(ArcherSW.NPC_ID, 1, ArcherSW.OnEnterCombat)
+RegisterCreatureEvent(ArcherSW.NPC_ID, 2, ArcherSW.OnLeaveCombat)
+RegisterCreatureEvent(ArcherSW.NPC_ID, 4, ArcherSW.OnDied)

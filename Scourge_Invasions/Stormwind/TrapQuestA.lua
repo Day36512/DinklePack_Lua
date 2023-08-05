@@ -1,3 +1,5 @@
+--[[
+
 -- Quest ID for the quest that should trigger the sound
 local QUEST_ID = 30004
 
@@ -17,3 +19,4 @@ RegisterCreatureEvent(CREATURE_ID, 31, function(event, player, creature, quest)
         creature:PerformEmote(EMOTE_ID)
     end
 end)
+]]

@@ -1,19 +1,25 @@
-local LitheStalker = {};
+local LitheStalker = {}
 
-local function CastWhirlingTip(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 24048, true)
+LitheStalker.NPC_ID = 400015
+LitheStalker.SPELL_IDS = {
+    WHIRLING_TIP = 24048,
+    SWEEPING_SLAM = 53399
+}
+
+function LitheStalker.CastWhirlingTip(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), LitheStalker.SPELL_IDS.WHIRLING_TIP, true)
 end
 
-local function CastSweepingSlam(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 53399, true)
+function LitheStalker.CastSweepingSlam(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), LitheStalker.SPELL_IDS.SWEEPING_SLAM, true)
 end
 
 function LitheStalker.OnEnterCombat(event, creature, target)
     if math.random(1, 100) <= 25 then
         creature:SendUnitYell("The Master will have your guts!", 0)
     end
-    creature:RegisterEvent(CastWhirlingTip, 5000, 0)
-    creature:RegisterEvent(CastSweepingSlam, 10000, 0)
+    creature:RegisterEvent(LitheStalker.CastWhirlingTip, 5000, 0)
+    creature:RegisterEvent(LitheStalker.CastSweepingSlam, 10000, 0)
 end
 
 function LitheStalker.OnLeaveCombat(event, creature)
@@ -24,12 +30,12 @@ function LitheStalker.OnLeaveCombat(event, creature)
 end
 
 function LitheStalker.OnDied(event, creature, killer)
-if(killer:GetObjectType() == "Player") then
-killer:SendBroadcastMessage("You killed " ..creature:GetName().."!")
-end
-creature:RemoveEvents()
+    if killer:GetObjectType() == "Player" then
+        killer:SendBroadcastMessage("You killed " .. creature:GetName() .. "!")
+    end
+    creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(400015, 1, LitheStalker.OnEnterCombat)
-RegisterCreatureEvent(400015, 2, LitheStalker.OnLeaveCombat)
-RegisterCreatureEvent(400015, 4, LitheStalker.OnDied)
+RegisterCreatureEvent(LitheStalker.NPC_ID, 1, LitheStalker.OnEnterCombat)
+RegisterCreatureEvent(LitheStalker.NPC_ID, 2, LitheStalker.OnLeaveCombat)
+RegisterCreatureEvent(LitheStalker.NPC_ID, 4, LitheStalker.OnDied)

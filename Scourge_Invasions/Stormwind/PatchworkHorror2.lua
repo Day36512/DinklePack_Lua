@@ -1,38 +1,43 @@
-local PatchWorkHorror2 = {};
+local PatchWorkHorrorTwice = {}
 
-local function AcidSpit(eventId, delay, calls, creature)
-    creature:CastSpell(creature:GetVictim(), 61597, true)
+PatchWorkHorrorTwice.NPC_ID = 10414
+PatchWorkHorrorTwice.SPELL_IDS = {
+    ACID_SPIT = 61597,
+    KNOCK_AWAY = 10101,
+    BLUDGEONING_STRIKE = 60870
+}
+
+function PatchWorkHorrorTwice.AcidSpit(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), PatchWorkHorrorTwice.SPELL_IDS.ACID_SPIT, true)
 end
 
-local function KnockAway(eventId, delay, calls, creature)
-    creature:CastSpell(creature:GetVictim(), 10101, true)
+function PatchWorkHorrorTwice.KnockAway(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), PatchWorkHorrorTwice.SPELL_IDS.KNOCK_AWAY, true)
 end
 
-
-function CastBludgeoningStrike(eventId, delay, calls, creature)
-  local targets = creature:GetAITargets(10)
-  if #targets == 0 then
-    return
-  end
-  local target = targets[math.random(#targets)]
-  creature:CastSpell(target, 60870, true)
+function PatchWorkHorrorTwice.CastBludgeoningStrike(eventId, delay, calls, creature)
+    local targets = creature:GetAITargets(10)
+    if #targets == 0 then
+        return
+    end
+    local target = targets[math.random(#targets)]
+    creature:CastSpell(target, PatchWorkHorrorTwice.SPELL_IDS.BLUDGEONING_STRIKE, true)
 end
 
+function PatchWorkHorrorTwice.OnEnterCombat(event, creature, target)
+    creature:RegisterEvent(PatchWorkHorrorTwice.AcidSpit, 7000, 0)
+    creature:RegisterEvent(PatchWorkHorrorTwice.CastBludgeoningStrike, 13000, 0)
+    creature:RegisterEvent(PatchWorkHorrorTwice.KnockAway, 16000, 0)
+end
 
-local function OnEnterCombat(event, creature, target)
-	    creature:RegisterEvent(AcidSpit, 7000, 0)
-		creature:RegisterEvent(CastBludgeoningStrike, 13000, 0)
-		creature:RegisterEvent(KnockAway, 16000, 0)
-	end
-	
-local function OnLeaveCombat(event, creature)
+function PatchWorkHorrorTwice.OnLeaveCombat(event, creature)
     creature:RemoveEvents()
 end
 
-local function OnDied(event, creature, killer)
+function PatchWorkHorrorTwice.OnDied(event, creature, killer)
     creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(10414, 1, OnEnterCombat)
-RegisterCreatureEvent(10414, 2, OnLeaveCombat)
-RegisterCreatureEvent(10414, 4, OnDied)
+RegisterCreatureEvent(PatchWorkHorrorTwice.NPC_ID, 1, PatchWorkHorrorTwice.OnEnterCombat)
+RegisterCreatureEvent(PatchWorkHorrorTwice.NPC_ID, 2, PatchWorkHorrorTwice.OnLeaveCombat)
+RegisterCreatureEvent(PatchWorkHorrorTwice.NPC_ID, 4, PatchWorkHorrorTwice.OnDied)

@@ -1,9 +1,11 @@
-local npcid = 400019
+local AlleriaWalk = {}
 
-function OnSpawn(event, creature)
+AlleriaWalk.NPC_ID = 400019
+
+function AlleriaWalk.OnSpawn(event, creature)
     creature:SetWalk(true)
     creature:MoveWaypoint()
     creature:SetReactState(0)
 end
 
-RegisterCreatureEvent(npcid, 5, OnSpawn)
+RegisterCreatureEvent(AlleriaWalk.NPC_ID, 5, AlleriaWalk.OnSpawn)

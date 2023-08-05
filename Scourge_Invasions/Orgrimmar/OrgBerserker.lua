@@ -1,41 +1,40 @@
-local OrgBerserker = {};
+local OrgBerserker = {}
 
-local function CastWhirlWind(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 53361, true)
+OrgBerserker.NPC_IDS = {400040, 400045, 14720}
+OrgBerserker.SPELL_IDS = {
+    WHIRL_WIND = 53361,
+    ENRAGE = 12880,
+    BUFF = 17683
+}
+
+function OrgBerserker.CastWhirlWind(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), OrgBerserker.SPELL_IDS.WHIRL_WIND, true)
 end
 
-local function CastEnrage(eventId, delay, calls, creature)
-creature:CastSpell(creature, 12880, true)
+function OrgBerserker.CastEnrage(eventId, delay, calls, creature)
+    creature:CastSpell(creature, OrgBerserker.SPELL_IDS.ENRAGE, true)
 end
 
-local function OnEnterCombat(event, creature, target)
-creature:RegisterEvent(CastWhirlWind, 7000, 0)
-creature:RegisterEvent(CastEnrage, 10000, 0)
+function OrgBerserker.OnEnterCombat(event, creature, target)
+    creature:RegisterEvent(OrgBerserker.CastWhirlWind, 7000, 0)
+    creature:RegisterEvent(OrgBerserker.CastEnrage, 10000, 0)
 end
 
-local function OnLeaveCombat(event, creature)
-creature:RemoveEvents()
+function OrgBerserker.OnLeaveCombat(event, creature)
+    creature:RemoveEvents()
 end
 
-local function OnSpawn(event, creature)
-creature:CastSpell(creature, 17683, true)
+function OrgBerserker.OnSpawn(event, creature)
+    creature:CastSpell(creature, OrgBerserker.SPELL_IDS.BUFF, true)
 end
 
-local function OnDied(event, creature, killer)
-creature:RemoveEvents()
+function OrgBerserker.OnDied(event, creature, killer)
+    creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(400040, 1, OnEnterCombat)
-RegisterCreatureEvent(400040, 2, OnLeaveCombat)
-RegisterCreatureEvent(400040, 4, OnDied)
-RegisterCreatureEvent(400040, 5, OnSpawn)
-
-RegisterCreatureEvent(400045, 1, OnEnterCombat)
-RegisterCreatureEvent(400045, 2, OnLeaveCombat)
-RegisterCreatureEvent(400045, 4, OnDied)
-RegisterCreatureEvent(400045, 5, OnSpawn)
-
-RegisterCreatureEvent(14720, 1, OnEnterCombat)
-RegisterCreatureEvent(14720, 2, OnLeaveCombat)
-RegisterCreatureEvent(14720, 4, OnDied)
-RegisterCreatureEvent(14720, 5, OnSpawn)
+for _, npcId in ipairs(OrgBerserker.NPC_IDS) do
+    RegisterCreatureEvent(npcId, 1, OrgBerserker.OnEnterCombat)
+    RegisterCreatureEvent(npcId, 2, OrgBerserker.OnLeaveCombat)
+    RegisterCreatureEvent(npcId, 4, OrgBerserker.OnDied)
+    RegisterCreatureEvent(npcId, 5, OrgBerserker.OnSpawn)
+end

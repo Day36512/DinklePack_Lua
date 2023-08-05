@@ -1,37 +1,45 @@
-local BoneSentinel = {};
+local BoneSentinel = {}
 
-local function CastShadowCleave(eventId, delay, calls, creature)
-    creature:CastSpell(creature:GetVictim(), 38226, true)
+BoneSentinel.NPC_ID = 400036
+
+BoneSentinel.spells = {
+    SHADOW_CLEAVE = 38226,
+    EARTHQUAKE = 33919,
+    SPECIAL_SPELL = 5
+}
+
+function BoneSentinel.CastShadowCleave(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), BoneSentinel.spells.SHADOW_CLEAVE, true)
 end
 
-local function CastEarthquake(eventId, delay, calls, creature)
-    creature:CastSpell(creature:GetVictim(), 33919, true)
+function BoneSentinel.CastEarthquake(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), BoneSentinel.spells.EARTHQUAKE, true)
 end
 
-local function CastSpecialSpell(eventId, delay, calls, creature)
-  local victim = creature:GetVictim()
-  if not victim then
-    return
-  end
-  if victim:GetEntry() == 32666 or victim:GetEntry() == 32667 or victim:GetEntry() == 31144 or victim:GetEntry() == 31146 then
-    creature:CastSpell(victim, 5, true)
-  end
+function BoneSentinel.CastSpecialSpell(eventId, delay, calls, creature)
+    local victim = creature:GetVictim()
+    if not victim then
+        return
+    end
+    if victim:GetEntry() == 32666 or victim:GetEntry() == 32667 or victim:GetEntry() == 31144 or victim:GetEntry() == 31146 then
+        creature:CastSpell(victim, BoneSentinel.spells.SPECIAL_SPELL, true)
+    end
 end
 
-local function OnEnterCombat(event, creature, target)
-    creature:RegisterEvent(CastShadowCleave, 5000, 0)
-    creature:RegisterEvent(CastEarthquake, 12000, 0)
-	creature:RegisterEvent(CastSpecialSpell, 1000, 0)
+function BoneSentinel.OnEnterCombat(event, creature, target)
+    creature:RegisterEvent(BoneSentinel.CastShadowCleave, 5000, 0)
+    creature:RegisterEvent(BoneSentinel.CastEarthquake, 12000, 0)
+    creature:RegisterEvent(BoneSentinel.CastSpecialSpell, 1000, 0)
 end
 
-local function OnLeaveCombat(event, creature)
+function BoneSentinel.OnLeaveCombat(event, creature)
     creature:RemoveEvents()
 end
 
-local function OnDied(event, creature, killer)
+function BoneSentinel.OnDied(event, creature, killer)
     creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(400036, 1, OnEnterCombat)
-RegisterCreatureEvent(400036, 2, OnLeaveCombat)
-RegisterCreatureEvent(400036, 4, OnDied)
+RegisterCreatureEvent(BoneSentinel.NPC_ID, 1, BoneSentinel.OnEnterCombat)
+RegisterCreatureEvent(BoneSentinel.NPC_ID, 2, BoneSentinel.OnLeaveCombat)
+RegisterCreatureEvent(BoneSentinel.NPC_ID, 4, BoneSentinel.OnDied)

@@ -1,36 +1,44 @@
 local AMage = {}
 
-local function CastFireball(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 38692, true)
+AMage.NPC_ID = 400027
+AMage.SPELL_IDS = {
+    FIREBALL = 38692,
+    FROSTBOLT = 27071,
+    BLIZZARD = 42213,
+    ARCANE_EXPLOSION = 19712
+}
+
+function AMage.CastFireball(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), AMage.SPELL_IDS.FIREBALL, true)
 end
 
-local function CastFrostbolt(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 27071, true)
+function AMage.CastFrostbolt(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), AMage.SPELL_IDS.FROSTBOLT, true)
 end
 
-local function CastBlizzard(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 42213, true)
+function AMage.CastBlizzard(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), AMage.SPELL_IDS.BLIZZARD, true)
 end
 
-local function CastArcaneExplosion(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 19712, true)
+function AMage.CastArcaneExplosion(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), AMage.SPELL_IDS.ARCANE_EXPLOSION, true)
 end
 
-local function OnEnterCombat(event, creature, target)
-creature:RegisterEvent(CastFireball, 3600, 0)
-creature:RegisterEvent(CastFrostbolt, 7200, 0)
-creature:RegisterEvent(CastBlizzard, 9000, 0)
-creature:RegisterEvent(CastArcaneExplosion, 10800, 0)
+function AMage.OnEnterCombat(event, creature, target)
+    creature:RegisterEvent(AMage.CastFireball, 3600, 0)
+    creature:RegisterEvent(AMage.CastFrostbolt, 7200, 0)
+    creature:RegisterEvent(AMage.CastBlizzard, 9000, 0)
+    creature:RegisterEvent(AMage.CastArcaneExplosion, 10800, 0)
 end
 
-local function OnLeaveCombat(event, creature)
-creature:RemoveEvents()
+function AMage.OnLeaveCombat(event, creature)
+    creature:RemoveEvents()
 end
 
-local function OnDied(event, creature, killer)
-creature:RemoveEvents()
+function AMage.OnDied(event, creature, killer)
+    creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(400027, 1, OnEnterCombat)
-RegisterCreatureEvent(400027, 2, OnLeaveCombat)
-RegisterCreatureEvent(400027, 4, OnDied)
+RegisterCreatureEvent(AMage.NPC_ID, 1, AMage.OnEnterCombat)
+RegisterCreatureEvent(AMage.NPC_ID, 2, AMage.OnLeaveCombat)
+RegisterCreatureEvent(AMage.NPC_ID, 4, AMage.OnDied)

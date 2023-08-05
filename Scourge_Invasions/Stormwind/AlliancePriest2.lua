@@ -1,31 +1,38 @@
-local APriest = {};
+local APriest = {}
 
-local function CastSmite(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 48122, true)
+APriest.NPC_ID = 400026
+APriest.SPELL_IDS = {
+    SMITE = 48122,
+    HOLY_FIRE = 48134,
+    SWP = 27605
+}
+
+function APriest.CastSmite(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), APriest.SPELL_IDS.SMITE, true)
 end
 
-local function CastHolyFire(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 48134, true)
+function APriest.CastHolyFire(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), APriest.SPELL_IDS.HOLY_FIRE, true)
 end
 
-local function CastSWP(eventId, delay, calls, creature)
-creature:CastSpell(creature:GetVictim(), 27605, true)
+function APriest.CastSWP(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), APriest.SPELL_IDS.SWP, true)
 end
 
-local function OnEnterCombat(event, creature, target)
-creature:RegisterEvent(CastSmite, 2600, 0)
-creature:RegisterEvent(CastHolyFire, 5000, 0)
-creature:RegisterEvent(CastSWP, 15000, 0)
+function APriest.OnEnterCombat(event, creature, target)
+    creature:RegisterEvent(APriest.CastSmite, 2600, 0)
+    creature:RegisterEvent(APriest.CastHolyFire, 5000, 0)
+    creature:RegisterEvent(APriest.CastSWP, 15000, 0)
 end
 
-local function OnLeaveCombat(event, creature)
-creature:RemoveEvents()
+function APriest.OnLeaveCombat(event, creature)
+    creature:RemoveEvents()
 end
 
-local function OnDied(event, creature, killer)
-creature:RemoveEvents()
+function APriest.OnDied(event, creature, killer)
+    creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(400026, 1, OnEnterCombat)
-RegisterCreatureEvent(400026, 2, OnLeaveCombat)
-RegisterCreatureEvent(400026, 4, OnDied)
+RegisterCreatureEvent(APriest.NPC_ID, 1, APriest.OnEnterCombat)
+RegisterCreatureEvent(APriest.NPC_ID, 2, APriest.OnLeaveCombat)
+RegisterCreatureEvent(APriest.NPC_ID, 4, APriest.OnDied)
