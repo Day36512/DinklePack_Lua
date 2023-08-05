@@ -1,27 +1,33 @@
 local VSkeletalWarrior = {}
 
-local function CastCleave(eventId, delay, calls, creature)
-    creature:CastSpell(creature:GetVictim(), 15496, true)
+VSkeletalWarrior.NPC_ID = 400150
+VSkeletalWarrior.SPELL_IDS = {
+    CLEAVE = 15496,
+    ON_SPAWN = 51908
+}
+
+function VSkeletalWarrior.CastCleave(eventId, delay, calls, creature)
+    creature:CastSpell(creature:GetVictim(), VSkeletalWarrior.SPELL_IDS.CLEAVE, true)
 end
 
-local function OnEnterCombat(event, creature, target)
-    creature:RegisterEvent(CastCleave, math.random(8000, 12000), 0)
+function VSkeletalWarrior.OnEnterCombat(event, creature, target)
+    creature:RegisterEvent(VSkeletalWarrior.CastCleave, math.random(8000, 12000), 0)
 end
 
-local function OnLeaveCombat(event, creature)
+function VSkeletalWarrior.OnLeaveCombat(event, creature)
     creature:RemoveEvents()
 end
 
-local function OnDied(event, creature, killer)
+function VSkeletalWarrior.OnDied(event, creature, killer)
     creature:DespawnOrUnsummon(5000)
     creature:RemoveEvents()
 end
 
-local function OnSpawn(event, creature)
-    creature:CastSpell(creature, 51908, true)
+function VSkeletalWarrior.OnSpawn(event, creature)
+    creature:CastSpell(creature, VSkeletalWarrior.SPELL_IDS.ON_SPAWN, true)
 end
 
-RegisterCreatureEvent(400150, 1, OnEnterCombat)
-RegisterCreatureEvent(400150, 2, OnLeaveCombat)
-RegisterCreatureEvent(400150, 4, OnDied)
-RegisterCreatureEvent(400150, 5, OnSpawn)
+RegisterCreatureEvent(VSkeletalWarrior.NPC_ID, 1, VSkeletalWarrior.OnEnterCombat)
+RegisterCreatureEvent(VSkeletalWarrior.NPC_ID, 2, VSkeletalWarrior.OnLeaveCombat)
+RegisterCreatureEvent(VSkeletalWarrior.NPC_ID, 4, VSkeletalWarrior.OnDied)
+RegisterCreatureEvent(VSkeletalWarrior.NPC_ID, 5, VSkeletalWarrior.OnSpawn)

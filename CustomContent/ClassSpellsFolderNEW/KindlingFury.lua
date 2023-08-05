@@ -1,16 +1,21 @@
-local SPELL_TO_LISTEN_FOR = 80040 -- Kindling Fury
-local AURA_TO_CHECK = 80040 -- the aura to check stacks for is the same as the spell
-local SPELL_TO_CAST = 920353 -- Spell to cast when aura stacks reach 15
-local REQUIRED_AURA_STACKS = 14
+local KindlingFuryHandler = {}
 
-local function OnCast(event, player, spell, skipCheck)
-    if spell:GetEntry() == SPELL_TO_LISTEN_FOR then
-        local aura = player:GetAura(AURA_TO_CHECK)
-        if aura and aura:GetStackAmount() >= REQUIRED_AURA_STACKS then
-            player:CastSpell(player, SPELL_TO_CAST, true)
-            player:RemoveAura(AURA_TO_CHECK) -- Remove the aura
+KindlingFuryHandler.SPELL_IDS = {
+    TO_LISTEN_FOR = 80040,
+    TO_CAST = 920353,
+    AURA_TO_CHECK = 80040
+}
+
+KindlingFuryHandler.REQUIRED_AURA_STACKS = 14
+
+local function KF_OnCast(event, player, spell, skipCheck)
+    if spell:GetEntry() == KindlingFuryHandler.SPELL_IDS.TO_LISTEN_FOR then
+        local aura = player:GetAura(KindlingFuryHandler.SPELL_IDS.AURA_TO_CHECK)
+        if aura and aura:GetStackAmount() >= KindlingFuryHandler.REQUIRED_AURA_STACKS then
+            player:CastSpell(player, KindlingFuryHandler.SPELL_IDS.TO_CAST, true)
+            player:RemoveAura(KindlingFuryHandler.SPELL_IDS.AURA_TO_CHECK)
         end
     end
 end
 
-RegisterPlayerEvent(5, OnCast) -- PLAYER_EVENT_ON_SPELL_CAST = 5
+RegisterPlayerEvent(5, KF_OnCast) -- PLAYER_EVENT_ON_SPELL_CAST = 5

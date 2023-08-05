@@ -15,10 +15,10 @@ local SPAWN_LOCATIONS = {
     {-93.244, -703, 8.91}
 }
 
-local function SpawnCreatures(event, go, player)
+local function FireSpawnCreatures(event, go, player)
     for _, location in ipairs(SPAWN_LOCATIONS) do
         go:SpawnCreature(CREATURE_ENTRY, location[1], location[2], location[3], 0, SPAWN_TYPE, DESPAWN_TIME)
     end
 end
 
-RegisterGameObjectEvent(GAMEOBJECT_ENTRY, 14, SpawnCreatures)
+RegisterGameObjectEvent(GAMEOBJECT_ENTRY, 14, FireSpawnCreatures)

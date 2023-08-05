@@ -1,3 +1,5 @@
+--[[
+
 local spells_to_cast = {
     [44461] = 44457,
     [55361] = 55359,
@@ -49,5 +51,5 @@ end
 
 RegisterPlayerEvent(5, OnSpellCast)
 RegisterPlayerEvent(18, EnableDisableScript) -- 18 is for chat command events
-
+]]
 

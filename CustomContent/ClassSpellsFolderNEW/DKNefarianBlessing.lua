@@ -1,14 +1,17 @@
-local EQUIPPED_ITEM = 80344
-local SPELLS_TO_LISTEN_FOR = {49924, 49998, 49999, 45463, 49923, 47541, 49892, 49893, 49894, 49895}
-local SPELL_TO_CAST = 80038
-local CHANCE_TO_CAST = 10
+local DeathKnightTrinket = {}
 
-local EQUIPMENT_SLOT_TRINKET1 = 12
-local EQUIPMENT_SLOT_TRINKET2 = 13
+DeathKnightTrinket.EQUIPPED_ITEM = 80344
+DeathKnightTrinket.SPELLS_TO_LISTEN_FOR = {49924, 49998, 49999, 45463, 49923, 47541, 49892, 49893, 49894, 49895}
+DeathKnightTrinket.SPELL_TO_CAST = 80038
+DeathKnightTrinket.CHANCE_TO_CAST = 10
 
-local function IsItemEquipped(player, itemID)
-    local trinket1 = player:GetEquippedItemBySlot(EQUIPMENT_SLOT_TRINKET1)
-    local trinket2 = player:GetEquippedItemBySlot(EQUIPMENT_SLOT_TRINKET2)
+DeathKnightTrinket.EQUIPMENT_SLOT_TRINKET1 = 12
+DeathKnightTrinket.EQUIPMENT_SLOT_TRINKET2 = 13
+DeathKnightTrinket.DEATH_KNIGHT_CLASS = 6
+
+function DeathKnightTrinket.IsItemEquipped(player, itemID)
+    local trinket1 = player:GetEquippedItemBySlot(DeathKnightTrinket.EQUIPMENT_SLOT_TRINKET1)
+    local trinket2 = player:GetEquippedItemBySlot(DeathKnightTrinket.EQUIPMENT_SLOT_TRINKET2)
     
     if trinket1 and trinket1:GetEntry() == itemID and trinket1:IsEquipped() then
         return true
@@ -21,14 +24,14 @@ local function IsItemEquipped(player, itemID)
     return false
 end
 
-local function OnCast(event, player, spell, skipCheck)
-    if (player:GetClass() == 6) then -- 6 is Death Knight
-        if (IsItemEquipped(player, EQUIPPED_ITEM)) then
+function DeathKnightTrinket.OnCast(event, player, spell, skipCheck)
+    if (player:GetClass() == DeathKnightTrinket.DEATH_KNIGHT_CLASS) then
+        if (DeathKnightTrinket.IsItemEquipped(player, DeathKnightTrinket.EQUIPPED_ITEM)) then
             local spellEntry = spell:GetEntry()
-            for _, spellID in ipairs(SPELLS_TO_LISTEN_FOR) do
+            for _, spellID in ipairs(DeathKnightTrinket.SPELLS_TO_LISTEN_FOR) do
                 if (spellEntry == spellID) then
-                    if (math.random(1, 100) <= CHANCE_TO_CAST and not player:HasAura(SPELL_TO_CAST)) then
-                        player:CastSpell(player, SPELL_TO_CAST, true)
+                    if (math.random(1, 100) <= DeathKnightTrinket.CHANCE_TO_CAST and not player:HasAura(DeathKnightTrinket.SPELL_TO_CAST)) then
+                        player:CastSpell(player, DeathKnightTrinket.SPELL_TO_CAST, true)
                     end
                     break
                 end
@@ -37,4 +40,4 @@ local function OnCast(event, player, spell, skipCheck)
     end
 end
 
-RegisterPlayerEvent(5, OnCast) 
+RegisterPlayerEvent(5, DeathKnightTrinket.OnCast)

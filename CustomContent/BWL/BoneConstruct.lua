@@ -1,15 +1,17 @@
-local NPC_BONE_CONSTRUCT = 14605 
-local SPELL_EXPLOIT_WEAKNESS = 8355
+local BWLBoneConstruct = {}
 
-local function ExploitWeakness(eventId, delay, repeats, creature)
+BWLBoneConstruct.NPC_ID = 14605
+BWLBoneConstruct.SPELL_ID = 8355
+
+function BWLBoneConstruct.ExploitWeakness(eventId, delay, repeats, creature)
     local target = creature:GetVictim()
 
     if target then
-        creature:CastSpell(target, SPELL_EXPLOIT_WEAKNESS, false)
+        creature:CastSpell(target, BWLBoneConstruct.SPELL_ID, false)
     end
 end
 
-local function OnSpawn(event, creature)
+function BWLBoneConstruct.OnSpawn(event, creature)
     local playersInRange = creature:GetPlayersInRange(100, 1) -- 100 yards range, hostile players
 
     for _, player in pairs(playersInRange) do
@@ -18,14 +20,14 @@ local function OnSpawn(event, creature)
     end
 end
 
-local function OnEnterCombat(event, creature, target)
-    creature:RegisterEvent(ExploitWeakness, 6000, 0) -- Every 6 seconds
+function BWLBoneConstruct.OnEnterCombat(event, creature, target)
+    creature:RegisterEvent(BWLBoneConstruct.ExploitWeakness, 6000, 0) -- Every 6 seconds
 end
 
-local function OnLeaveCombat(event, creature)
+function BWLBoneConstruct.OnLeaveCombat(event, creature)
     creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(NPC_BONE_CONSTRUCT, 5, OnSpawn) 
-RegisterCreatureEvent(NPC_BONE_CONSTRUCT, 1, OnEnterCombat) 
-RegisterCreatureEvent(NPC_BONE_CONSTRUCT, 2, OnLeaveCombat) 
+RegisterCreatureEvent(BWLBoneConstruct.NPC_ID, 5, BWLBoneConstruct.OnSpawn)
+RegisterCreatureEvent(BWLBoneConstruct.NPC_ID, 1, BWLBoneConstruct.OnEnterCombat)
+RegisterCreatureEvent(BWLBoneConstruct.NPC_ID, 2, BWLBoneConstruct.OnLeaveCombat)
