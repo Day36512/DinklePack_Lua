@@ -1,4 +1,4 @@
-local AttackerSpawnModule = {}
+--[[local AttackerSpawnModule = {}
 
 AttackerSpawnModule.ITEM_ID = 800050 
 AttackerSpawnModule.MAX_NPC_SPAWN = 3 
@@ -125,3 +125,4 @@ function AttackerSpawnModule.SpawnAttacker(event, player)
 end
 
 RegisterPlayerEvent(27, AttackerSpawnModule.SpawnAttacker)
+]]
